@@ -17,10 +17,12 @@ type User struct {
 	RegisteredAt time.Time `json:"registered_at"`
 }
 
+// TODO: is this even used
 func (u User) Value() (driver.Value, error) {
 	return json.Marshal(u)
 }
 
+// TODO: is this even used
 func (u *User) Scan(value interface{}) error {
 	i, ok := value.([]byte)
 	if !ok {
@@ -30,6 +32,7 @@ func (u *User) Scan(value interface{}) error {
 	return json.Unmarshal(i, &u)
 }
 
+// TODO: is this even used
 func (u *User) Validate() (*User, error) {
 	validate := validator.New(validator.WithRequiredStructEnabled())
 

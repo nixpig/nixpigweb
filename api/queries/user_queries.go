@@ -38,3 +38,17 @@ func (q *UserQueries) GetUsers() ([]models.User, error) {
 
 	return users, nil
 }
+
+func (q *UserQueries) GetUser(id int) (models.User, error) {
+	user := models.User{}
+
+	query := "select id, username, email, is_admin, registered_at from users where id=$1 limit 1"
+
+	row := q.Db.QueryRow(query, id)
+
+	if err := row.Scan(&user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.RegisteredAt); err != nil {
+		return user, err
+	}
+
+	return user, nil
+}

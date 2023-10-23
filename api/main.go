@@ -19,6 +19,7 @@ func main() {
 
 	fmt.Println("registering get user route")
 	app.Get("/user", controllers.GetUsers)
+	app.Get("/user/:id", controllers.GetUser)
 
 	log.Fatal(app.Listen(":3000"))
 }
