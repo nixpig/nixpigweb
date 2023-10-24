@@ -3,28 +3,24 @@ package queries
 import (
 	"database/sql"
 	"fmt"
-
+	_ "github.com/lib/pq"
 	"github.com/nixpig/nixpigweb/api/models"
 )
 
 type UserQueries struct {
-	Db *sql.DB
+	DB *sql.DB
 }
 
 func (q *UserQueries) GetUsers() ([]models.User, error) {
-	fmt.Println("executing db query...")
 	users := []models.User{}
 
 	query := "select id, username, email, is_admin, registered_at from users order by id"
 
-	rows, err := q.Db.Query(query)
-	fmt.Println("executed query and got rows or error")
+	rows, err := q.DB.Query(query)
 	if err != nil {
 		return users, err
 	}
 	defer rows.Close()
-
-	fmt.Println("closed the rows")
 
 	for rows.Next() {
 		user := models.User{}
@@ -44,7 +40,9 @@ func (q *UserQueries) GetUser(id int) (models.User, error) {
 
 	query := "select id, username, email, is_admin, registered_at from users where id=$1 limit 1"
 
-	row := q.Db.QueryRow(query, id)
+	fmt.Println("before query row")
+	row := q.DB.QueryRow(query, id)
+	fmt.Println("after query row")
 
 	if err := row.Scan(&user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.RegisteredAt); err != nil {
 		return user, err

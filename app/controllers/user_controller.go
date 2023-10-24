@@ -2,25 +2,19 @@ package controllers
 
 import (
 	"fmt"
-	"log"
-	"os"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/lib/pq"
 	"github.com/nixpig/nixpigweb/api/queries"
 
-	"github.com/nixpig/nixpigweb/api/connections"
+	"github.com/nixpig/nixpigweb/api/database"
 )
 
 func GetUsers(c *fiber.Ctx) error {
-	db, err := connections.Postgres()
-	if err != nil {
-		log.Fatal(err)
-		os.Exit(1)
-	}
-
-	userQueries := queries.UserQueries{Db: db}
+	fmt.Println("before database")
+	db := database.Connect()
+	userQueries := queries.UserQueries{DB: db}
 
 	users, err := userQueries.GetUsers()
 	if err != nil {
@@ -41,6 +35,7 @@ func GetUsers(c *fiber.Ctx) error {
 }
 
 func GetUser(c *fiber.Ctx) error {
+	fmt.Println("before database")
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -50,17 +45,15 @@ func GetUser(c *fiber.Ctx) error {
 			"user":    nil,
 		})
 	}
-	fmt.Println("id passed id:", id)
 
-	db, err := connections.Postgres()
-	if err != nil {
-		log.Fatal(err)
-		os.Exit(1)
-	}
+	fmt.Println("before query construction")
+	db := database.Connect()
+	userQueries := queries.UserQueries{DB: db}
 
-	userQueries := queries.UserQueries{Db: db}
+	fmt.Println("before query execution")
 
 	user, err := userQueries.GetUser(id)
+	fmt.Println("after query execution")
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,

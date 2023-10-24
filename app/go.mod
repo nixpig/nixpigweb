@@ -19,6 +19,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.50.0 // indirect
 	github.com/gohugoio/hugo v0.111.3 // indirect
 	github.com/google/uuid v1.3.1 // indirect
+	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/lib/pq v1.10.9 // indirect
