@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/nixpig/nixpigweb/api/routes"
+	"github.com/nixpig/nixpigweb/api/internal/user"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 
 	api := app.Group("/api")
 
-	routes.SetupUserRoutes(api)
+	user.SetupUserRoutes(api)
 
 	log.Fatal(app.Listen(":3000"))
 }

@@ -1,10 +1,10 @@
-package models
+package user
 
 import (
 	"time"
 )
 
-type User struct {
+type UserModel struct {
 	Id           int       `json:"id" validate:"required,gte=0"`
 	Username     string    `json:"username" validate:"required"`
 	Email        string    `json:"email" validate:"required,email"`
@@ -13,7 +13,7 @@ type User struct {
 	RegisteredAt time.Time `json:"registered_at"`
 }
 
-type NewUser struct {
+type NewUserModel struct {
 	Username string `json:"username" validate:"required"`
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password,omitempty,min=8" validate:"required"`

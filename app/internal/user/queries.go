@@ -1,20 +1,18 @@
-package queries
+package user
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
 
 	_ "github.com/lib/pq"
-	"github.com/nixpig/nixpigweb/api/models"
 )
 
 type UserQueries struct {
 	*sql.DB
 }
 
-func (q *UserQueries) GetUsers() ([]models.User, error) {
-	users := []models.User{}
+func (q *UserQueries) GetAll() ([]UserModel, error) {
+	users := []UserModel{}
 
 	query := "select id, username, email, is_admin, registered_at from users order by id"
 
@@ -26,7 +24,7 @@ func (q *UserQueries) GetUsers() ([]models.User, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		user := models.User{}
+		user := UserModel{}
 
 		if err := rows.Scan(&user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.RegisteredAt); err != nil {
 			return users, err
@@ -38,8 +36,8 @@ func (q *UserQueries) GetUsers() ([]models.User, error) {
 	return users, nil
 }
 
-func (q *UserQueries) GetUser(id int) (models.User, error) {
-	user := models.User{}
+func (q *UserQueries) GetOne(id int) (UserModel, error) {
+	user := UserModel{}
 
 	query := "select id, username, email, is_admin, registered_at from users where id = $1 limit 1"
 
@@ -52,7 +50,7 @@ func (q *UserQueries) GetUser(id int) (models.User, error) {
 	return user, nil
 }
 
-func (q *UserQueries) CreateUser(user *models.NewUser) error {
+func (q *UserQueries) Create(user *NewUserModel) error {
 	query := "insert into users (username, email, is_admin, password, registered_at) values ($1, $2, $3, $4, $5)"
 
 	_, err := q.Exec(query, &user.Username, &user.Email, false, &user.Password, time.Now())
@@ -63,7 +61,7 @@ func (q *UserQueries) CreateUser(user *models.NewUser) error {
 	return nil
 }
 
-func (q *UserQueries) DeleteUser(id int) error {
+func (q *UserQueries) Delete(id int) error {
 	query := "delete from users where id = $1"
 
 	_, err := q.Exec(query, id)
@@ -74,7 +72,7 @@ func (q *UserQueries) DeleteUser(id int) error {
 	return nil
 }
 
-func (q *UserQueries) UpdateUser(user *models.User) error {
+func (q *UserQueries) Update(user *UserModel) error {
 	query := "update users set username = $2, email = $3, is_admin = $4, password = $5 where id = $1"
 
 	_, err := q.Exec(query, &user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.Password)
