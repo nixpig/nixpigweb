@@ -7,14 +7,14 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/nixpig/nixpigweb/api/config"
-	// "github.com/nixpig/nixpigweb/api/internal/user"
+	"github.com/nixpig/nixpigweb/api/queries"
 )
 
-// type Queries struct {
-// 	*user.UserQueries
-// }
+type Queries struct {
+	*queries.UserQueries
+}
 
-func Connect() *sql.DB {
+func Connect() *Queries {
 	var err error
 
 	host := config.Config("DBHOST")
@@ -42,8 +42,7 @@ func Connect() *sql.DB {
 		panic("failed to ping database")
 	}
 
-	// return &Queries{
-	// 	UserQueries: &user.UserQueries{DB: db},
-	// }
-	return db
+	return &Queries{
+		UserQueries: &queries.UserQueries{DB: db},
+	}
 }
