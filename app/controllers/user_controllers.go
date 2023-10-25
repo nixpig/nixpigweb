@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/geraldo-labs/merge-struct"
 	"strconv"
 
 	"github.com/go-playground/validator/v10"
@@ -28,7 +29,7 @@ func GetUsers(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"error":   false,
-		"message": nil,
+		"message": "found users",
 		"count":   len(users),
 		"users":   users,
 	})
@@ -58,7 +59,7 @@ func GetUser(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"error":   false,
-		"message": nil,
+		"message": "found user",
 		"user":    user,
 	})
 }
@@ -93,7 +94,7 @@ func CreateUser(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"error":   false,
-		"message": nil,
+		"message": "user created",
 		"user": models.NewUser{
 			Username: user.Username,
 			Email:    user.Email,
@@ -102,17 +103,8 @@ func CreateUser(c *fiber.Ctx) error {
 }
 
 func DeleteUser(c *fiber.Ctx) error {
-	user := &models.User{}
-
-	if err := c.BodyParser(user); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":   true,
-			"message": err.Error(),
-		})
-	}
-
-	validate := validator.New()
-	if err := validate.StructPartial(user); err != nil {
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": err.Error(),
@@ -121,7 +113,7 @@ func DeleteUser(c *fiber.Ctx) error {
 
 	db := database.Connect()
 
-	foundUser, err := db.GetUser(user.Id)
+	user, err := db.GetUser(id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
@@ -129,7 +121,7 @@ func DeleteUser(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := db.DeleteUser(foundUser.Id); err != nil {
+	if err := db.DeleteUser(user.Id); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
 			"message": err.Error(),
@@ -137,4 +129,62 @@ func DeleteUser(c *fiber.Ctx) error {
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)
+}
+
+func UpdateUser(c *fiber.Ctx) error {
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+		})
+	}
+
+	userUpdates := &models.User{}
+
+	if err := c.BodyParser(userUpdates); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+		})
+	}
+
+	db := database.Connect()
+
+	user, err := db.GetUser(id)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+		})
+	}
+
+	patched, err := mp.Struct(&user, userUpdates)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+		})
+	}
+
+	if !patched {
+		return c.Status(fiber.StatusNotModified).JSON(fiber.Map{
+			"error":   false,
+			"message": "no changes to make",
+			"user":    user,
+		})
+	}
+
+	if err := db.UpdateUser(&user); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"error":   false,
+		"message": "updated user",
+		"user":    user,
+	})
 }

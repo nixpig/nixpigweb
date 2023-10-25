@@ -2,6 +2,7 @@ package queries
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	_ "github.com/lib/pq"
@@ -73,4 +74,13 @@ func (q *UserQueries) DeleteUser(id int) error {
 	return nil
 }
 
-// TODO: update user
+func (q *UserQueries) UpdateUser(user *models.User) error {
+	query := "update users set username = $2, email = $3, is_admin = $4, password = $5 where id = $1"
+
+	_, err := q.Exec(query, &user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.Password)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

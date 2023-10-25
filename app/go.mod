@@ -2,6 +2,8 @@ module github.com/nixpig/nixpigweb/api
 
 go 1.21.3
 
+require github.com/geraldo-labs/merge-struct v1.0.0
+
 require (
 	dario.cat/mergo v1.0.0 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
@@ -11,6 +13,7 @@ require (
 	github.com/cosmtrek/air v1.48.0 // indirect
 	github.com/creack/pty v1.1.18 // indirect
 	github.com/fatih/color v1.14.1 // indirect
+	github.com/fatih/structs v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
