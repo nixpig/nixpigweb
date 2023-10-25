@@ -22,16 +22,14 @@ func GetUsers(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
 			"message": "no users found",
-			"count":   0,
-			"users":   nil,
+			"data":    nil,
 		})
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"error":   false,
 		"message": "found users",
-		"count":   len(users),
-		"users":   users,
+		"data":    users,
 	})
 }
 
@@ -41,8 +39,7 @@ func GetUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
 			"message": err.Error(),
-			"count":   0,
-			"user":    nil,
+			"data":    nil,
 		})
 	}
 
@@ -53,14 +50,14 @@ func GetUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
 			"message": "user with the provided id was not found",
-			"user":    nil,
+			"data":    nil,
 		})
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"error":   false,
 		"message": "found user",
-		"user":    user,
+		"data":    user,
 	})
 }
 
@@ -71,6 +68,7 @@ func CreateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": err.Error(),
+			"data":    nil,
 		})
 	}
 
@@ -81,6 +79,7 @@ func CreateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": err.Error(),
+			"data":    nil,
 		})
 	}
 
@@ -89,13 +88,14 @@ func CreateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
 			"message": err.Error(),
+			"data":    nil,
 		})
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"error":   false,
 		"message": "user created",
-		"user": models.NewUser{
+		"data": models.NewUser{
 			Username: user.Username,
 			Email:    user.Email,
 		},
@@ -108,6 +108,7 @@ func DeleteUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": err.Error(),
+			"data":    nil,
 		})
 	}
 
@@ -118,6 +119,7 @@ func DeleteUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
 			"message": err.Error(),
+			"data":    nil,
 		})
 	}
 
@@ -125,6 +127,7 @@ func DeleteUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
 			"message": err.Error(),
+			"data":    nil,
 		})
 	}
 
@@ -137,6 +140,7 @@ func UpdateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": err.Error(),
+			"data":    nil,
 		})
 	}
 
@@ -146,6 +150,7 @@ func UpdateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": err.Error(),
+			"data":    nil,
 		})
 	}
 
@@ -156,6 +161,7 @@ func UpdateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
 			"message": err.Error(),
+			"data":    nil,
 		})
 	}
 
@@ -164,6 +170,7 @@ func UpdateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
 			"message": err.Error(),
+			"data":    nil,
 		})
 	}
 
@@ -171,7 +178,7 @@ func UpdateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotModified).JSON(fiber.Map{
 			"error":   false,
 			"message": "no changes to make",
-			"user":    user,
+			"data":    user,
 		})
 	}
 
@@ -179,12 +186,13 @@ func UpdateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
 			"message": err.Error(),
+			"data":    nil,
 		})
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"error":   false,
 		"message": "updated user",
-		"user":    user,
+		"data":    user,
 	})
 }
