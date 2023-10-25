@@ -10,4 +10,5 @@ func SetupUserRoutes(api fiber.Router) {
 
 	user.Get("/", controllers.GetUsers)
 	user.Get("/:id", controllers.GetUser)
+	user.Post("/", controllers.CreateUser)
 }

@@ -2,13 +2,14 @@ package queries
 
 import (
 	"database/sql"
-	"fmt"
+	"time"
+
 	_ "github.com/lib/pq"
 	"github.com/nixpig/nixpigweb/api/models"
 )
 
 type UserQueries struct {
-	DB *sql.DB
+	*sql.DB
 }
 
 func (q *UserQueries) GetUsers() ([]models.User, error) {
@@ -16,10 +17,11 @@ func (q *UserQueries) GetUsers() ([]models.User, error) {
 
 	query := "select id, username, email, is_admin, registered_at from users order by id"
 
-	rows, err := q.DB.Query(query)
+	rows, err := q.Query(query)
 	if err != nil {
 		return users, err
 	}
+
 	defer rows.Close()
 
 	for rows.Next() {
@@ -40,13 +42,22 @@ func (q *UserQueries) GetUser(id int) (models.User, error) {
 
 	query := "select id, username, email, is_admin, registered_at from users where id=$1 limit 1"
 
-	fmt.Println("before query row")
-	row := q.DB.QueryRow(query, id)
-	fmt.Println("after query row")
+	row := q.QueryRow(query, id)
 
 	if err := row.Scan(&user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.RegisteredAt); err != nil {
 		return user, err
 	}
 
 	return user, nil
+}
+
+func (q *UserQueries) CreateUser(user *models.NewUser) error {
+	query := "insert into users (username, email, is_admin, password, registered_at) values ($1, $2, $3, $4, $5)"
+
+	_, err := q.Exec(query, &user.Username, &user.Email, false, &user.Password, time.Now())
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

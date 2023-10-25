@@ -4,19 +4,19 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/lib/pq"
-	"github.com/nixpig/nixpigweb/api/queries"
 
 	"github.com/nixpig/nixpigweb/api/database"
+	"github.com/nixpig/nixpigweb/api/models"
 )
 
 func GetUsers(c *fiber.Ctx) error {
 	fmt.Println("before database")
 	db := database.Connect()
-	userQueries := queries.UserQueries{DB: db}
 
-	users, err := userQueries.GetUsers()
+	users, err := db.GetUsers()
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
@@ -35,7 +35,6 @@ func GetUsers(c *fiber.Ctx) error {
 }
 
 func GetUser(c *fiber.Ctx) error {
-	fmt.Println("before database")
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -46,14 +45,9 @@ func GetUser(c *fiber.Ctx) error {
 		})
 	}
 
-	fmt.Println("before query construction")
 	db := database.Connect()
-	userQueries := queries.UserQueries{DB: db}
 
-	fmt.Println("before query execution")
-
-	user, err := userQueries.GetUser(id)
-	fmt.Println("after query execution")
+	user, err := db.GetUser(id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
@@ -66,5 +60,43 @@ func GetUser(c *fiber.Ctx) error {
 		"error":   false,
 		"message": nil,
 		"user":    user,
+	})
+}
+
+func CreateUser(c *fiber.Ctx) error {
+	user := &models.NewUser{}
+
+	if err := c.BodyParser(user); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+		})
+	}
+
+	fmt.Println("user:", user)
+
+	validate := validator.New()
+	if err := validate.Struct(user); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+		})
+	}
+
+	db := database.Connect()
+	if err := db.CreateUser(user); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"error":   false,
+		"message": nil,
+		"user": models.NewUser{
+			Username: user.Username,
+			Email:    user.Email,
+		},
 	})
 }

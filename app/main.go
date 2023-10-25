@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/nixpig/nixpigweb/api/routes"
 )
@@ -11,7 +12,10 @@ import (
 func main() {
 	app := fiber.New()
 
-	api := app.Group("/api", logger.New())
+	app.Use(cors.New())
+	app.Use(logger.New())
+
+	api := app.Group("/api")
 
 	routes.SetupUserRoutes(api)
 
