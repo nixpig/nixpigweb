@@ -40,7 +40,7 @@ func (q *UserQueries) GetUsers() ([]models.User, error) {
 func (q *UserQueries) GetUser(id int) (models.User, error) {
 	user := models.User{}
 
-	query := "select id, username, email, is_admin, registered_at from users where id=$1 limit 1"
+	query := "select id, username, email, is_admin, registered_at from users where id = $1 limit 1"
 
 	row := q.QueryRow(query, id)
 
@@ -61,3 +61,16 @@ func (q *UserQueries) CreateUser(user *models.NewUser) error {
 
 	return nil
 }
+
+func (q *UserQueries) DeleteUser(id int) error {
+	query := "delete from users where id = $1"
+
+	_, err := q.Exec(query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// TODO: update user

@@ -100,3 +100,41 @@ func CreateUser(c *fiber.Ctx) error {
 		},
 	})
 }
+
+func DeleteUser(c *fiber.Ctx) error {
+	user := &models.User{}
+
+	if err := c.BodyParser(user); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+		})
+	}
+
+	validate := validator.New()
+	if err := validate.StructPartial(user); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+		})
+	}
+
+	db := database.Connect()
+
+	foundUser, err := db.GetUser(user.Id)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+		})
+	}
+
+	if err := db.DeleteUser(foundUser.Id); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+		})
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
+}
