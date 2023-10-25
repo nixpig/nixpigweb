@@ -17,12 +17,12 @@ type Queries struct {
 func Connect() *Queries {
 	var err error
 
-	host := config.Config("DBHOST")
-	user := config.Config("DBUSER")
-	password := config.Config("DBPASSWORD")
-	database := config.Config("DBNAME")
+	host := config.Get("DBHOST")
+	user := config.Get("DBUSER")
+	password := config.Get("DBPASSWORD")
+	database := config.Get("DBNAME")
 
-	port, err := strconv.Atoi(config.Config("DBPORT"))
+	port, err := strconv.Atoi(config.Get("DBPORT"))
 	if err != nil {
 		panic("failed to get database port from environment")
 	}
