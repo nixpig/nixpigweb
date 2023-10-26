@@ -10,6 +10,7 @@ func SetupPostRoutes(api fiber.Router) {
 
 	post.Get("/", controllers.GetPosts)
 	post.Get("/:id", controllers.GetPost)
+	post.Delete("/:id", controllers.DeletePost)
 	post.Post("/", controllers.CreatePost)
 
 }

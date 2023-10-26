@@ -98,3 +98,35 @@ func CreatePost(c *fiber.Ctx) error {
 		},
 	})
 }
+
+func DeletePost(c *fiber.Ctx) error {
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+			"data":    nil,
+		})
+	}
+
+	db := database.Connect()
+
+	post, err := db.GetPost(id)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error":   true,
+			"message": "post not found",
+			"data":    nil,
+		})
+	}
+
+	if err := db.DeletePost(post.Id); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+			"data":    nil,
+		})
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
+}

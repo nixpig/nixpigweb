@@ -5,7 +5,7 @@ import (
 )
 
 type User struct {
-	Id           uint      `json:"id" validate:"required,gte=0"`
+	Id           int       `json:"id" validate:"required,gte=0"`
 	Username     string    `json:"username" validate:"required"`
 	Email        string    `json:"email" validate:"required,email"`
 	Password     string    `json:"password,omitempty,min=8" validate:"required"`
