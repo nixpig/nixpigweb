@@ -2,8 +2,9 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/geraldo-labs/merge-struct"
 	"strconv"
+
+	"github.com/geraldo-labs/merge-struct"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -14,7 +15,6 @@ import (
 )
 
 func GetUsers(c *fiber.Ctx) error {
-	fmt.Println("before database")
 	db := database.Connect()
 
 	users, err := db.GetUsers()
@@ -28,7 +28,7 @@ func GetUsers(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"error":   false,
-		"message": "found users",
+		"message": fmt.Sprintf("found %v users", len(users)),
 		"data":    users,
 	})
 }
@@ -71,8 +71,6 @@ func CreateUser(c *fiber.Ctx) error {
 			"data":    nil,
 		})
 	}
-
-	fmt.Println("user:", user)
 
 	validate := validator.New()
 	if err := validate.Struct(user); err != nil {

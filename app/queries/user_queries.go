@@ -62,7 +62,7 @@ func (q *UserQueries) CreateUser(user *models.NewUser) error {
 	return nil
 }
 
-func (q *UserQueries) DeleteUser(id int) error {
+func (q *UserQueries) DeleteUser(id uint) error {
 	query := "delete from users where id = $1"
 
 	_, err := q.Exec(query, id)
