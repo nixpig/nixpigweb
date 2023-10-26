@@ -2,9 +2,9 @@ package queries
 
 import (
 	"database/sql"
-	"fmt"
-	"github.com/mozillazg/go-slugify"
 	"time"
+
+	"github.com/mozillazg/go-slugify"
 
 	_ "github.com/lib/pq"
 	"github.com/nixpig/nixpigweb/api/models"
@@ -37,6 +37,20 @@ func (q *PostQueries) GetPosts() ([]models.Post, error) {
 	}
 
 	return posts, nil
+}
+
+func (q *PostQueries) GetPost(id int) (models.Post, error) {
+	post := models.Post{}
+
+	query := "select * from posts where id = $1"
+
+	row := q.QueryRow(query, id)
+
+	if err := row.Scan(&post.Id, &post.Title, &post.Body, &post.Views, &post.Slug, &post.Published, &post.PublishedAt, &post.UpdatedAt, &post.UserId); err != nil {
+		return post, err
+	}
+
+	return post, nil
 }
 
 func (q *PostQueries) CreatePost(post *models.NewPost) error {

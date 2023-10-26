@@ -9,6 +9,7 @@ func SetupPostRoutes(api fiber.Router) {
 	post := api.Group("/post")
 
 	post.Get("/", controllers.GetPosts)
+	post.Get("/:id", controllers.GetPost)
 	post.Post("/", controllers.CreatePost)
 
 }

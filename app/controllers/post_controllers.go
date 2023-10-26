@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"fmt"
+	"strconv"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/lib/pq"
@@ -26,6 +28,34 @@ func GetPosts(c *fiber.Ctx) error {
 		"error":   false,
 		"message": fmt.Sprintf("found %v posts", len(posts)),
 		"data":    posts,
+	})
+}
+
+func GetPost(c *fiber.Ctx) error {
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+			"data":    nil,
+		})
+	}
+
+	db := database.Connect()
+
+	post, err := db.GetPost(id)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error":   true,
+			"message": "post with the provided ID was not found",
+			"data":    nil,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"error":   true,
+		"message": "found post",
+		"data":    post,
 	})
 }
 
