@@ -6,7 +6,7 @@ import (
 	"github.com/nixpig/nixpigweb/api/config"
 )
 
-func Private() fiber.Handler {
+func Protected() fiber.Handler {
 	return jwtware.New(jwtware.Config{
 		SigningKey:   jwtware.SigningKey{Key: []byte(config.Get("SECRET"))},
 		ErrorHandler: jwtErrorHandler,

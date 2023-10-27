@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/nixpig/nixpigweb/api/controllers"
+	"github.com/nixpig/nixpigweb/api/middleware"
 )
 
 func SetupPostRoutes(api fiber.Router) {
@@ -10,7 +11,7 @@ func SetupPostRoutes(api fiber.Router) {
 
 	post.Get("/", controllers.GetPosts)
 	post.Get("/:id", controllers.GetPost)
-	post.Delete("/:id", controllers.DeletePost)
-	post.Post("/", controllers.CreatePost)
-	post.Patch("/:id", controllers.UpdatePost)
+	post.Delete("/:id", middleware.Protected(), controllers.DeletePost)
+	post.Post("/", middleware.Protected(), controllers.CreatePost)
+	post.Patch("/:id", middleware.Protected(), controllers.UpdatePost)
 }
