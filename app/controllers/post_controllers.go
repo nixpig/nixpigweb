@@ -7,11 +7,19 @@ import (
 	mp "github.com/geraldo-labs/merge-struct"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	_ "github.com/lib/pq"
 
 	"github.com/nixpig/nixpigweb/api/database"
 	"github.com/nixpig/nixpigweb/api/models"
 )
+
+func validateUserToken(token *jwt.Token, id int) bool {
+	claims := token.Claims.(jwt.MapClaims)
+	uid := int(claims["id"].(float64))
+
+	return id == uid
+}
 
 func GetPosts(c *fiber.Ctx) error {
 	db := database.Connect()
@@ -61,6 +69,7 @@ func GetPost(c *fiber.Ctx) error {
 }
 
 func CreatePost(c *fiber.Ctx) error {
+
 	post := &models.NewPost{}
 
 	if err := c.BodyParser(post); err != nil {
@@ -77,6 +86,19 @@ func CreatePost(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "unable to validate post data",
+			"data":    nil,
+		})
+	}
+
+	fmt.Println("locals:", c.Locals("user").(*jwt.Token))
+	token := c.Locals("user").(*jwt.Token)
+
+	isValidUserToken := validateUserToken(token, post.UserId)
+
+	if !isValidUserToken {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error":   true,
+			"message": "user id for post doesn't match authenticated user token",
 			"data":    nil,
 		})
 	}
@@ -101,6 +123,7 @@ func CreatePost(c *fiber.Ctx) error {
 }
 
 func DeletePost(c *fiber.Ctx) error {
+	// TODO: ensure that user owns the post or is admin
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -133,6 +156,7 @@ func DeletePost(c *fiber.Ctx) error {
 }
 
 func UpdatePost(c *fiber.Ctx) error {
+	// TODO: ensure that user owns post or is admin
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -141,6 +165,8 @@ func UpdatePost(c *fiber.Ctx) error {
 			"data":    nil,
 		})
 	}
+
+	fmt.Println("locals:", c.Locals("user").(*jwt.Token))
 
 	db := database.Connect()
 	post, err := db.GetPost(id)
@@ -178,8 +204,6 @@ func UpdatePost(c *fiber.Ctx) error {
 			"data":    post,
 		})
 	}
-	// 2. Merge in changes
-	// 3. Execute query
 
 	if err := db.UpdatePost(&post); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
