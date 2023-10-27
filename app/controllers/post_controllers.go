@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	mp "github.com/geraldo-labs/merge-struct"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/lib/pq"
@@ -129,4 +130,69 @@ func DeletePost(c *fiber.Ctx) error {
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)
+}
+
+func UpdatePost(c *fiber.Ctx) error {
+	// 1. Get existing post
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+			"data":    nil,
+		})
+	}
+
+	db := database.Connect()
+	post, err := db.GetPost(id)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+			"data":    nil,
+		})
+	}
+
+	postUpdates := &models.Post{}
+
+	if err := c.BodyParser(postUpdates); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+			"data":    nil,
+		})
+	}
+
+	patched, err := mp.Struct(&post, postUpdates)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+			"data":    nil,
+		})
+	}
+
+	if !patched {
+		return c.Status(fiber.StatusNotModified).JSON(fiber.Map{
+			"error":   false,
+			"message": "no changes made",
+			"data":    post,
+		})
+	}
+	// 2. Merge in changes
+	// 3. Execute query
+
+	if err := db.UpdatePost(&post); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": err.Error(),
+			"data":    nil,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"error":   false,
+		"message": "updated post",
+		"data":    post,
+	})
 }

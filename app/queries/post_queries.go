@@ -65,10 +65,22 @@ func (q *PostQueries) CreatePost(post *models.NewPost) error {
 
 	return nil
 }
+
 func (q *PostQueries) DeletePost(id int) error {
 	query := "delete from posts where id = $1"
 
 	_, err := q.Exec(query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (q *PostQueries) UpdatePost(post *models.Post) error {
+	query := "update posts set title = $2, body = $3, slug = $4, published = $5, updated_at = $6 where id = $1"
+
+	_, err := q.Exec(query, &post.Id, &post.Title, &post.Body, &post.Slug, &post.Published, &post.PublishedAt)
 	if err != nil {
 		return err
 	}
