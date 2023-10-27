@@ -17,14 +17,14 @@ func jwtErrorHandler(c *fiber.Ctx, err error) error {
 	if err.Error() == "Missing or malformed JWT" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "invalid jwt provided",
 			"data":    nil,
 		})
 	}
 
 	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 		"error":   true,
-		"message": err.Error(),
+		"message": "not authorised",
 		"data":    nil,
 	})
 }

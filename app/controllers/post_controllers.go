@@ -37,7 +37,7 @@ func GetPost(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to parse user id",
 			"data":    nil,
 		})
 	}
@@ -66,7 +66,7 @@ func CreatePost(c *fiber.Ctx) error {
 	if err := c.BodyParser(post); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to parse post data from request body",
 			"data":    nil,
 		})
 	}
@@ -76,7 +76,7 @@ func CreatePost(c *fiber.Ctx) error {
 		fmt.Println("failed validation")
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to validate post data",
 			"data":    nil,
 		})
 	}
@@ -85,7 +85,7 @@ func CreatePost(c *fiber.Ctx) error {
 	if err := db.CreatePost(post); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to create new post",
 			"data":    nil,
 		})
 	}
@@ -105,7 +105,7 @@ func DeletePost(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to parse user id",
 			"data":    nil,
 		})
 	}
@@ -124,7 +124,7 @@ func DeletePost(c *fiber.Ctx) error {
 	if err := db.DeletePost(post.Id); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to delete post from database",
 			"data":    nil,
 		})
 	}
@@ -133,12 +133,11 @@ func DeletePost(c *fiber.Ctx) error {
 }
 
 func UpdatePost(c *fiber.Ctx) error {
-	// 1. Get existing post
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to parse user id",
 			"data":    nil,
 		})
 	}
@@ -148,7 +147,7 @@ func UpdatePost(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to find post",
 			"data":    nil,
 		})
 	}
@@ -158,7 +157,7 @@ func UpdatePost(c *fiber.Ctx) error {
 	if err := c.BodyParser(postUpdates); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to parse post update from request body",
 			"data":    nil,
 		})
 	}
@@ -167,7 +166,7 @@ func UpdatePost(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to merge post changes",
 			"data":    nil,
 		})
 	}
@@ -185,7 +184,7 @@ func UpdatePost(c *fiber.Ctx) error {
 	if err := db.UpdatePost(&post); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to save updated post to database",
 			"data":    nil,
 		})
 	}

@@ -38,7 +38,7 @@ func GetUser(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to parse id",
 			"data":    nil,
 		})
 	}
@@ -67,7 +67,7 @@ func CreateUser(c *fiber.Ctx) error {
 	if err := c.BodyParser(user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to parse user from body",
 			"data":    nil,
 		})
 	}
@@ -76,7 +76,7 @@ func CreateUser(c *fiber.Ctx) error {
 	if err := validate.Struct(user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to validate user data",
 			"data":    nil,
 		})
 	}
@@ -85,7 +85,7 @@ func CreateUser(c *fiber.Ctx) error {
 	if err := db.CreateUser(user); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to insert user into database",
 			"data":    nil,
 		})
 	}
@@ -105,7 +105,7 @@ func DeleteUser(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to parse user id",
 			"data":    nil,
 		})
 	}
@@ -116,7 +116,7 @@ func DeleteUser(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "user id not found",
 			"data":    nil,
 		})
 	}
@@ -124,7 +124,7 @@ func DeleteUser(c *fiber.Ctx) error {
 	if err := db.DeleteUser(user.Id); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to delete user from database",
 			"data":    nil,
 		})
 	}
@@ -137,7 +137,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to parse id",
 			"data":    nil,
 		})
 	}
@@ -147,7 +147,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	if err := c.BodyParser(userUpdates); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to parse user updates from request body",
 			"data":    nil,
 		})
 	}
@@ -158,7 +158,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "could not find user by id",
 			"data":    nil,
 		})
 	}
@@ -167,7 +167,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to merge changes to user",
 			"data":    nil,
 		})
 	}
@@ -183,7 +183,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	if err := db.UpdateUser(&user); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
-			"message": err.Error(),
+			"message": "unable to update user",
 			"data":    nil,
 		})
 	}
