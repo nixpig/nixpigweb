@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/geraldo-labs/merge-struct"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/go-playground/validator/v10"
@@ -13,6 +14,7 @@ import (
 
 	"github.com/nixpig/nixpigweb/api/database"
 	"github.com/nixpig/nixpigweb/api/models"
+	"github.com/nixpig/nixpigweb/api/utils"
 )
 
 func GetUsers(c *fiber.Ctx) error {
@@ -113,7 +115,6 @@ func CreateUser(c *fiber.Ctx) error {
 }
 
 func DeleteUser(c *fiber.Ctx) error {
-	// TODO: verify that user making request is either an admin or the user being deleted
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -134,6 +135,17 @@ func DeleteUser(c *fiber.Ctx) error {
 		})
 	}
 
+	token := c.Locals("user").(*jwt.Token)
+	isValidUserToken := utils.ValidateUserToken(token, user.Id)
+
+	if !isValidUserToken {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "logged in user is not authorised to perform this action",
+			"data":    nil,
+		})
+	}
+
 	if err := db.DeleteUser(user.Id); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
@@ -146,7 +158,6 @@ func DeleteUser(c *fiber.Ctx) error {
 }
 
 func UpdateUser(c *fiber.Ctx) error {
-	// TODO: ensure that user making request is either admin or user being updated
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -173,6 +184,17 @@ func UpdateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
 			"message": "could not find user by id",
+			"data":    nil,
+		})
+	}
+
+	token := c.Locals("user").(*jwt.Token)
+	isValidUserToken := utils.ValidateUserToken(token, user.Id)
+
+	if !isValidUserToken {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "logged in user is not authorised to perform this action",
 			"data":    nil,
 		})
 	}

@@ -12,14 +12,8 @@ import (
 
 	"github.com/nixpig/nixpigweb/api/database"
 	"github.com/nixpig/nixpigweb/api/models"
+	"github.com/nixpig/nixpigweb/api/utils"
 )
-
-func validateUserToken(token *jwt.Token, id int) bool {
-	claims := token.Claims.(jwt.MapClaims)
-	uid := int(claims["id"].(float64))
-
-	return id == uid
-}
 
 func GetPosts(c *fiber.Ctx) error {
 	db := database.Connect()
@@ -69,7 +63,6 @@ func GetPost(c *fiber.Ctx) error {
 }
 
 func CreatePost(c *fiber.Ctx) error {
-
 	post := &models.NewPost{}
 
 	if err := c.BodyParser(post); err != nil {
@@ -90,15 +83,13 @@ func CreatePost(c *fiber.Ctx) error {
 		})
 	}
 
-	fmt.Println("locals:", c.Locals("user").(*jwt.Token))
 	token := c.Locals("user").(*jwt.Token)
-
-	isValidUserToken := validateUserToken(token, post.UserId)
+	isValidUserToken := utils.ValidateUserToken(token, post.UserId)
 
 	if !isValidUserToken {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
-			"message": "user id for post doesn't match authenticated user token",
+			"message": "logged in user is not the author of this post",
 			"data":    nil,
 		})
 	}
@@ -123,7 +114,6 @@ func CreatePost(c *fiber.Ctx) error {
 }
 
 func DeletePost(c *fiber.Ctx) error {
-	// TODO: ensure that user owns the post or is admin
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -144,6 +134,17 @@ func DeletePost(c *fiber.Ctx) error {
 		})
 	}
 
+	token := c.Locals("user").(*jwt.Token)
+	isValidUserToken := utils.ValidateUserToken(token, post.UserId)
+
+	if !isValidUserToken {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "logged in user is not the author of this post",
+			"data":    nil,
+		})
+	}
+
 	if err := db.DeletePost(post.Id); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
@@ -156,7 +157,6 @@ func DeletePost(c *fiber.Ctx) error {
 }
 
 func UpdatePost(c *fiber.Ctx) error {
-	// TODO: ensure that user owns post or is admin
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -166,14 +166,23 @@ func UpdatePost(c *fiber.Ctx) error {
 		})
 	}
 
-	fmt.Println("locals:", c.Locals("user").(*jwt.Token))
-
 	db := database.Connect()
 	post, err := db.GetPost(id)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "unable to find post",
+			"data":    nil,
+		})
+	}
+
+	token := c.Locals("user").(*jwt.Token)
+	isValidUserToken := utils.ValidateUserToken(token, post.UserId)
+
+	if !isValidUserToken {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "logged in user is not the author of this post",
 			"data":    nil,
 		})
 	}
