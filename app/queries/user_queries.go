@@ -37,7 +37,7 @@ func (q *UserQueries) GetUsers() ([]models.User, error) {
 	return users, nil
 }
 
-func (q *UserQueries) GetUser(id int) (models.User, error) {
+func (q *UserQueries) GetUserById(id int) (models.User, error) {
 	user := models.User{}
 
 	query := "select id, username, email, is_admin, registered_at from users where id = $1 limit 1"
@@ -45,6 +45,34 @@ func (q *UserQueries) GetUser(id int) (models.User, error) {
 	row := q.QueryRow(query, id)
 
 	if err := row.Scan(&user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.RegisteredAt); err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
+
+func (q *UserQueries) GetUserByEmail(email string) (models.User, error) {
+	query := "select id, username, email, is_admin, password from users where email = $1"
+
+	row := q.QueryRow(query, email)
+
+	user := models.User{}
+
+	if err := row.Scan(&user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.Password); err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
+
+func (q *UserQueries) GetUserByUsername(username string) (models.User, error) {
+	query := "select id, username, email, is_admin, password from users where username = $1"
+
+	row := q.QueryRow(query, username)
+
+	user := models.User{}
+
+	if err := row.Scan(&user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.Password); err != nil {
 		return user, err
 	}
 

@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/geraldo-labs/merge-struct"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -45,7 +46,7 @@ func GetUser(c *fiber.Ctx) error {
 
 	db := database.Connect()
 
-	user, err := db.GetUser(id)
+	user, err := db.GetUserById(id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
@@ -81,6 +82,17 @@ func CreateUser(c *fiber.Ctx) error {
 		})
 	}
 
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": "unable to create user",
+			"data":    nil,
+		})
+	}
+
+	user.Password = string(hashedPassword)
+
 	db := database.Connect()
 	if err := db.CreateUser(user); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -112,7 +124,7 @@ func DeleteUser(c *fiber.Ctx) error {
 
 	db := database.Connect()
 
-	user, err := db.GetUser(id)
+	user, err := db.GetUserById(id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
@@ -154,7 +166,7 @@ func UpdateUser(c *fiber.Ctx) error {
 
 	db := database.Connect()
 
-	user, err := db.GetUser(id)
+	user, err := db.GetUserById(id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
