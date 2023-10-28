@@ -44,6 +44,9 @@
     ]
   },
   "devDependencies": {
-    "@types/loadable__component": "^5.13.6"
+    "@types/loadable__component": "^5.13.6",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.5"
   }
 }

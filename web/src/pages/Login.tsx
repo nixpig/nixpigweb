@@ -1,52 +1,71 @@
-import axios, { AxiosResponse } from "axios";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../providers/AuthProvider";
+import { AxiosResponse } from "axios";
 import { useState } from "react";
+import { api, ApiResponse } from "../api";
 
 const BASE_URL = "http://localhost:3001";
 
-type LoginResponse = {
-  data: { token: string } | null;
-  error: boolean;
-  message: string;
-};
+interface LoginData {
+  username: string;
+  password: string;
+}
 
 async function login(
-  username: string,
-  password: string
-): Promise<LoginResponse> {
-  let res: AxiosResponse<LoginResponse>;
+  e: React.MouseEvent,
+  data: LoginData,
+  navigate: any,
+  setToken: any
+): Promise<any> {
+  e.preventDefault();
+
+  let res: AxiosResponse<ApiResponse>;
 
   try {
-    res = await axios.post(`${BASE_URL}/api/user/login`, {
-      username,
-      password,
+    res = await api.post(`${BASE_URL}/api/user/login`, {
+      ...data,
     });
 
-    return res.data;
+    setToken(res.data.data?.token);
+    if (navigator) {
+      navigate("/admin", { replace: true });
+    } else {
+      return res.data;
+    }
   } catch (e: any) {
     return e.response.data;
   }
 }
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { setToken } = useAuth();
+
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
   return (
     <div>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+      <h2>Login</h2>
+      <form>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-      <button onClick={() => login(username, password)} type="submit">
-        Login
-      </button>
+        <button
+          onClick={(e) => login(e, { username, password }, navigate, setToken)}
+          type="submit"
+        >
+          Login
+        </button>
+      </form>
     </div>
   );
 };

@@ -66,6 +66,7 @@ func CreatePost(c *fiber.Ctx) error {
 	post := &models.NewPost{}
 
 	if err := c.BodyParser(post); err != nil {
+		fmt.Println("err", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "unable to parse post data from request body",
