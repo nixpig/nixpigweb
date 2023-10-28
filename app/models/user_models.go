@@ -11,6 +11,7 @@ type User struct {
 	Password     string    `json:"password,omitempty,min=8" validate:"required"`
 	IsAdmin      bool      `json:"is_admin" validate:"required"`
 	RegisteredAt time.Time `json:"registered_at"`
+	Role         string    `json:"role"`
 }
 
 type NewUser struct {

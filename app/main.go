@@ -19,9 +19,10 @@ func main() {
 
 	api := app.Group("/api")
 
-	routes.SetupUserRoutes(api)
+	authGroup := routes.SetupUserRoutes(api)
+	routes.SetupAuthRoutes(authGroup)
+
 	routes.SetupPostRoutes(api)
-	routes.SetupAuthRoutes(api)
 
 	log.Fatal(app.Listen(fmt.Sprintf(":%s", config.Get("API_PORT"))))
 }

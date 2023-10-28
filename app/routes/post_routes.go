@@ -6,7 +6,7 @@ import (
 	"github.com/nixpig/nixpigweb/api/middleware"
 )
 
-func SetupPostRoutes(api fiber.Router) {
+func SetupPostRoutes(api fiber.Router) fiber.Router {
 	post := api.Group("/post")
 
 	post.Get("/", controllers.GetPosts)
@@ -14,4 +14,6 @@ func SetupPostRoutes(api fiber.Router) {
 	post.Delete("/:id", middleware.Protected(), controllers.DeletePost)
 	post.Post("/", middleware.Protected(), controllers.CreatePost)
 	post.Patch("/:id", middleware.Protected(), controllers.UpdatePost)
+
+	return post
 }

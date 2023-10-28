@@ -6,12 +6,14 @@ import (
 	"github.com/nixpig/nixpigweb/api/middleware"
 )
 
-func SetupUserRoutes(api fiber.Router) {
+func SetupUserRoutes(api fiber.Router) fiber.Router {
 	user := api.Group("/user")
 
 	user.Get("/", controllers.GetUsers)
 	user.Get("/:id", controllers.GetUser)
-	user.Post("/", middleware.Protected(), controllers.CreateUser)
+	user.Post("/register", controllers.CreateUser)
 	user.Delete("/:id", middleware.Protected(), controllers.DeleteUser)
 	user.Patch("/:id", middleware.Protected(), controllers.UpdateUser)
+
+	return user
 }
