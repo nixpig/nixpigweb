@@ -14,7 +14,7 @@ type MetaQueries struct {
 func (q *MetaQueries) GetMeta() ([]models.Meta, error) {
 	meta := []models.Meta{}
 
-	query := "select * from meta_"
+	query := "select id, name_, value_ from meta_"
 
 	rows, err := q.Query(query)
 	if err != nil {
@@ -31,6 +31,20 @@ func (q *MetaQueries) GetMeta() ([]models.Meta, error) {
 		}
 
 		meta = append(meta, metaItem)
+	}
+
+	return meta, nil
+}
+
+func (q *MetaQueries) GetMetaById(id int) (models.Meta, error) {
+	meta := models.Meta{}
+
+	query := "select id, name_, value_ from meta_ where id = $1"
+
+	row := q.QueryRow(query, id)
+
+	if err := row.Scan(&meta.Id, &meta.Name, &meta.Value); err != nil {
+		return meta, err
 	}
 
 	return meta, nil

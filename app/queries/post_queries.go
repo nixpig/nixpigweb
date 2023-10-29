@@ -18,7 +18,7 @@ type PostQueries struct {
 func (q *PostQueries) GetPosts() ([]models.Post, error) {
 	posts := []models.Post{}
 
-	query := "select * from post_"
+	query := "select id, title_, subtitle_, body_, status_, created_at_, published_at_, updated_at_, user_id_, category_id_ from post_"
 
 	rows, err := q.Query(query)
 	if err != nil {
@@ -43,7 +43,7 @@ func (q *PostQueries) GetPosts() ([]models.Post, error) {
 func (q *PostQueries) GetPost(id int) (models.Post, error) {
 	post := models.Post{}
 
-	query := "select * from post_ where id = $1"
+	query := "select id, title_, subtitle_, body_, slug_, status_, created_at_, published_at_, updated_at_, user_id_, category_id_ from post_ where id = $1"
 
 	row := q.QueryRow(query, id)
 

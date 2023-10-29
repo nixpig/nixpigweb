@@ -15,11 +15,10 @@ type ConfigQueries struct {
 func (q *ConfigQueries) GetConfigs() ([]models.Config, error) {
 	configs := []models.Config{}
 
-	query := "select * from config_"
+	query := "select id, name_, value_ from config_"
 
 	rows, err := q.DB.Query(query)
 	if err != nil {
-		fmt.Println("err:", err)
 		return configs, err
 	}
 
@@ -41,7 +40,7 @@ func (q *ConfigQueries) GetConfigs() ([]models.Config, error) {
 func (q *ConfigQueries) GetConfig(id int) (models.Config, error) {
 	config := models.Config{}
 
-	query := "select * from config_ where id = $1"
+	query := "select id, name_, value_ from config_ where id = $1"
 
 	row := q.DB.QueryRow(query, id)
 

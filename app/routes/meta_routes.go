@@ -11,6 +11,7 @@ func SetupMetaRoutes(api fiber.Router) fiber.Router {
 	meta := api.Group("/meta")
 
 	meta.Get("/", middleware.Protected(), controllers.GetMeta)
+	meta.Get("/:id", middleware.Protected(), controllers.GetMetaById)
 
 	return meta
 }
