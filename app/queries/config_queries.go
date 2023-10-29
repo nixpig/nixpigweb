@@ -2,12 +2,14 @@ package queries
 
 import (
 	"database/sql"
+	"fmt"
+
 	_ "github.com/lib/pq"
 	"github.com/nixpig/nixpigweb/api/models"
 )
 
 type ConfigQueries struct {
-	db *sql.DB
+	DB *sql.DB
 }
 
 func (q *ConfigQueries) GetConfigs() ([]models.Config, error) {
@@ -15,8 +17,9 @@ func (q *ConfigQueries) GetConfigs() ([]models.Config, error) {
 
 	query := "select * from config_"
 
-	rows, err := q.db.Query(query)
+	rows, err := q.DB.Query(query)
 	if err != nil {
+		fmt.Println("err:", err)
 		return configs, err
 	}
 
@@ -25,7 +28,7 @@ func (q *ConfigQueries) GetConfigs() ([]models.Config, error) {
 	for rows.Next() {
 		config := models.Config{}
 
-		if err := rows.Scan(&config.Name, &config.Value, &config.Id); err != nil {
+		if err := rows.Scan(&config.Id, &config.Name, &config.Value); err != nil {
 			return configs, err
 		}
 
@@ -40,7 +43,7 @@ func (q *ConfigQueries) GetConfig(id int) (models.Config, error) {
 
 	query := "select * from config_ where id = $1"
 
-	row := q.db.QueryRow(query, id)
+	row := q.DB.QueryRow(query, id)
 
 	if err := row.Scan(&config.Id, &config.Name, &config.Value); err != nil {
 		return config, err
@@ -49,10 +52,10 @@ func (q *ConfigQueries) GetConfig(id int) (models.Config, error) {
 	return config, nil
 }
 
-func (q *ConfigQueries) CreateConfig(config *models.Config) error {
+func (q *ConfigQueries) CreateConfig(config *models.NewConfig) error {
 	query := "insert into config_ (name_, value_) values ($1, $2)"
 
-	_, err := q.db.Exec(query, &config.Name, &config.Value)
+	_, err := q.DB.Exec(query, &config.Name, &config.Value)
 	if err != nil {
 		return err
 	}
@@ -61,10 +64,11 @@ func (q *ConfigQueries) CreateConfig(config *models.Config) error {
 }
 
 func (q *ConfigQueries) DeleteConfig(id int) error {
-	query := "delete from config_ where_ id = $1"
+	query := "delete from config_ where id = $1"
 
-	_, err := q.db.Exec(query, id)
+	_, err := q.DB.Exec(query, id)
 	if err != nil {
+		fmt.Println("err:", err)
 		return err
 	}
 
@@ -74,7 +78,7 @@ func (q *ConfigQueries) DeleteConfig(id int) error {
 func (q *ConfigQueries) UpdateConfig(config *models.Config) error {
 	query := "update config_ set name_ = $2, value_ = $3 where id = $1"
 
-	_, err := q.db.Exec(query, &config.Name, &config.Value, &config.Id)
+	_, err := q.DB.Exec(query, &config.Id, &config.Name, &config.Value)
 	if err != nil {
 		return err
 	}

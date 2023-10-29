@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	mp "github.com/geraldo-labs/merge-struct"
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/nixpig/nixpigweb/api/database"
 	"github.com/nixpig/nixpigweb/api/models"
@@ -15,6 +16,7 @@ func GetConfigs(c *fiber.Ctx) error {
 
 	config, err := db.GetConfigs()
 	if err != nil {
+		fmt.Println("err:", err)
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
 			"message": "no configs found",
@@ -58,11 +60,22 @@ func GetConfig(c *fiber.Ctx) error {
 }
 
 func CreateConfig(c *fiber.Ctx) error {
-	config := models.Config{}
+	config := models.NewConfig{}
+
 	if err := c.BodyParser(&config); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "could not parse provided config",
+			"data":    nil,
+		})
+	}
+
+	validate := validator.New()
+	if err := validate.Struct(config); err != nil {
+		fmt.Println("failed validation:", err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "unable to validate config",
 			"data":    nil,
 		})
 	}
@@ -141,13 +154,24 @@ func UpdateConfig(c *fiber.Ctx) error {
 		})
 	}
 
-	patched, err := mp.Struct(config, &configUpdates)
+	patched, err := mp.Struct(&config, configUpdates)
 	if err != nil || !patched {
+		fmt.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
 			"message": "could not merge in proposed changes",
 			"data":    nil,
 		})
+	}
+
+	if err := db.UpdateConfig(&config); err != nil {
+		fmt.Println(err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": "could not save proposed changes",
+			"data":    nil,
+		})
+
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{

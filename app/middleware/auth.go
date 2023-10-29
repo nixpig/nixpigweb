@@ -29,6 +29,6 @@ func jwtErrorHandler(c *fiber.Ctx, err error) error {
 	})
 }
 
-func Admin() fiber.Handler {
-
-}
+// func Admin() fiber.Handler {
+//
+// }
