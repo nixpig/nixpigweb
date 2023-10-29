@@ -7,11 +7,25 @@ import (
 	mp "github.com/geraldo-labs/merge-struct"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/nixpig/nixpigweb/api/database"
 	"github.com/nixpig/nixpigweb/api/models"
+	"github.com/nixpig/nixpigweb/api/utils"
 )
 
 func GetConfigs(c *fiber.Ctx) error {
+	token := c.Locals("user").(*jwt.Token)
+	isAdminToken := utils.ValidateAdminToken(token)
+
+	if !isAdminToken {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"error":   true,
+			"message": "you are not authorised",
+
+			"data": nil,
+		})
+	}
+
 	db := database.Connect()
 
 	config, err := db.GetConfigs()
@@ -32,6 +46,18 @@ func GetConfigs(c *fiber.Ctx) error {
 }
 
 func GetConfig(c *fiber.Ctx) error {
+	token := c.Locals("user").(*jwt.Token)
+	isAdminToken := utils.ValidateAdminToken(token)
+
+	if !isAdminToken {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"error":   true,
+			"message": "you are not authorised",
+
+			"data": nil,
+		})
+	}
+
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -60,6 +86,18 @@ func GetConfig(c *fiber.Ctx) error {
 }
 
 func CreateConfig(c *fiber.Ctx) error {
+	token := c.Locals("user").(*jwt.Token)
+	isAdminToken := utils.ValidateAdminToken(token)
+
+	if !isAdminToken {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"error":   true,
+			"message": "you are not authorised",
+
+			"data": nil,
+		})
+	}
+
 	config := models.NewConfig{}
 
 	if err := c.BodyParser(&config); err != nil {
@@ -99,6 +137,18 @@ func CreateConfig(c *fiber.Ctx) error {
 }
 
 func DeleteConfig(c *fiber.Ctx) error {
+	token := c.Locals("user").(*jwt.Token)
+	isAdminToken := utils.ValidateAdminToken(token)
+
+	if !isAdminToken {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"error":   true,
+			"message": "you are not authorised",
+
+			"data": nil,
+		})
+	}
+
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -125,6 +175,18 @@ func DeleteConfig(c *fiber.Ctx) error {
 }
 
 func UpdateConfig(c *fiber.Ctx) error {
+	token := c.Locals("user").(*jwt.Token)
+	isAdminToken := utils.ValidateAdminToken(token)
+
+	if !isAdminToken {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"error":   true,
+			"message": "you are not authorised",
+
+			"data": nil,
+		})
+	}
+
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{

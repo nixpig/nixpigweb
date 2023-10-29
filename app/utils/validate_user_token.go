@@ -8,3 +8,10 @@ func ValidateUserToken(token *jwt.Token, id int) bool {
 
 	return id == uid
 }
+
+func ValidateAdminToken(token *jwt.Token) bool {
+	claims := token.Claims.(jwt.MapClaims)
+	role := claims["role"]
+
+	return role == "admin"
+}
