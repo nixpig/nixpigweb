@@ -11,7 +11,7 @@ type User struct {
 	IsAdmin      bool      `json:"is_admin" validate:"required"`
 	Password     string    `json:"password,omitempty,min=8" validate:"required"`
 	RegisteredAt time.Time `json:"registered_at"`
-	LastLogin    time.Time `json:"last_login"`
+	LastLogin    time.Time `json:"last_login,omitempty"`
 	Role         string    `json:"role"`
 	Profile      string    `json:"profile"`
 }

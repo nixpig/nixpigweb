@@ -63,6 +63,7 @@ func CreateConfig(c *fiber.Ctx) error {
 	config := models.NewConfig{}
 
 	if err := c.BodyParser(&config); err != nil {
+		fmt.Println("err", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "could not parse provided config",

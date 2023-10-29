@@ -7,6 +7,7 @@ import (
 )
 
 func Protected() fiber.Handler {
+
 	return jwtware.New(jwtware.Config{
 		SigningKey:   jwtware.SigningKey{Key: []byte(config.Get("SECRET"))},
 		ErrorHandler: jwtErrorHandler,
@@ -28,7 +29,3 @@ func jwtErrorHandler(c *fiber.Ctx, err error) error {
 		"data":    nil,
 	})
 }
-
-// func Admin() fiber.Handler {
-//
-// }

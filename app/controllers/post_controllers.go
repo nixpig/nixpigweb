@@ -64,6 +64,7 @@ func GetPost(c *fiber.Ctx) error {
 
 func CreatePost(c *fiber.Ctx) error {
 	post := &models.NewPost{}
+	fmt.Println("creating post in controller")
 
 	if err := c.BodyParser(post); err != nil {
 		fmt.Println("err", err)

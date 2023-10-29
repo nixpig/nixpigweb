@@ -94,6 +94,7 @@ func Login(c *fiber.Ctx) error {
 
 	claims["username"] = user.Username
 	claims["id"] = user.Id
+	claims["role"] = user.Role
 	claims["exp"] = time.Now().Add(time.Hour + 72).Unix()
 
 	signedToken, err := token.SignedString([]byte(config.Get("SECRET")))

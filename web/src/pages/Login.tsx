@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
 import { AxiosResponse } from "axios";
 import { useState } from "react";
@@ -14,8 +14,8 @@ interface LoginData {
 async function login(
   e: React.MouseEvent,
   data: LoginData,
-  navigate: any,
-  setToken: any
+  navigate: NavigateFunction,
+  setToken: React.Dispatch<React.SetStateAction<string | null>>
 ): Promise<any> {
   e.preventDefault();
 
@@ -26,10 +26,11 @@ async function login(
       ...data,
     });
 
-    setToken(res.data.data?.token);
+    setToken(res.data.data?.token ?? null);
     if (navigator) {
       navigate("/admin", { replace: true });
     } else {
+      navigate("/admin", { replace: true });
       return res.data;
     }
   } catch (e: any) {

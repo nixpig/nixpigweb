@@ -2,6 +2,7 @@ package queries
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	"github.com/mozillazg/go-slugify"
@@ -54,11 +55,14 @@ func (q *PostQueries) GetPost(id int) (models.Post, error) {
 }
 
 func (q *PostQueries) CreatePost(post *models.NewPost) error {
-	query := "insert into post_ ( title_, subtitle_, body_, slug_, status_,  published_at_, updated_at_, user_id_, category_id_) values($1, $2, $3, $4, $5, $6, $7, $8)"
+	query := "insert into post_ ( title_, subtitle_, body_, slug_, status_,  published_at_, updated_at_, user_id_, category_id_) values($1, $2, $3, $4, $5, $6, $7, $8, $9)"
+
+	fmt.Println("creating post...")
 
 	slug := slugify.Slugify(post.Title)
 
-	_, err := q.Exec(query, &post.Title, &post.Subtitle, &post.Body, slug, "published", time.Now(), time.Now(), &post.UserId)
+	_, err := q.Exec(query, &post.Title, &post.Subtitle, &post.Body, slug, "published", time.Now(), time.Now(), &post.UserId, &post.CategoryId)
+	fmt.Println("error in query:", err)
 	if err != nil {
 		return err
 	}
