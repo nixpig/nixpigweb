@@ -28,3 +28,7 @@ func jwtErrorHandler(c *fiber.Ctx, err error) error {
 		"data":    nil,
 	})
 }
+
+func Admin() fiber.Handler {
+
+}

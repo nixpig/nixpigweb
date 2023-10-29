@@ -17,7 +17,7 @@ type PostQueries struct {
 func (q *PostQueries) GetPosts() ([]models.Post, error) {
 	posts := []models.Post{}
 
-	query := "select * from posts"
+	query := "select * from post_"
 
 	rows, err := q.Query(query)
 	if err != nil {
@@ -29,7 +29,7 @@ func (q *PostQueries) GetPosts() ([]models.Post, error) {
 	for rows.Next() {
 		post := models.Post{}
 
-		if err := rows.Scan(&post.Id, &post.Title, &post.Body, &post.Views, &post.Slug, &post.Published, &post.PublishedAt, &post.UpdatedAt, &post.UserId); err != nil {
+		if err := rows.Scan(&post.Id, &post.Title, &post.SubTitle, &post.Body, &post.Slug, &post.Status, &post.CreatedAt, &post.PublishedAt, &post.UpdatedAt, &post.UserId, &post.CategoryId); err != nil {
 			return posts, err
 		}
 
@@ -42,11 +42,11 @@ func (q *PostQueries) GetPosts() ([]models.Post, error) {
 func (q *PostQueries) GetPost(id int) (models.Post, error) {
 	post := models.Post{}
 
-	query := "select * from posts where id = $1"
+	query := "select * from post_ where id = $1"
 
 	row := q.QueryRow(query, id)
 
-	if err := row.Scan(&post.Id, &post.Title, &post.Body, &post.Views, &post.Slug, &post.Published, &post.PublishedAt, &post.UpdatedAt, &post.UserId); err != nil {
+	if err := row.Scan(&post.Id, &post.Title, &post.SubTitle, &post.Body, &post.Slug, &post.Status, &post.CreatedAt, &post.PublishedAt, &post.UpdatedAt, &post.UserId, &post.CategoryId); err != nil {
 		return post, err
 	}
 
@@ -54,11 +54,11 @@ func (q *PostQueries) GetPost(id int) (models.Post, error) {
 }
 
 func (q *PostQueries) CreatePost(post *models.NewPost) error {
-	query := "insert into posts (user_id, title, body, slug, views, published, published_at, updated_at) values($1, $2, $3, $4, $5, $6, $7, $8)"
+	query := "insert into post_ ( title_, subtitle_, body_, slug_, status_,  published_at_, updated_at_, user_id_, category_id_) values($1, $2, $3, $4, $5, $6, $7, $8)"
 
 	slug := slugify.Slugify(post.Title)
 
-	_, err := q.Exec(query, &post.UserId, &post.Title, &post.Body, slug, 0, true, time.Now(), time.Now())
+	_, err := q.Exec(query, &post.Title, &post.Subtitle, &post.Body, slug, "published", time.Now(), time.Now(), &post.UserId)
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func (q *PostQueries) CreatePost(post *models.NewPost) error {
 }
 
 func (q *PostQueries) DeletePost(id int) error {
-	query := "delete from posts where id = $1"
+	query := "delete from post_ where id = $1"
 
 	_, err := q.Exec(query, id)
 	if err != nil {
@@ -78,9 +78,11 @@ func (q *PostQueries) DeletePost(id int) error {
 }
 
 func (q *PostQueries) UpdatePost(post *models.Post) error {
-	query := "update posts set title = $2, body = $3, slug = $4, published = $5, updated_at = $6 where id = $1"
+	query := "update post_ set title_ = $2, subtitle_ = $3, body_ = $4, slug_ = $5, status_ = $6, updated_at_ = $7, category_id_ = $8 where id = $1"
 
-	_, err := q.Exec(query, &post.Id, &post.Title, &post.Body, &post.Slug, &post.Published, &post.PublishedAt)
+	slug := slugify.Slugify(post.Title)
+
+	_, err := q.Exec(query, &post.Id, &post.Title, &post.SubTitle, &post.Body, slug, &post.Status, &post.UpdatedAt, &post.CategoryId)
 	if err != nil {
 		return err
 	}

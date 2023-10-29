@@ -13,6 +13,7 @@ import (
 type Queries struct {
 	*queries.UserQueries
 	*queries.PostQueries
+	*queries.ConfigQueries
 }
 
 func Connect() *Queries {
@@ -44,7 +45,8 @@ func Connect() *Queries {
 	}
 
 	return &Queries{
-		UserQueries: &queries.UserQueries{DB: db},
-		PostQueries: &queries.PostQueries{DB: db},
+		UserQueries:   &queries.UserQueries{DB: db},
+		PostQueries:   &queries.PostQueries{DB: db},
+		ConfigQueries: &queries.ConfigQueries{DB: db},
 	}
 }

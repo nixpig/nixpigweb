@@ -17,7 +17,10 @@ type Post struct {
 }
 
 type NewPost struct {
-	UserId int    `json:"user_id" validate:"required,gte=0"`
-	Title  string `json:"title" validate:"required,max=255"`
-	Body   string `json:"body"`
+	UserId     int    `json:"user_id_" validate:"required"`
+	Title      string `json:"title_" validate:"required,max=255"`
+	Subtitle   string `json:"subtitle_" validate:"max=255"`
+	Body       string `json:"body_"`
+	Status     string `json:"status_"`
+	CategoryId int    `json:"category_id_"`
 }

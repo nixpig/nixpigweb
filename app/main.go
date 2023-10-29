@@ -23,6 +23,7 @@ func main() {
 	routes.SetupAuthRoutes(authGroup)
 
 	routes.SetupPostRoutes(api)
+	routes.SetupConfigRoutes(api)
 
 	log.Fatal(app.Listen(fmt.Sprintf(":%s", config.Get("API_PORT"))))
 }
