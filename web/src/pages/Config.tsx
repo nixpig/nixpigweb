@@ -4,11 +4,16 @@ import { api } from "../api";
 async function createNewConfig(e: any, name: string, value: string) {
   e.preventDefault();
 
-  const res = await api.post("/config", {
+  await api.post("/config", {
     name,
     value,
   });
-  console.log({ res });
+}
+
+async function deleteConfig(e: any, id: number) {
+  e.preventDefault();
+
+  await api.delete(`/config/${id}`);
 }
 const Config = () => {
   const [config, setConfig] = useState<{ data: any[] }>({ data: [] });
@@ -20,7 +25,6 @@ const Config = () => {
       const config = await api.get("/config");
 
       setConfig(config.data);
-      console.log(config.data);
     };
 
     getConfig();
@@ -55,7 +59,8 @@ const Config = () => {
             config.data.map((c: any, k) => {
               return (
                 <li key={k}>
-                  {c.name} - {c.value}
+                  {c.name} - {c.value} -{" "}
+                  <button onClick={(e) => deleteConfig(e, c.id)}>delete</button>
                 </li>
               );
             })}
