@@ -1,16 +1,22 @@
-# API
+## TODO
 
-## `posts`
+1. Create `Admin` middleware which verifies the current user token has a `role` of `admin` before accessing `Config` routes.
 
-### Public
+## API
 
-- **GET**: `/api/v1/posts` get all posts
-- **GET**: `/api/v1/post/{id}` get post by ID
+### Public (anybody can access)
 
-- **GET**: `/api/v1/token/new` generate an access token for dev
+### Protected (must be logged in to access)
 
-### Private
+### Private (must be logged in and admin role to access)
 
-- **POST**: `/api/v1/post` create a new post
-- **PATCH**: `/api/v1/post` update a post
-- **DELETE**: `/api/v1/post` delete a post
+#### `/config`
+
+- `GET` - get all config options
+- `POST` - create new config option
+
+#### `/config/:id`
+
+- `GET` - get config for specific item
+- `PATCH` - update specific config option
+- `DELETE` - delete a specific config option
