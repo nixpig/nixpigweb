@@ -79,6 +79,19 @@ func (q *UserQueries) GetUserByUsername(username string) (models.User, error) {
 	return user, nil
 }
 
+func (q *UserQueries) GetUserRoleById(id int) (string, error) {
+	query := "select role_ from user_ where id = $1"
+
+	row := q.QueryRow(query, id)
+
+	user := models.User{}
+	if err := row.Scan(&user.Role); err != nil {
+		return "", err
+	}
+
+	return user.Role, nil
+}
+
 func (q *UserQueries) CreateUser(user *models.NewUser) error {
 	query := "insert into user_ (username_, email_, is_admin_, password_, registered_at_) values ($1, $2, $3, $4, $5)"
 

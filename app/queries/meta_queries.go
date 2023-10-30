@@ -49,3 +49,14 @@ func (q *MetaQueries) GetMetaById(id int) (models.Meta, error) {
 
 	return meta, nil
 }
+
+func (q *MetaQueries) CreateMeta(meta models.Meta) error {
+	query := "insert into meta_ (name_, value_) values ($1, $2)"
+
+	_, err := q.Exec(query, meta.Name, meta.Value)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

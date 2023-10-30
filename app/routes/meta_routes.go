@@ -8,10 +8,15 @@ import (
 
 func SetupMetaRoutes(api fiber.Router) fiber.Router {
 
-	meta := api.Group("/meta")
+	meta := api.Group(
+		"/meta",
+		middleware.Protected(),
+		middleware.Admin,
+	)
 
-	meta.Get("/", middleware.Protected(), controllers.GetMeta)
-	meta.Get("/:id", middleware.Protected(), controllers.GetMetaById)
+	meta.Get("/", controllers.GetMeta)
+	meta.Get("/:id", controllers.GetMetaById)
+	meta.Post("/", controllers.CreateMeta)
 
 	return meta
 }

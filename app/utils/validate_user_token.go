@@ -1,6 +1,9 @@
 package utils
 
-import "github.com/golang-jwt/jwt/v5"
+import (
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/nixpig/nixpigweb/api/database"
+)
 
 func ValidateUserToken(token *jwt.Token, id int) bool {
 	claims := token.Claims.(jwt.MapClaims)
@@ -11,7 +14,15 @@ func ValidateUserToken(token *jwt.Token, id int) bool {
 
 func ValidateAdminToken(token *jwt.Token) bool {
 	claims := token.Claims.(jwt.MapClaims)
-	role := claims["role"]
+	id := int(claims["id"].(float64))
+	claimedRole := claims["role"]
 
-	return role == "admin"
+	db := database.Connect()
+
+	role, err := db.GetUserRoleById(id)
+	if err != nil {
+		return false
+	}
+
+	return claimedRole == "admin" && claimedRole == role
 }
