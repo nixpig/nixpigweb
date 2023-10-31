@@ -17,6 +17,7 @@ func SetupMetaRoutes(api fiber.Router) fiber.Router {
 	meta.Get("/", controllers.GetMeta)
 	meta.Get("/:id", controllers.GetMetaById)
 	meta.Post("/", controllers.CreateMeta)
+	meta.Delete("/:id", controllers.DeleteMeta)
 
 	return meta
 }

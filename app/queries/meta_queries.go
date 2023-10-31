@@ -60,3 +60,14 @@ func (q *MetaQueries) CreateMeta(meta models.Meta) error {
 
 	return nil
 }
+
+func (q *MetaQueries) DeleteMeta(id int) error {
+	query := "delete from meta_ where id = $1"
+
+	_, err := q.Exec(query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

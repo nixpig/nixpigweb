@@ -85,3 +85,37 @@ func CreateMeta(c *fiber.Ctx) error {
 		"data":    nil,
 	})
 }
+
+func DeleteMeta(c *fiber.Ctx) error {
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return err
+	}
+
+	db := database.Connect()
+
+	meta, err := db.GetMetaById(id)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
+
+	if err := db.DeleteMeta(meta.Id); err != nil {
+		fmt.Println("err:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": "couldn't delete meta",
+			"data":    nil,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"error":   false,
+		"message": "successfully deleted meta item",
+		"data":    nil,
+	})
+
+}
