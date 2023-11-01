@@ -71,3 +71,14 @@ func (q *MetaQueries) DeleteMeta(id int) error {
 
 	return nil
 }
+
+func (q *MetaQueries) UpdateMeta(meta models.Meta) error {
+	query := "update meta_ set name_ = $2, value_ = $3 where id = $1"
+
+	_, err := q.Exec(query, meta.Id, meta.Name, meta.Value)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
