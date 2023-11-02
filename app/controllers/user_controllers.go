@@ -77,6 +77,7 @@ func CreateUser(c *fiber.Ctx) error {
 
 	validate := validator.New()
 	if err := validate.Struct(user); err != nil {
+		fmt.Println(err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "unable to validate user data",

@@ -4,10 +4,6 @@
 
 ### Config
 
-- `GET` - get config for specific item
-- `PATCH` - update specific config option
-- `DELETE` - delete a specific config option
-
 | Endpoint      | Verb     | Description                       |
 | ------------- | -------- | --------------------------------- |
 | `/config`     | `GET`    | Get all config options            |

@@ -44,6 +44,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/loadable__component": "^5.13.6",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.31",

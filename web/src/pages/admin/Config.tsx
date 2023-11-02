@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { api } from "../api";
+import { api } from "../../api";
+import { Config as ConfigModel } from "../../models/Config";
 
-async function createNewConfig(e: any, name: string, value: string) {
-  e.preventDefault();
+async function createNewConfig(event: any, name: string, value: string) {
+  event.preventDefault();
 
   await api.post("/config", {
     name,
@@ -15,8 +16,9 @@ async function deleteConfig(e: any, id: number) {
 
   await api.delete(`/config/${id}`);
 }
+
 const Config = () => {
-  const [config, setConfig] = useState<{ data: any[] }>({ data: [] });
+  const [config, setConfig] = useState<ConfigModel[]>();
   const [newConfigName, setNewConfigName] = useState<string>("");
   const [newConfigValue, setNewConfigValue] = useState<string>("");
 
@@ -24,7 +26,7 @@ const Config = () => {
     const getConfig = async () => {
       const config = await api.get("/config");
 
-      setConfig(config.data);
+      setConfig(config.data.data);
     };
 
     getConfig();
@@ -55,8 +57,8 @@ const Config = () => {
         <h3>View</h3>
         <ul>
           {/*  @ts-ignore*/}
-          {config.data &&
-            config.data.map((c: any, k) => {
+          {config &&
+            config.map((c: any, k) => {
               return (
                 <li key={k}>
                   {c.name} - {c.value} -{" "}

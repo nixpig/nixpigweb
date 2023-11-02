@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Link, Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
 
 export const ProtectedRoute = () => {
@@ -8,5 +8,18 @@ export const ProtectedRoute = () => {
     return <Navigate to="/login" />;
   }
 
-  return <Outlet />;
+  return (
+    <div>
+      <h1>Admin</h1>
+      <ul>
+        <li>
+          <Link to="/admin/config">Config</Link>
+        </li>
+        <li>
+          <Link to="/admin/user">User</Link>
+        </li>
+      </ul>
+      <Outlet />
+    </div>
+  );
 };

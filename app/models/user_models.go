@@ -18,6 +18,12 @@ type User struct {
 
 type NewUser struct {
 	Username string `json:"username" validate:"required"`
-	Email    string `json:"email" validate:"required,email"`
+	Email    string `json:"email" validate:"required"`
 	Password string `json:"password,omitempty,min=8" validate:"required"`
+}
+
+type UserMeta struct {
+	Id     int `json:"id" validate:"required"`
+	UserId int `json:"user_id" validate:"required"`
+	MetaId int `json:"meta_id" validate:"required"`
 }
