@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
 const Home = () => {
   return (
     <div>
-      <h2 className="text-3xl font-bold underline">home?</h2>
+      <h1 className="text-3xl font-bold underline">Home</h1>
+      <Link to="/admin">Admin</Link>
     </div>
   );
 };

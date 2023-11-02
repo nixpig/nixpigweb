@@ -16,7 +16,10 @@ export const ProtectedRoute = () => {
           <Link to="/admin/config">Config</Link>
         </li>
         <li>
-          <Link to="/admin/user">User</Link>
+          <Link to="/admin/user">Users</Link>
+        </li>
+        <li>
+          <Link to="/admin/post">Posts</Link>
         </li>
       </ul>
       <Outlet />

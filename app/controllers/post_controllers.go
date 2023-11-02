@@ -86,12 +86,21 @@ func CreatePost(c *fiber.Ctx) error {
 	}
 
 	token := c.Locals("user").(*jwt.Token)
-	isValidUserToken := utils.ValidateUserToken(token, post.UserId)
 
+	isValidUserToken := utils.ValidateUserToken(token, post.UserId)
 	if !isValidUserToken {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "logged in user is not the author of this post",
+			"data":    nil,
+		})
+	}
+
+	isValidAuthorToken := utils.ValidateRoleToken(token, "author")
+	if !isValidAuthorToken {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "user is not an author",
 			"data":    nil,
 		})
 	}
@@ -137,12 +146,21 @@ func DeletePost(c *fiber.Ctx) error {
 	}
 
 	token := c.Locals("user").(*jwt.Token)
-	isValidUserToken := utils.ValidateUserToken(token, post.UserId)
 
+	isValidUserToken := utils.ValidateUserToken(token, post.UserId)
 	if !isValidUserToken {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "logged in user is not the author of this post",
+			"data":    nil,
+		})
+	}
+
+	isValidAuthorToken := utils.ValidateRoleToken(token, "author")
+	if !isValidAuthorToken {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "user is not an author",
 			"data":    nil,
 		})
 	}
@@ -179,12 +197,21 @@ func UpdatePost(c *fiber.Ctx) error {
 	}
 
 	token := c.Locals("user").(*jwt.Token)
-	isValidUserToken := utils.ValidateUserToken(token, post.UserId)
 
+	isValidUserToken := utils.ValidateUserToken(token, post.UserId)
 	if !isValidUserToken {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "logged in user is not the author of this post",
+			"data":    nil,
+		})
+	}
+
+	isValidAuthorToken := utils.ValidateRoleToken(token, "author")
+	if !isValidAuthorToken {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "user is not an author",
 			"data":    nil,
 		})
 	}

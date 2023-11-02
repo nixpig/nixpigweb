@@ -2,19 +2,14 @@ import { useEffect, useState } from "react";
 import { api } from "../../api";
 import { User as UserModel, NewUser as NewUserModel } from "../../models/User";
 
-async function createUser(
-  event: any,
-  username: string,
-  email: string,
-  password: string
-) {
+async function createUser(event: any, user: NewUserModel) {
   event.preventDefault();
 
-  await api.post("/user", {
-    username,
-    email,
-    password,
-  });
+  try {
+    await api.post("/user", user);
+  } catch (e: any) {
+    console.error(e.message);
+  }
 }
 
 const User = () => {
@@ -25,9 +20,12 @@ const User = () => {
 
   useEffect(() => {
     const getUsers = async () => {
-      const users = await api.get("/user");
-
-      setUsers(users.data.data);
+      try {
+        const users = await api.get("/user");
+        setUsers(users.data.data);
+      } catch (e: any) {
+        console.error(e.message);
+      }
     };
 
     getUsers();
@@ -36,7 +34,43 @@ const User = () => {
   return (
     <div>
       <>
-        <h2>User</h2>
+        <h2>Users</h2>
+        <h3>Create user</h3>
+        <label htmlFor="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          value={newUserUsername}
+          onChange={(e) => setNewUserUsername(e.target.value)}
+        />
+
+        <label htmlFor="email">Email</label>
+        <input
+          id="email"
+          type="text"
+          value={newUserEmail}
+          onChange={(e) => setNewUserEmail(e.target.value)}
+        />
+
+        <label htmlFor="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          value={newUserPassword}
+          onChange={(e) => setNewUserPassword(e.target.value)}
+        />
+
+        <button
+          onClick={(e) =>
+            createUser(e, {
+              username: newUserUsername,
+              password: newUserPassword,
+              email: newUserEmail,
+            })
+          }
+        >
+          Create
+        </button>
         <h3>Manage users</h3>
         <table>
           <tr>
@@ -66,30 +100,6 @@ const User = () => {
             );
           })}
         </table>
-        <h3>Create new user</h3>
-        <input
-          type="text"
-          value={newUserUsername}
-          onChange={(e) => setNewUserUsername(e.target.value)}
-        />
-        <input
-          type="text"
-          value={newUserEmail}
-          onChange={(e) => setNewUserEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          value={newUserPassword}
-          onChange={(e) => setNewUserPassword(e.target.value)}
-        />
-
-        <button
-          onClick={(e) =>
-            createUser(e, newUserUsername, newUserPassword, newUserEmail)
-          }
-        >
-          Create
-        </button>
       </>
     </div>
   );

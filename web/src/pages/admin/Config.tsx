@@ -1,20 +1,28 @@
 import { useEffect, useState } from "react";
 import { api } from "../../api";
-import { Config as ConfigModel } from "../../models/Config";
+import {
+  Config as ConfigModel,
+  NewConfig as NewConfigModel,
+} from "../../models/Config";
 
-async function createNewConfig(event: any, name: string, value: string) {
+async function createNewConfig(event: any, config: NewConfigModel) {
   event.preventDefault();
 
-  await api.post("/config", {
-    name,
-    value,
-  });
+  try {
+    await api.post("/config", config);
+  } catch (e: any) {
+    console.error(e.message);
+  }
 }
 
 async function deleteConfig(e: any, id: number) {
   e.preventDefault();
 
-  await api.delete(`/config/${id}`);
+  try {
+    await api.delete(`/config/${id}`);
+  } catch (e: any) {
+    console.error(e.message);
+  }
 }
 
 const Config = () => {
@@ -24,9 +32,12 @@ const Config = () => {
 
   useEffect(() => {
     const getConfig = async () => {
-      const config = await api.get("/config");
-
-      setConfig(config.data.data);
+      try {
+        const config = await api.get("/config");
+        setConfig(config.data.data);
+      } catch (e: any) {
+        console.error(e.message);
+      }
     };
 
     getConfig();
@@ -35,26 +46,33 @@ const Config = () => {
     <div>
       <h2>Config</h2>
       <div>
-        <h3>Create</h3>
+        <h3>Create config</h3>
+        <label htmlFor="name">Name</label>
         <input
+          id="name"
           type="text"
           value={newConfigName}
           onChange={(e) => setNewConfigName(e.target.value)}
         />
+
+        <label htmlFor="value">Value</label>
         <input
+          id="value"
           type="text"
           value={newConfigValue}
           onChange={(e) => setNewConfigValue(e.target.value)}
         />
         <button
-          onClick={(e) => createNewConfig(e, newConfigName, newConfigValue)}
+          onClick={(e) =>
+            createNewConfig(e, { name: newConfigName, value: newConfigValue })
+          }
         >
           Create
         </button>
       </div>
 
       <div>
-        <h3>View</h3>
+        <h3>Manage config</h3>
         <ul>
           {/*  @ts-ignore*/}
           {config &&

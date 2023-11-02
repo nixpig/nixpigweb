@@ -1,0 +1,157 @@
+import { useEffect, useState } from "react";
+import { Post as PostModel, NewPost as NewPostModel } from "../../models/Post";
+import { Category as CategoryModel } from "../../models/Category";
+import { api } from "../../api";
+
+async function createNewPost(e: any, post: NewPostModel) {
+  e.preventDefault();
+
+  try {
+    await api.post("/post", post);
+  } catch (e: any) {
+    console.error(e.message);
+  }
+}
+
+const Post = () => {
+  const [posts, setPosts] = useState<PostModel[]>();
+  const [categories, setCategories] = useState<CategoryModel[]>();
+
+  const [newPostTitle, setNewPostTitle] = useState("");
+  const [newPostSubtitle, setNewPostSubtitle] = useState("");
+  const [newPostBody, setNewPostBody] = useState("");
+  const [newPostStatus, setNewPostStatus] = useState("");
+  const [newPostCategoryId, setNewPostCategoryId] = useState<number>();
+
+  useEffect(() => {
+    const getPosts = async () => {
+      try {
+        const posts = await api.get("/post");
+        setPosts(posts.data.data);
+      } catch (e: any) {
+        console.error(e.message);
+      }
+    };
+
+    getPosts();
+  }, []);
+
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const categories = await api.get("/category");
+        setCategories(categories.data.data);
+      } catch (e: any) {
+        console.error(e.message);
+      }
+    };
+
+    getCategories();
+  });
+
+  return (
+    <>
+      <h2>Posts</h2>
+      <h3>Create post</h3>
+      <div>
+        <input type="hidden" value="USER_ID_IN_HERE" />
+
+        <label htmlFor="title">Title</label>
+        <input
+          id="title"
+          type="text"
+          value={newPostTitle}
+          onChange={(e) => setNewPostTitle(e.target.value)}
+        />
+
+        <label htmlFor="subtitle">Subtitle</label>
+        <input
+          id="subtitle"
+          type="text"
+          value={newPostSubtitle}
+          onChange={(e) => setNewPostSubtitle(e.target.value)}
+        />
+
+        <label htmlFor="body">Post content</label>
+        <input
+          id="body"
+          type="text"
+          value={newPostBody}
+          onChange={(e) => setNewPostBody(e.target.value)}
+        />
+
+        <label htmlFor="status">Status</label>
+        <input
+          id="status"
+          type="text"
+          value={newPostStatus}
+          onChange={(e) => setNewPostStatus(e.target.value)}
+        />
+
+        <label htmlFor="category">Category</label>
+        <select
+          id="category"
+          onChange={(e) => setNewPostCategoryId(parseInt(e.target.value))}
+        >
+          {categories &&
+            categories.map((category) => {
+              return (
+                <option
+                  selected={category.id === newPostCategoryId}
+                  value={category.id}
+                >
+                  {category.name}
+                </option>
+              );
+            })}
+        </select>
+
+        <button
+          onClick={(e) =>
+            createNewPost(e, {
+              user_id: 69,
+              title: newPostTitle,
+              subtitle: newPostSubtitle,
+              body: newPostBody,
+              status: newPostStatus,
+              category_id: newPostCategoryId,
+            })
+          }
+        >
+          Create
+        </button>
+      </div>
+
+      <h3>Manage posts</h3>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Subtitle</th>
+          <th>Created</th>
+          <th>Updated</th>
+          <th>Published</th>
+          <th>User ID</th>
+          <th>Category ID</th>
+        </tr>
+        {posts &&
+          posts.map((post) => {
+            return (
+              <tr>
+                <td>{post.id}</td>
+                <td>{post.title}</td>
+                <td>{post.subtitle}</td>
+                <td>{`${JSON.stringify(post.created_at)}`}</td>
+                <td>{`${JSON.stringify(post.updated_at)}`}</td>
+                <td>{`${JSON.stringify(post.published_at)}`}</td>
+                <td>{post.user_id}</td>
+                <td>{post.category_id}</td>
+              </tr>
+            );
+          })}
+      </table>
+    </>
+  );
+};
+
+export default Post;
