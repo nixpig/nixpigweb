@@ -8,7 +8,7 @@ type Post struct {
 	SubTitle    string    `json:"subtitle"`
 	Body        string    `json:"body"`
 	Slug        string    `json:"slug" validate:"required,max=255"`
-	Status      string    `json:"status"`
+	Status      int       `json:"status"`
 	CreatedAt   time.Time `json:"created_at"`
 	PublishedAt time.Time `json:"published_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
@@ -21,6 +21,6 @@ type NewPost struct {
 	Title      string `json:"title" validate:"required,max=255"`
 	Subtitle   string `json:"subtitle" validate:"max=255"`
 	Body       string `json:"body"`
-	Status     string `json:"status"`
+	Status     int    `json:"status"`
 	CategoryId int    `json:"category_id"`
 }

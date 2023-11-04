@@ -4,7 +4,7 @@ export type Post = {
   subtitle: string;
   body: string;
   slug: string;
-  status: string;
+  status: number;
   created_at: Date;
   published_at: Date;
   updated_at: Date;
@@ -17,6 +17,6 @@ export type NewPost = {
   title: string;
   subtitle: string;
   body: string;
-  status: string;
-  category_id?: number;
+  status: number;
+  category_id: number;
 };

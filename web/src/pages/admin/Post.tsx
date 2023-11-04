@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Post as PostModel, NewPost as NewPostModel } from "../../models/Post";
 import { Category as CategoryModel } from "../../models/Category";
+import { Status as StatusModel } from "../../models/Status";
 import { api } from "../../api";
 
 async function createNewPost(e: any, post: NewPostModel) {
@@ -16,12 +17,13 @@ async function createNewPost(e: any, post: NewPostModel) {
 const Post = () => {
   const [posts, setPosts] = useState<PostModel[]>();
   const [categories, setCategories] = useState<CategoryModel[]>();
+  const [statuses, setStatuses] = useState<StatusModel[]>();
 
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostSubtitle, setNewPostSubtitle] = useState("");
   const [newPostBody, setNewPostBody] = useState("");
-  const [newPostStatus, setNewPostStatus] = useState("");
-  const [newPostCategoryId, setNewPostCategoryId] = useState<number>();
+  const [newPostStatus, setNewPostStatus] = useState<number>(0);
+  const [newPostCategoryId, setNewPostCategoryId] = useState<number>(0);
 
   useEffect(() => {
     const getPosts = async () => {
@@ -46,8 +48,21 @@ const Post = () => {
       }
     };
 
-    getCategories();
+    // getCategories();
   });
+
+  useEffect(() => {
+    const getStatuses = async () => {
+      try {
+        const statuses = await api.get("/status");
+        setStatuses(statuses.data.data);
+      } catch (e: any) {
+        console.error(e.message);
+      }
+    };
+
+    getStatuses();
+  }, []);
 
   return (
     <>
@@ -81,25 +96,31 @@ const Post = () => {
         />
 
         <label htmlFor="status">Status</label>
-        <input
+        <select
           id="status"
-          type="text"
+          onChange={(e) => setNewPostStatus(parseInt(e.target.value))}
           value={newPostStatus}
-          onChange={(e) => setNewPostStatus(e.target.value)}
-        />
+        >
+          {statuses &&
+            statuses.map((status, id) => {
+              return (
+                <option key={id} value={status.id}>
+                  {status.name}
+                </option>
+              );
+            })}
+        </select>
 
         <label htmlFor="category">Category</label>
         <select
           id="category"
           onChange={(e) => setNewPostCategoryId(parseInt(e.target.value))}
+          value={newPostCategoryId}
         >
           {categories &&
-            categories.map((category) => {
+            categories.map((category, id) => {
               return (
-                <option
-                  selected={category.id === newPostCategoryId}
-                  value={category.id}
-                >
+                <option key={id} value={category.id}>
                   {category.name}
                 </option>
               );
@@ -124,31 +145,35 @@ const Post = () => {
 
       <h3>Manage posts</h3>
       <table>
-        <tr>
-          <th>ID</th>
-          <th>Title</th>
-          <th>Subtitle</th>
-          <th>Created</th>
-          <th>Updated</th>
-          <th>Published</th>
-          <th>User ID</th>
-          <th>Category ID</th>
-        </tr>
-        {posts &&
-          posts.map((post) => {
-            return (
-              <tr>
-                <td>{post.id}</td>
-                <td>{post.title}</td>
-                <td>{post.subtitle}</td>
-                <td>{`${JSON.stringify(post.created_at)}`}</td>
-                <td>{`${JSON.stringify(post.updated_at)}`}</td>
-                <td>{`${JSON.stringify(post.published_at)}`}</td>
-                <td>{post.user_id}</td>
-                <td>{post.category_id}</td>
-              </tr>
-            );
-          })}
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Subtitle</th>
+            <th>Created</th>
+            <th>Updated</th>
+            <th>Published</th>
+            <th>User ID</th>
+            <th>Category ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {posts &&
+            posts.map((post) => {
+              return (
+                <tr>
+                  <td>{post.id}</td>
+                  <td>{post.title}</td>
+                  <td>{post.subtitle}</td>
+                  <td>{`${JSON.stringify(post.created_at)}`}</td>
+                  <td>{`${JSON.stringify(post.updated_at)}`}</td>
+                  <td>{`${JSON.stringify(post.published_at)}`}</td>
+                  <td>{post.user_id}</td>
+                  <td>{post.category_id}</td>
+                </tr>
+              );
+            })}
+        </tbody>
       </table>
     </>
   );
