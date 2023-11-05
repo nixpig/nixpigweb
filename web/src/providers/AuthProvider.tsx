@@ -13,6 +13,7 @@ const AuthContext = createContext<TokenContextValue>({
 
 const AuthProvider = ({ children }: any) => {
   const [token, setToken] = useState(localStorage.getItem("token"));
+  // const [token, setToken] = useState<string | null>("");
 
   useEffect(() => {
     if (token) {

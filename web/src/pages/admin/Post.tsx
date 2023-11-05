@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { Post as PostModel, NewPost as NewPostModel } from "../../models/Post";
 import { Category as CategoryModel } from "../../models/Category";
 import { Status as StatusModel } from "../../models/Status";
+import { User as UserModel } from "../../models/User";
 import { api } from "../../api";
 
 async function createNewPost(e: any, post: NewPostModel) {
   e.preventDefault();
 
   try {
+    console.log({ post });
     await api.post("/post", post);
   } catch (e: any) {
     console.error(e.message);
@@ -15,6 +17,7 @@ async function createNewPost(e: any, post: NewPostModel) {
 }
 
 const Post = () => {
+  const [loggedInUser, setLoggedInUser] = useState<UserModel>();
   const [posts, setPosts] = useState<PostModel[]>();
   const [categories, setCategories] = useState<CategoryModel[]>();
   const [statuses, setStatuses] = useState<StatusModel[]>();
@@ -24,6 +27,20 @@ const Post = () => {
   const [newPostBody, setNewPostBody] = useState("");
   const [newPostStatus, setNewPostStatus] = useState<number>(0);
   const [newPostCategoryId, setNewPostCategoryId] = useState<number>(0);
+
+  useEffect(() => {
+    const getLoggedInUser = async () => {
+      try {
+        const loggedInUser = await api.get("/user/me");
+        console.log({ loggedInUser });
+        setLoggedInUser(loggedInUser.data.data);
+      } catch (e: any) {
+        console.error(e.message);
+      }
+    };
+
+    getLoggedInUser();
+  }, []);
 
   useEffect(() => {
     const getPosts = async () => {
@@ -43,19 +60,21 @@ const Post = () => {
       try {
         const categories = await api.get("/category");
         setCategories(categories.data.data);
+        setNewPostCategoryId(categories.data.data[0].id);
       } catch (e: any) {
         console.error(e.message);
       }
     };
 
-    // getCategories();
-  });
+    getCategories();
+  }, []);
 
   useEffect(() => {
     const getStatuses = async () => {
       try {
         const statuses = await api.get("/status");
         setStatuses(statuses.data.data);
+        setNewPostStatus(statuses.data.data[0].id);
       } catch (e: any) {
         console.error(e.message);
       }
@@ -130,7 +149,7 @@ const Post = () => {
         <button
           onClick={(e) =>
             createNewPost(e, {
-              user_id: 69,
+              user_id: loggedInUser?.id as number,
               title: newPostTitle,
               subtitle: newPostSubtitle,
               body: newPostBody,
