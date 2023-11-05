@@ -26,6 +26,7 @@ func main() {
 	routes.SetupConfigRoutes(api)
 	routes.SetupMetaRoutes(api)
 	routes.SetupStatusRoutes(api)
+	routes.SetupCategoryRoutes(api)
 
 	log.Fatal(app.Listen(fmt.Sprintf(":%s", config.Get("API_PORT"))))
 }

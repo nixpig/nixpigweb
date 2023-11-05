@@ -16,6 +16,7 @@ type Queries struct {
 	*queries.ConfigQueries
 	*queries.MetaQueries
 	*queries.StatusQueries
+	*queries.CategoryQueries
 }
 
 func Connect() *Queries {
@@ -47,10 +48,11 @@ func Connect() *Queries {
 	}
 
 	return &Queries{
-		UserQueries:   &queries.UserQueries{DB: db},
-		PostQueries:   &queries.PostQueries{DB: db},
-		ConfigQueries: &queries.ConfigQueries{DB: db},
-		MetaQueries:   &queries.MetaQueries{DB: db},
-		StatusQueries: &queries.StatusQueries{DB: db},
+		UserQueries:     &queries.UserQueries{DB: db},
+		PostQueries:     &queries.PostQueries{DB: db},
+		ConfigQueries:   &queries.ConfigQueries{DB: db},
+		MetaQueries:     &queries.MetaQueries{DB: db},
+		StatusQueries:   &queries.StatusQueries{DB: db},
+		CategoryQueries: &queries.CategoryQueries{DB: db},
 	}
 }
