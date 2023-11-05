@@ -80,7 +80,16 @@ func Login(c *fiber.Ctx) error {
 
 	fmt.Println("user found and assigned for login:", user)
 
-	isAuthorised := ComparePasswordHash(input.Password, user.Password)
+	password, err := db.GetUserPassword(user.Id)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
+
+	isAuthorised := ComparePasswordHash(input.Password, password)
 	if !isAuthorised {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error":   true,

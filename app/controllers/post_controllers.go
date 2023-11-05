@@ -77,7 +77,7 @@ func CreatePost(c *fiber.Ctx) error {
 
 	validate := validator.New()
 	if err := validate.Struct(post); err != nil {
-		fmt.Println("failed validation")
+		fmt.Println("failed validation", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "unable to validate post data",
@@ -97,7 +97,8 @@ func CreatePost(c *fiber.Ctx) error {
 	}
 
 	isValidAuthorToken := utils.ValidateRoleToken(token, "author")
-	if !isValidAuthorToken {
+	isValidAdminToken := utils.ValidateRoleToken(token, "admin")
+	if !isValidAuthorToken && !isValidAdminToken {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "user is not an author",
@@ -157,7 +158,9 @@ func DeletePost(c *fiber.Ctx) error {
 	}
 
 	isValidAuthorToken := utils.ValidateRoleToken(token, "author")
-	if !isValidAuthorToken {
+	isValidAdminToken := utils.ValidateRoleToken(token, "admin")
+
+	if !isValidAuthorToken && !isValidAdminToken {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "user is not an author",
@@ -208,7 +211,8 @@ func UpdatePost(c *fiber.Ctx) error {
 	}
 
 	isValidAuthorToken := utils.ValidateRoleToken(token, "author")
-	if !isValidAuthorToken {
+	isValidAdminToken := utils.ValidateRoleToken(token, "admin")
+	if !isValidAuthorToken && !isValidAdminToken {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "user is not an author",

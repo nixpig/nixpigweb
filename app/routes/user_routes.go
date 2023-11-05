@@ -11,6 +11,7 @@ func SetupUserRoutes(api fiber.Router) fiber.Router {
 
 	user.Get("/", controllers.GetUsers)
 	user.Post("/", controllers.CreateUser)
+	user.Get("/me", middleware.Protected(), controllers.GetLoggedInUser)
 	user.Get("/:id", controllers.GetUser)
 	user.Delete("/:id", middleware.Protected(), controllers.DeleteUser)
 	user.Patch("/:id", middleware.Protected(), controllers.UpdateUser)

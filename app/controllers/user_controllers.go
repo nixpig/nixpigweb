@@ -231,3 +231,31 @@ func UpdateUser(c *fiber.Ctx) error {
 		"data":    user,
 	})
 }
+
+func GetLoggedInUser(c *fiber.Ctx) error {
+	fmt.Println("Get logged in user...")
+	token := c.Locals("user").(*jwt.Token)
+	fmt.Println("token:", token)
+	claims := token.Claims.(jwt.MapClaims)
+	fmt.Println("claims:", claims)
+	id := int(claims["id"].(float64))
+	fmt.Println("id:", id)
+
+	db := database.Connect()
+
+	loggedInUser, err := db.GetUserById(id)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+
+			"data": nil,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"error":   true,
+		"message": "found logged in user",
+		"data":    loggedInUser,
+	})
+}

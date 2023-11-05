@@ -15,7 +15,7 @@ type UserQueries struct {
 func (q *UserQueries) GetUsers() ([]models.User, error) {
 	users := []models.User{}
 
-	query := "select id, username_, email_, is_admin_, password_, registered_at_, last_login_, role_, profile_ from user_ order by id"
+	query := "select id, username_, email_, is_admin_,  registered_at_, last_login_, role_, profile_ from user_ order by id"
 
 	rows, err := q.Query(query)
 	if err != nil {
@@ -27,7 +27,7 @@ func (q *UserQueries) GetUsers() ([]models.User, error) {
 	for rows.Next() {
 		user := models.User{}
 
-		if err := rows.Scan(&user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.Password, &user.RegisteredAt, &user.LastLogin, &user.Role, &user.Profile); err != nil {
+		if err := rows.Scan(&user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.RegisteredAt, &user.LastLogin, &user.Role, &user.Profile); err != nil {
 			return users, err
 		}
 
@@ -40,11 +40,11 @@ func (q *UserQueries) GetUsers() ([]models.User, error) {
 func (q *UserQueries) GetUserById(id int) (models.User, error) {
 	user := models.User{}
 
-	query := "select id, username_, email_, is_admin_, password_, registered_at_, last_login_, role_, profile_ from user_ where id = $1 limit 1"
+	query := "select id, username_, email_, is_admin_, registered_at_, last_login_, role_, profile_ from user_ where id = $1 limit 1"
 
 	row := q.QueryRow(query, id)
 
-	if err := row.Scan(&user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.Password, &user.RegisteredAt, &user.LastLogin, &user.Role, &user.Profile); err != nil {
+	if err := row.Scan(&user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.RegisteredAt, &user.LastLogin, &user.Role, &user.Profile); err != nil {
 		return user, err
 	}
 
@@ -52,13 +52,13 @@ func (q *UserQueries) GetUserById(id int) (models.User, error) {
 }
 
 func (q *UserQueries) GetUserByEmail(email string) (models.User, error) {
-	query := "select id, username_, email_, is_admin_, password_, registered_at_, last_login_, role_, profile_ from user_ where email_ = $1"
+	query := "select id, username_, email_, is_admin_, registered_at_, last_login_, role_, profile_ from user_ where email_ = $1"
 
 	row := q.QueryRow(query, email)
 
 	user := models.User{}
 
-	if err := row.Scan(&user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.Password, &user.RegisteredAt, &user.LastLogin, &user.Role, &user.Profile); err != nil {
+	if err := row.Scan(&user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.RegisteredAt, &user.LastLogin, &user.Role, &user.Profile); err != nil {
 		return user, err
 	}
 
@@ -66,13 +66,13 @@ func (q *UserQueries) GetUserByEmail(email string) (models.User, error) {
 }
 
 func (q *UserQueries) GetUserByUsername(username string) (models.User, error) {
-	query := "select id, username_, email_, is_admin_, password_, registered_at_, last_login_, role_, profile_ from user_ where username_ = $1"
+	query := "select id, username_, email_, is_admin_,  registered_at_, last_login_, role_, profile_ from user_ where username_ = $1"
 
 	row := q.QueryRow(query, username)
 
 	user := models.User{}
 
-	if err := row.Scan(&user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.Password, &user.RegisteredAt, &user.LastLogin, &user.Role, &user.Profile); err != nil {
+	if err := row.Scan(&user.Id, &user.Username, &user.Email, &user.IsAdmin, &user.RegisteredAt, &user.LastLogin, &user.Role, &user.Profile); err != nil {
 		return user, err
 	}
 
@@ -123,4 +123,16 @@ func (q *UserQueries) UpdateUser(user *models.User) error {
 	}
 
 	return nil
+}
+
+func (q *UserQueries) GetUserPassword(userId int) (string, error) {
+	query := "select password_ from user_ where id = $1"
+
+	var password string
+	row := q.QueryRow(query, userId)
+	if err := row.Scan(&password); err != nil {
+		return password, err
+	}
+
+	return password, nil
 }
