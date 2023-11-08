@@ -1,0 +1,19 @@
+version: "3.1"
+
+services:
+  db:
+    restart: always
+    image: postgres:16.0-alpine3.18
+    environment:
+      - POSTGRES_PASSWORD=lol
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+volumes:
+  db_volume:
+
+networks:
+  nixpig_net:
+    driver: bridge
