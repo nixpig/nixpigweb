@@ -5,7 +5,7 @@ services:
     restart: always
     image: postgres:16.0-alpine3.18
     environment:
-      - POSTGRES_PASSWORD=lol
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - db_volume:/var/lib/postgresql/data
     ports:
