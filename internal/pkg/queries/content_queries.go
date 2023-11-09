@@ -11,10 +11,21 @@ type Content struct {
 	*sql.DB
 }
 
+func (c *Content) CreateContent(content *models.Content) (sql.Result, error) {
+	query := `insert into content_ (title_, subtitle_, slug_, body_, type_) values ($1, $2, $3, $4, $5)`
+
+	res, err := c.Exec(query, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.Type)
+	if err != nil {
+		return res, fmt.Errorf("error inserting new content item\n%v", err)
+	}
+
+	return res, nil
+}
+
 func (c *Content) GetContent() ([]models.Content, error) {
 	var contents []models.Content
 
-	query := `select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_ from nixpigweb_`
+	query := `select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_ from content_`
 
 	rows, err := c.Query(query)
 	if err != nil {
