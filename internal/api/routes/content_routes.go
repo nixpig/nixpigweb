@@ -9,6 +9,7 @@ func RegisterContentRoutes(api fiber.Router) fiber.Router {
 	content := api.Group("/content")
 
 	content.Get("/", handlers.GetContent)
+	content.Get("/:id", handlers.GetContentById)
 	content.Post("/", handlers.CreateContent)
 
 	return content

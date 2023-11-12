@@ -50,3 +50,16 @@ func (c *Content) GetContent() ([]models.Content, error) {
 
 	return contents, nil
 }
+
+func (c *Content) GetContentById(id int) (models.Content, error) {
+	query := `select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_ from content_ where id_ = $1`
+
+	var content models.Content
+
+	row := c.QueryRow(query, id)
+	if err := row.Scan(&content.Id, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.CreatedAt, &content.UpdatedAt, &content.Type); err != nil {
+		return content, fmt.Errorf("error scanning data\n%v", err)
+	}
+
+	return content, nil
+}

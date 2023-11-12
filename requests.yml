@@ -5,6 +5,9 @@
     - name: get_content
       path: /api/content
 
+    - name: get_content_by_id
+      path: /api/content/10
+
     - name: create_content
       path: /api/content
       method: post

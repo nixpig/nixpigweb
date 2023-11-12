@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/nixpig/nixpigweb/internal/pkg/database"
@@ -28,6 +29,35 @@ func GetContent(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"error":   false,
 		"message": fmt.Sprintf("found %v records", len(content)),
+		"content": content,
+	})
+}
+
+func GetContentById(c *fiber.Ctx) error {
+	idParam := c.Params("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad content id provided in request",
+			"content": nil,
+		})
+	}
+
+	contentQueries := queries.Content{DB: database.Connection()}
+
+	content, err := contentQueries.GetContentById(id)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error":   true,
+			"message": fmt.Sprintf("no content found with id provided: %v", id),
+			"content": nil,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"error":   false,
+		"message": fmt.Sprintf("found content for id: %v", id),
 		"content": content,
 	})
 }
