@@ -87,7 +87,7 @@ func CreateContent(c *fiber.Ctx) error {
 
 	contentQueries := queries.Content{DB: database.Connection()}
 
-	res, err := contentQueries.CreateContent(content)
+	rowsAffected, err := contentQueries.CreateContent(content)
 	if err != nil {
 		fmt.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -99,7 +99,37 @@ func CreateContent(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"error":   false,
-		"message": "successfully added",
-		"content": res,
+		"message": fmt.Sprintf("%v records added", rowsAffected),
+		"content": nil,
+	})
+}
+
+func DeleteContentById(c *fiber.Ctx) error {
+	idParam := c.Params("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad content id provided",
+			"content": nil,
+		})
+	}
+
+	contentQueries := queries.Content{DB: database.Connection()}
+
+	rowsAffected, err := contentQueries.DeleteContentById(id)
+	if err != nil {
+		fmt.Println(err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": "we messed something up",
+			"content": nil,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"error":   false,
+		"message": fmt.Sprintf("%v records deleted", rowsAffected),
+		"content": nil,
 	})
 }

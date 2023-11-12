@@ -19,12 +19,12 @@ func (c *Content) CreateContent(content *models.Content) (int64, error) {
 		return 0, fmt.Errorf("error inserting new content item\n%v", err)
 	}
 
-	id, err := res.RowsAffected()
+	rowsAffected, err := res.RowsAffected()
 	if err != nil {
 		return 0, err
 	}
 
-	return id, nil
+	return rowsAffected, nil
 }
 
 func (c *Content) GetContent() ([]models.Content, error) {
@@ -62,4 +62,20 @@ func (c *Content) GetContentById(id int) (models.Content, error) {
 	}
 
 	return content, nil
+}
+
+func (c *Content) DeleteContentById(id int) (int64, error) {
+	query := `delete from content_ where id_ = $1`
+
+	res, err := c.Exec(query, id)
+	if err != nil {
+		return 0, fmt.Errorf("error deleting record with id: %v\n%v", id, err)
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return rowsAffected, nil
 }
