@@ -18,7 +18,7 @@ type databaseEnvironment struct {
 	password string
 }
 
-func Connect() *sql.DB {
+func Connection() *sql.DB {
 	var err error
 
 	environment := loadEnvironment()

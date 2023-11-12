@@ -7,7 +7,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-const envPath = "../../.env"
+const envPath = ".env"
 
 func Init() error {
 	err := godotenv.Load(envPath)
