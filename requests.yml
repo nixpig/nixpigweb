@@ -1,0 +1,22 @@
+---
+- host: localhost
+  port: 3001
+  requests:
+    - name: get_content
+      path: /api/content
+
+    - name: get_content_by_id
+      path: /api/content/14
+
+    - name: delete_content_by_id
+      path: /api/content/13
+      method: delete
+
+    - name: create_content
+      path: /api/content
+      method: post
+      content:
+        title: Some title
+        subtitle: Some subtitle in here
+        body: Some body content to fill up in here.
+        type: post
