@@ -89,7 +89,6 @@ func CreateContent(c *fiber.Ctx) error {
 
 	rowsAffected, err := contentQueries.CreateContent(content)
 	if err != nil {
-		fmt.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
 			"message": "it's not you, it's me",
@@ -119,7 +118,6 @@ func DeleteContentById(c *fiber.Ctx) error {
 
 	rowsAffected, err := contentQueries.DeleteContentById(id)
 	if err != nil {
-		fmt.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
 			"message": "we messed something up",

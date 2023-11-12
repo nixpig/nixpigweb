@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 
@@ -50,7 +51,7 @@ func loadEnvironment() *databaseEnvironment {
 
 	portNumber, err := strconv.Atoi(port)
 	if err != nil {
-		fmt.Println(fmt.Errorf("error converting port string to number\n%v", err))
+		log.Fatal(fmt.Errorf("error converting port string to number\n%v", err))
 	}
 
 	return &databaseEnvironment{
