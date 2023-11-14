@@ -79,3 +79,19 @@ func (c *Content) DeleteContentById(id int) (int64, error) {
 
 	return rowsAffected, nil
 }
+
+func (c *Content) UpdateContent(content *models.Content) (int64, error) {
+	query := `update content_ set title_ = $2, subtitle_ = $3, slug_ = $4, body_ = $5, updated_at_ = $6, type_ = $7 where id_ = $1`
+
+	res, err := c.Exec(query, &content.Id, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.UpdatedAt, &content.Type)
+	if err != nil {
+		return 0, fmt.Errorf("error updating record\n%v", err)
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return rowsAffected, nil
+}

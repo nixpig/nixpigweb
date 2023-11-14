@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/nixpig/nixpigweb/internal/pkg/database"
@@ -128,6 +129,72 @@ func DeleteContentById(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"error":   false,
 		"message": fmt.Sprintf("%v records deleted", rowsAffected),
+		"content": nil,
+	})
+}
+
+func UpdateContent(c *fiber.Ctx) error {
+	var content models.Content
+
+	if err := c.BodyParser(&content); err != nil {
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error":   true,
+				"message": "bad request",
+				"content": nil,
+			})
+		}
+	}
+
+	idParam := c.Params("id")
+
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"content": nil,
+		})
+	}
+
+	if id != content.Id {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"content": nil,
+		})
+	}
+
+	validate := validator.New()
+
+	slug := slugify.Slugify(content.Title)
+	content.Slug = slug
+
+	content.UpdatedAt = time.Now()
+
+	if err := validate.Struct(&content); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"content": nil,
+		})
+	}
+
+	contentQueries := queries.Content{DB: database.Connection()}
+
+	rowsAffected, err := contentQueries.UpdateContent(&content)
+	if err != nil {
+		fmt.Println(err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": "we messed up",
+			"content": nil,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"error":   false,
+		"message": fmt.Sprintf("%v records updated", rowsAffected),
 		"content": nil,
 	})
 }

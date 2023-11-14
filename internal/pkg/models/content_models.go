@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Content struct {
-	Id        string    `json:"id"`
+	Id        int       `json:"id"`
 	Title     string    `json:"title" validate:"required,max=255"`
 	Subtitle  string    `json:"subtitle" validate:"required,max=255"`
 	Slug      string    `json:"slug"`

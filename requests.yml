@@ -20,3 +20,13 @@
         subtitle: Some subtitle in here
         body: Some body content to fill up in here.
         type: post
+
+    - name: update_content
+      path: /api/content/14
+      method: patch
+      content:
+        id: 14
+        title: Some title updated
+        subtitle: Updated subtitle
+        body: Updated body content in here.
+        type: page
