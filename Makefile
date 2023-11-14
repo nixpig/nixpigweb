@@ -1,15 +1,41 @@
-dev:
-	air --build.cmd "go build -o bin/api cmd/api/main.go" --build.bin "./bin/api"
+API_PACKAGE_PATH := ./cmd/api/
+API_BINARY_NAME := api
 
-run:
-	go run cmd/api/main.go
+.PHONY: tidy
+tidy: 
+	go fmt ./...
+	go mod tidy -v
 
-test:
-	go test -v cmd/api/./..
+.PHONY: audit
+audit:
+	go mod verify
+	go vet ./...
+	go run honnef.co/go/tools/cmd/staticcheck@latest -checks=all,-ST1000,-U1000 ./...
+	go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+	go test -race -buildvcs -vet=off ./...
+
+.PHONY: test
+test: 
+	go test -v -race -buildvcs ./...
+
+.PHONY: build
+build:
+	go build -o tmp/bin/${API_BINARY_NAME} ${API_PACKAGE_PATH}
+
+.PHONY: run
+run: build
+	tmp/bin/${API_BINARY_NAME}
+
+.PHONY: dev
+dev: 
+	go run github.com/cosmtrek/air@v1.43.0 \
+		--build.cmd "make build" \
+		--build.bin "tmp/bin/${API_BINARY_NAME}" \
+		--build.delay "100" \
+		--build.exclude_dir "" \
+		--build.include_ext "go, tpl, tmpl, html, css, scss, js, ts, sql, jpeg, jpg, gif, png, bmp, svg, webp, ico" \
+		--misc.clean_on_exit "true"
 
 clean:
-	rm -rf bin tmp cmd/api/tmp
-
-build:
-	go build -o bin/api cmd/api/main.go
+	rm -rf bin tmp cmd/api/tmp cmd/web/tmp
 
