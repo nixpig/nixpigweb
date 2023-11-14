@@ -60,10 +60,10 @@ ALTER TABLE public.content_ ALTER COLUMN id_ ADD GENERATED ALWAYS AS IDENTITY (
 
 CREATE TABLE public.users_ (
     id_ integer NOT NULL,
-    username_ character varying(50),
-    email_ character varying(100),
-    password_ character varying(100),
-    is_admin_ boolean
+    username_ character varying(50) NOT NULL,
+    email_ character varying(100) NOT NULL,
+    password_ character varying(100) NOT NULL,
+    is_admin_ boolean DEFAULT false NOT NULL
 );
 
 
