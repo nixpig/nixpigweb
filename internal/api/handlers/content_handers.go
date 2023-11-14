@@ -64,6 +64,8 @@ func GetContentById(c *fiber.Ctx) error {
 }
 
 func CreateContent(c *fiber.Ctx) error {
+	// TODO: content should be created for the current logged in user
+
 	content := &models.Content{}
 
 	if err := c.BodyParser(content); err != nil {
@@ -105,6 +107,7 @@ func CreateContent(c *fiber.Ctx) error {
 }
 
 func DeleteContentById(c *fiber.Ctx) error {
+	// TODO: the current logged in user should be able to delete only their own content
 	idParam := c.Params("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
@@ -134,6 +137,7 @@ func DeleteContentById(c *fiber.Ctx) error {
 }
 
 func UpdateContent(c *fiber.Ctx) error {
+	// TODO: the current logged in user should be able to update only their own content
 	var content models.Content
 
 	if err := c.BodyParser(&content); err != nil {
