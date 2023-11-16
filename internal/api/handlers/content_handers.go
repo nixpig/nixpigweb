@@ -76,6 +76,7 @@ func CreateContent(c *fiber.Ctx) error {
 	validate := validator.New()
 
 	if err := validate.Struct(content); err != nil {
+		fmt.Println(err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "could not validate data",

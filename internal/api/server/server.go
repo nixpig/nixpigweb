@@ -21,6 +21,7 @@ func Start() {
 
 	routes.RegisterContentRoutes(api)
 	routes.RegisterUserRoutes(api)
+	routes.RegisterAuthRoutes(api)
 
 	api.Use(func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{

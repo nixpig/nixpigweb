@@ -20,6 +20,8 @@
         subtitle: Some subtitle in here
         body: Some body content to fill up in here.
         type: post
+      headers:
+        Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDAxMzA4OTIsImlzX2FkbWluIjpmYWxzZSwidXNlcl9pZCI6Mn0.aYXAcwR9J4JQ3TCMy8_mE-vg1ltAN8DH1yfrYWUTvqc
 
     - name: update_content
       path: /api/content/14
@@ -44,3 +46,17 @@
 
     - name: get_user_by_id
       path: /api/user/3
+
+    - name: login_success
+      path: /api/auth/login
+      method: post
+      content:
+        username: nixpig
+        password: p4ssw0rd
+
+    - name: login_fail
+      path: /api/auth/login
+      method: post
+      content:
+        username: nixpig
+        password: sd0932jf

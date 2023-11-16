@@ -26,7 +26,7 @@ func CreateContent(content *models.Content) (int64, error) {
 func GetContent() ([]models.Content, error) {
 	var contents []models.Content
 
-	query := `select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_ from content_`
+	query := `select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_, user_id_ from content_`
 
 	rows, err := database.DB.Query(query)
 	if err != nil {
@@ -37,7 +37,7 @@ func GetContent() ([]models.Content, error) {
 
 	for rows.Next() {
 		var content models.Content
-		if err := rows.Scan(&content.Id, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.CreatedAt, &content.UpdatedAt, &content.Type); err != nil {
+		if err := rows.Scan(&content.Id, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.CreatedAt, &content.UpdatedAt, &content.Type, &content.UserId); err != nil {
 			return contents, fmt.Errorf("error scanning data to struct\n%v", err)
 		}
 
@@ -48,12 +48,12 @@ func GetContent() ([]models.Content, error) {
 }
 
 func GetContentById(id int) (models.Content, error) {
-	query := `select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_ from content_ where id_ = $1`
+	query := `select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_, user_id_ from content_ where id_ = $1`
 
 	var content models.Content
 
 	row := database.DB.QueryRow(query, id)
-	if err := row.Scan(&content.Id, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.CreatedAt, &content.UpdatedAt, &content.Type); err != nil {
+	if err := row.Scan(&content.Id, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.CreatedAt, &content.UpdatedAt, &content.Type, &content.UserId); err != nil {
 		return content, fmt.Errorf("error scanning data\n%v", err)
 	}
 
