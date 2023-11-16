@@ -13,7 +13,7 @@ type User struct {
 func (u *User) CreateUser(user *models.User) (int64, error) {
 	query := `insert into users_ (username_, email_, password_) values ($1, $2, $3)`
 
-	res, err := u.Exec(query, &user)
+	res, err := u.Exec(query, &user.Username, &user.Email, &user.Password)
 	if err != nil {
 		return 0, err
 	}

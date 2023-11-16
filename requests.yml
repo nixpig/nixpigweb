@@ -30,3 +30,11 @@
         subtitle: Updated subtitle
         body: Updated body content in here.
         type: page
+
+    - name: create_user
+      path: /api/user
+      method: post
+      content:
+        username: nixpig
+        email: hello@nixpig.dev
+        password: p4ssw0rd

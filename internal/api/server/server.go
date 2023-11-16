@@ -20,6 +20,7 @@ func Start() {
 	api := app.Group("/api")
 
 	routes.RegisterContentRoutes(api)
+	routes.RegisterUserRoutes(api)
 
 	log.Fatal(app.Listen(fmt.Sprintf(":%s", config.Get("API_PORT"))))
 }
