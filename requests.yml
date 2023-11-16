@@ -38,3 +38,9 @@
         username: nixpig
         email: hello@nixpig.dev
         password: p4ssw0rd
+
+    - name: get_users
+      path: /api/user
+
+    - name: get_user_by_id
+      path: /api/user/3

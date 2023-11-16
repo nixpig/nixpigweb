@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/nixpig/nixpigweb/internal/pkg/models"
@@ -61,5 +62,53 @@ func CreateUser(c *fiber.Ctx) error {
 		"error":   false,
 		"message": fmt.Sprintf("added %v users", addedRows),
 		"data":    nil,
+	})
+}
+
+func GetUsers(c *fiber.Ctx) error {
+	userQueries := queries.User{}
+
+	users, err := userQueries.GetUsers()
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "unable to retrieve users; check your request",
+			"data":    nil,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"error":   false,
+		"message": fmt.Sprintf("got %v users", len(users)),
+		"data":    users,
+	})
+}
+
+func GetUserById(c *fiber.Ctx) error {
+	idParam := c.Params("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request, couldn't get user",
+			"data":    nil,
+		})
+	}
+
+	userQueries := queries.User{}
+
+	user, err := userQueries.GetUserById(id)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "couldn't get user requested",
+			"data":    nil,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"error":   false,
+		"message": "found user",
+		"data":    user,
 	})
 }
