@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/nixpig/nixpigweb/internal/pkg/database"
 	"github.com/nixpig/nixpigweb/internal/pkg/models"
 	"github.com/nixpig/nixpigweb/internal/pkg/queries"
 
@@ -16,7 +15,7 @@ import (
 )
 
 func GetContent(c *fiber.Ctx) error {
-	contentQueries := queries.Content{DB: database.Connection()}
+	contentQueries := queries.Content{}
 
 	content, err := contentQueries.GetContent()
 	if err != nil {
@@ -45,7 +44,7 @@ func GetContentById(c *fiber.Ctx) error {
 		})
 	}
 
-	contentQueries := queries.Content{DB: database.Connection()}
+	contentQueries := queries.Content{}
 
 	content, err := contentQueries.GetContentById(id)
 	if err != nil {
@@ -88,7 +87,7 @@ func CreateContent(c *fiber.Ctx) error {
 		})
 	}
 
-	contentQueries := queries.Content{DB: database.Connection()}
+	contentQueries := queries.Content{}
 
 	rowsAffected, err := contentQueries.CreateContent(content)
 	if err != nil {
@@ -107,7 +106,7 @@ func CreateContent(c *fiber.Ctx) error {
 }
 
 func DeleteContentById(c *fiber.Ctx) error {
-	// TODO: the current logged in user should be able to delete only their own content
+	// TODO: the current logged in user or admins should be able to delete only their own content
 	idParam := c.Params("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
@@ -118,7 +117,7 @@ func DeleteContentById(c *fiber.Ctx) error {
 		})
 	}
 
-	contentQueries := queries.Content{DB: database.Connection()}
+	contentQueries := queries.Content{}
 
 	rowsAffected, err := contentQueries.DeleteContentById(id)
 	if err != nil {
@@ -137,7 +136,7 @@ func DeleteContentById(c *fiber.Ctx) error {
 }
 
 func UpdateContent(c *fiber.Ctx) error {
-	// TODO: the current logged in user should be able to update only their own content
+	// TODO: the current logged in user or admins should be able to update only their own content
 	var content models.Content
 
 	if err := c.BodyParser(&content); err != nil {
@@ -184,7 +183,7 @@ func UpdateContent(c *fiber.Ctx) error {
 		})
 	}
 
-	contentQueries := queries.Content{DB: database.Connection()}
+	contentQueries := queries.Content{}
 
 	rowsAffected, err := contentQueries.UpdateContent(&content)
 	if err != nil {

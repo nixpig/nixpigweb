@@ -19,23 +19,24 @@ type databaseEnvironment struct {
 	password string
 }
 
-func Connection() *sql.DB {
+func Connect() *sql.DB {
 	var err error
 
 	environment := loadEnvironment()
 	connectionString := buildConnectionString(environment)
 
-	db, err := sql.Open("postgres", connectionString)
+	DB, err = sql.Open("postgres", connectionString)
 	if err != nil {
 		fmt.Println(fmt.Errorf("error connecting to database\n%v", err))
 		os.Exit(1)
 	}
 
-	if err := db.Ping(); err != nil {
+	if err = DB.Ping(); err != nil {
 		fmt.Println(fmt.Errorf("failed to ping database\n%v", err))
+		os.Exit(1)
 	}
 
-	return db
+	return DB
 }
 
 func loadEnvironment() *databaseEnvironment {

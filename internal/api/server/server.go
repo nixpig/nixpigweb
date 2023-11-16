@@ -22,5 +22,13 @@ func Start() {
 	routes.RegisterContentRoutes(api)
 	routes.RegisterUserRoutes(api)
 
+	api.Use(func(c *fiber.Ctx) error {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error":   true,
+			"message": "not found",
+			"data":    nil,
+		})
+	})
+
 	log.Fatal(app.Listen(fmt.Sprintf(":%s", config.Get("API_PORT"))))
 }

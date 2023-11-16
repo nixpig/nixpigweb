@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/nixpig/nixpigweb/internal/pkg/database"
 	"github.com/nixpig/nixpigweb/internal/pkg/models"
 	"github.com/nixpig/nixpigweb/internal/pkg/queries"
 	"golang.org/x/crypto/bcrypt"
@@ -13,6 +12,8 @@ import (
 )
 
 func CreateUser(c *fiber.Ctx) error {
+	// TODO: validate logged in user is admin before allowing to create new users
+
 	var user models.User
 
 	if err := c.BodyParser(&user); err != nil {
@@ -44,7 +45,7 @@ func CreateUser(c *fiber.Ctx) error {
 
 	user.Password = string(hashedPassword)
 
-	userQueries := queries.User{DB: database.Connection()}
+	userQueries := queries.User{}
 
 	addedRows, err := userQueries.CreateUser(&user)
 	if err != nil {
