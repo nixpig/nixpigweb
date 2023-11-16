@@ -15,9 +15,7 @@ import (
 )
 
 func GetContent(c *fiber.Ctx) error {
-	contentQueries := queries.Content{}
-
-	content, err := contentQueries.GetContent()
+	content, err := queries.GetContent()
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
@@ -44,9 +42,7 @@ func GetContentById(c *fiber.Ctx) error {
 		})
 	}
 
-	contentQueries := queries.Content{}
-
-	content, err := contentQueries.GetContentById(id)
+	content, err := queries.GetContentById(id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
@@ -87,9 +83,7 @@ func CreateContent(c *fiber.Ctx) error {
 		})
 	}
 
-	contentQueries := queries.Content{}
-
-	rowsAffected, err := contentQueries.CreateContent(content)
+	rowsAffected, err := queries.CreateContent(content)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
@@ -117,9 +111,7 @@ func DeleteContentById(c *fiber.Ctx) error {
 		})
 	}
 
-	contentQueries := queries.Content{}
-
-	rowsAffected, err := contentQueries.DeleteContentById(id)
+	rowsAffected, err := queries.DeleteContentById(id)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
@@ -183,9 +175,7 @@ func UpdateContent(c *fiber.Ctx) error {
 		})
 	}
 
-	contentQueries := queries.Content{}
-
-	rowsAffected, err := contentQueries.UpdateContent(&content)
+	rowsAffected, err := queries.UpdateContent(&content)
 	if err != nil {
 		fmt.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

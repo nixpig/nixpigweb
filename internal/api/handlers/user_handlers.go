@@ -46,9 +46,7 @@ func CreateUser(c *fiber.Ctx) error {
 
 	user.Password = string(hashedPassword)
 
-	userQueries := queries.User{}
-
-	addedRows, err := userQueries.CreateUser(&user)
+	addedRows, err := queries.CreateUser(&user)
 	if err != nil {
 		fmt.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -66,9 +64,7 @@ func CreateUser(c *fiber.Ctx) error {
 }
 
 func GetUsers(c *fiber.Ctx) error {
-	userQueries := queries.User{}
-
-	users, err := userQueries.GetUsers()
+	users, err := queries.GetUsers()
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
@@ -95,9 +91,7 @@ func GetUserById(c *fiber.Ctx) error {
 		})
 	}
 
-	userQueries := queries.User{}
-
-	user, err := userQueries.GetUserById(id)
+	user, err := queries.GetUserById(id)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,

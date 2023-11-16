@@ -5,9 +5,7 @@ import (
 	"github.com/nixpig/nixpigweb/internal/pkg/models"
 )
 
-type User struct{}
-
-func (u *User) CreateUser(user *models.User) (int64, error) {
+func CreateUser(user *models.User) (int64, error) {
 	query := `insert into users_ (username_, email_, password_) values ($1, $2, $3)`
 
 	res, err := database.DB.Exec(query, &user.Username, &user.Email, &user.Password)
@@ -23,7 +21,7 @@ func (u *User) CreateUser(user *models.User) (int64, error) {
 	return rowsAffected, nil
 }
 
-func (u *User) GetUsers() ([]models.User, error) {
+func GetUsers() ([]models.User, error) {
 	query := `select username_ from users_`
 
 	rows, err := database.DB.Query(query)
@@ -48,7 +46,7 @@ func (u *User) GetUsers() ([]models.User, error) {
 	return users, nil
 }
 
-func (u *User) GetUserById(id int) (models.User, error) {
+func GetUserById(id int) (models.User, error) {
 	query := `select username_ from users_ where id_ = $1`
 
 	res := database.DB.QueryRow(query, id)
