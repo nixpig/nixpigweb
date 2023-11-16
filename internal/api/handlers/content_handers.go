@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/golang-jwt/jwt/v5"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/nixpig/nixpigweb/internal/pkg/models"
 	"github.com/nixpig/nixpigweb/internal/pkg/queries"
@@ -59,8 +61,6 @@ func GetContentById(c *fiber.Ctx) error {
 }
 
 func CreateContent(c *fiber.Ctx) error {
-	// TODO: content should be created for the current logged in user
-
 	content := &models.Content{}
 
 	if err := c.BodyParser(content); err != nil {
@@ -71,6 +71,20 @@ func CreateContent(c *fiber.Ctx) error {
 		})
 	}
 
+	token := c.Locals("user").(*jwt.Token)
+	claims := token.Claims.(jwt.MapClaims)
+	userId := int(claims["user_id"].(float64))
+
+	user, err := queries.GetUserById(userId)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "user does not exist",
+			"data":    nil,
+		})
+	}
+
+	content.UserId = user.Id
 	content.Slug = slugify.Slugify(content.Title)
 
 	validate := validator.New()
@@ -86,6 +100,7 @@ func CreateContent(c *fiber.Ctx) error {
 
 	rowsAffected, err := queries.CreateContent(content)
 	if err != nil {
+		fmt.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
 			"message": "it's not you, it's me",
@@ -111,6 +126,10 @@ func DeleteContentById(c *fiber.Ctx) error {
 			"data":    nil,
 		})
 	}
+
+	// 1. get user id from token
+	// 2. query database to make sure user exists
+	// 3. verify that user owns the content they're trying to delete
 
 	rowsAffected, err := queries.DeleteContentById(id)
 	if err != nil {
@@ -152,6 +171,10 @@ func UpdateContent(c *fiber.Ctx) error {
 			"data":    nil,
 		})
 	}
+
+	// 1. get user id from token
+	// 2. query database to make sure user exists
+	// 3. verify that user owns the content they're trying to update
 
 	if id != content.Id {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{

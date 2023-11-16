@@ -6,7 +6,7 @@ import (
 
 func ValidateUserToken(token *jwt.Token, id int) bool {
 	claims := token.Claims.(jwt.MapClaims)
-	claim_id := int(claims["id"].(float64))
+	claim_id := int(claims["user_id"].(float64))
 
 	return claim_id == id
 

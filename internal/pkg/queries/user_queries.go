@@ -47,13 +47,13 @@ func GetUsers() ([]models.User, error) {
 }
 
 func GetUserById(id int) (models.User, error) {
-	query := `select username_ from users_ where id_ = $1`
+	query := `select id_, username_, email_, is_admin_ from users_ where id_ = $1`
 
 	res := database.DB.QueryRow(query, id)
 
 	var user models.User
 
-	if err := res.Scan(&user.Username); err != nil {
+	if err := res.Scan(&user.Id, &user.Username, &user.Email, &user.IsAdmin); err != nil {
 		return user, err
 	}
 
