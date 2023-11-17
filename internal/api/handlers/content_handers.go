@@ -116,7 +116,6 @@ func CreateContent(c *fiber.Ctx) error {
 }
 
 func DeleteContentById(c *fiber.Ctx) error {
-	// TODO: the current logged in user or admins should be able to delete only their own content
 	idParam := c.Params("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
@@ -127,9 +126,35 @@ func DeleteContentById(c *fiber.Ctx) error {
 		})
 	}
 
-	// 1. get user id from token
-	// 2. query database to make sure user exists
-	// 3. verify that user owns the content they're trying to delete
+	token := c.Locals("user").(*jwt.Token)
+	claims := token.Claims.(jwt.MapClaims)
+	loggedInUserId := int(claims["user_id"].(float64))
+
+	loggedInUser, err := queries.GetUserById(loggedInUserId)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
+
+	content, err := queries.GetContentById(id)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
+
+	if loggedInUser.Id != content.UserId && !loggedInUser.IsAdmin {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
 
 	rowsAffected, err := queries.DeleteContentById(id)
 	if err != nil {
@@ -148,10 +173,9 @@ func DeleteContentById(c *fiber.Ctx) error {
 }
 
 func UpdateContent(c *fiber.Ctx) error {
-	// TODO: the current logged in user or admins should be able to update only their own content
-	var content models.Content
+	var updatedContent models.Content
 
-	if err := c.BodyParser(&content); err != nil {
+	if err := c.BodyParser(&updatedContent); err != nil {
 		if err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 				"error":   true,
@@ -162,7 +186,6 @@ func UpdateContent(c *fiber.Ctx) error {
 	}
 
 	idParam := c.Params("id")
-
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -172,11 +195,37 @@ func UpdateContent(c *fiber.Ctx) error {
 		})
 	}
 
-	// 1. get user id from token
-	// 2. query database to make sure user exists
-	// 3. verify that user owns the content they're trying to update
+	token := c.Locals("user").(*jwt.Token)
+	claims := token.Claims.(jwt.MapClaims)
+	loggedInUserId := int(claims["user_id"].(float64))
 
-	if id != content.Id {
+	existingContent, err := queries.GetContentById(id)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
+
+	loggedInUser, err := queries.GetUserById(loggedInUserId)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
+
+	if (loggedInUserId != updatedContent.UserId || loggedInUserId != existingContent.UserId) && !loggedInUser.IsAdmin {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
+
+	if id != updatedContent.Id {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "bad request",
@@ -186,12 +235,12 @@ func UpdateContent(c *fiber.Ctx) error {
 
 	validate := validator.New()
 
-	slug := slugify.Slugify(content.Title)
-	content.Slug = slug
+	slug := slugify.Slugify(updatedContent.Title)
+	updatedContent.Slug = slug
 
-	content.UpdatedAt = time.Now()
+	updatedContent.UpdatedAt = time.Now()
 
-	if err := validate.Struct(&content); err != nil {
+	if err := validate.Struct(&updatedContent); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "bad request",
@@ -199,7 +248,7 @@ func UpdateContent(c *fiber.Ctx) error {
 		})
 	}
 
-	rowsAffected, err := queries.UpdateContent(&content)
+	rowsAffected, err := queries.UpdateContent(&updatedContent)
 	if err != nil {
 		fmt.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

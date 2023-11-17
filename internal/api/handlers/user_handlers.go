@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/nixpig/nixpigweb/internal/pkg/models"
 	"github.com/nixpig/nixpigweb/internal/pkg/queries"
 	"golang.org/x/crypto/bcrypt"
@@ -13,11 +14,24 @@ import (
 )
 
 func CreateUser(c *fiber.Ctx) error {
-	// TODO: validate logged in user is admin before allowing to create new users
+	token := c.Locals("user").(*jwt.Token)
+	claims := token.Claims.(jwt.MapClaims)
+	loggedInUserId := int(claims["user_id"].(float64))
 
-	var user models.User
+	loggedInUser, err := queries.GetUserById(loggedInUserId)
+	if err != nil || !loggedInUser.IsAdmin {
+		fmt.Println("err: ", err)
+		fmt.Println("isAdmin: ", loggedInUser.IsAdmin)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
 
-	if err := c.BodyParser(&user); err != nil {
+	var newUser models.User
+
+	if err := c.BodyParser(&newUser); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "bad user data provided",
@@ -27,7 +41,7 @@ func CreateUser(c *fiber.Ctx) error {
 
 	validate := validator.New()
 
-	if err := validate.Struct(&user); err != nil {
+	if err := validate.Struct(&newUser); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "bad data not validated",
@@ -35,7 +49,29 @@ func CreateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
+	_, err = queries.GetUserByUsername(newUser.Username)
+	// we wan't there to be an err (i.e. no user by that name already)
+	fmt.Println("err:", err)
+	if err == nil {
+		fmt.Println("should error")
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "username already taken",
+			"data":    nil,
+		})
+	}
+
+	_, err = queries.GetUserByEmail(newUser.Email)
+	// we wan't there to be an err (i.e. no user with that email already)
+	if err == nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "email already taken",
+			"data":    nil,
+		})
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), 14)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
@@ -44,9 +80,9 @@ func CreateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	user.Password = string(hashedPassword)
+	newUser.Password = string(hashedPassword)
 
-	addedRows, err := queries.CreateUser(&user)
+	addedRows, err := queries.CreateUser(&newUser)
 	if err != nil {
 		fmt.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
