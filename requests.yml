@@ -2,40 +2,11 @@
 - host: localhost
   port: 3001
   requests:
-    - name: get_content
-      path: /api/content
-
-    - name: get_content_by_id
-      path: /api/content/14
-
-    - name: delete_content_by_id
-      path: /api/content/13
-      method: delete
-
-    - name: create_content
-      path: /api/content
-      method: post
-      content:
-        title: Some title
-        subtitle: Some subtitle in here
-        body: Some body content to fill up in here.
-        type: post
-      headers:
-        Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDAxMzA4OTIsImlzX2FkbWluIjpmYWxzZSwidXNlcl9pZCI6Mn0.aYXAcwR9J4JQ3TCMy8_mE-vg1ltAN8DH1yfrYWUTvqc
-
-    - name: update_content
-      path: /api/content/14
-      method: patch
-      content:
-        id: 14
-        title: Some title updated
-        subtitle: Updated subtitle
-        body: Updated body content in here.
-        type: page
-
-    - name: create_user
+    - name: create_new_user
       path: /api/user
       method: post
+      headers:
+        Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDAyMDU4MjIsImlzX2FkbWluIjpmYWxzZSwidXNlcl9pZCI6Mn0.1uKA2rzEoOajZ5bBnxes9XIUo2iOwKCD7bVVwvRzJ48
       content:
         username: nixpig
         email: hello@nixpig.dev
@@ -60,3 +31,35 @@
       content:
         username: nixpig
         password: sd0932jf
+
+      # - name: get_content
+      #   path: /api/content
+      #
+      # - name: get_content_by_id
+      #   path: /api/content/14
+      #
+      # - name: delete_content_by_id
+      #   path: /api/content/13
+      #   method: delete
+      #
+      # - name: create_content
+      #   path: /api/content
+      #   method: post
+      #   content:
+      #     title: Some title
+      #     subtitle: Some subtitle in here
+      #     body: Some body content to fill up in here.
+      #     type: post
+      #   headers:
+      #     Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDAxMzA4OTIsImlzX2FkbWluIjpmYWxzZSwidXNlcl9pZCI6Mn0.aYXAcwR9J4JQ3TCMy8_mE-vg1ltAN8DH1yfrYWUTvqc
+      #
+      # - name: update_content
+      #   path: /api/content/14
+      #   method: patch
+      #   content:
+      #     id: 14
+      #     title: Some title updated
+      #     subtitle: Updated subtitle
+      #     body: Updated body content in here.
+      #     type: page
+      #
