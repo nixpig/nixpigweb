@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 
 	_ "github.com/lib/pq"
@@ -19,34 +18,31 @@ type databaseEnvironment struct {
 	password string
 }
 
-func Connection() *sql.DB {
+func Connect() error {
 	var err error
 
 	environment := loadEnvironment()
 	connectionString := buildConnectionString(environment)
 
-	db, err := sql.Open("postgres", connectionString)
+	DB, err = sql.Open("postgres", connectionString)
 	if err != nil {
 		fmt.Println(fmt.Errorf("error connecting to database\n%v", err))
-		os.Exit(1)
+		return err
 	}
 
-	if err := db.Ping(); err != nil {
+	if err = DB.Ping(); err != nil {
 		fmt.Println(fmt.Errorf("failed to ping database\n%v", err))
+		return err
 	}
 
-	return db
+	return nil
 }
 
 func loadEnvironment() *databaseEnvironment {
 	host := config.Get("DATABASE_HOST")
-
 	user := config.Get("DATABASE_USER")
-
 	name := config.Get("DATABASE_DB")
-
 	password := config.Get("DATABASE_PASSWORD")
-
 	port := config.Get("DATABASE_PORT")
 
 	portNumber, err := strconv.Atoi(port)

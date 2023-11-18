@@ -5,8 +5,9 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/golang-jwt/jwt/v5"
+
 	"github.com/gofiber/fiber/v2"
-	"github.com/nixpig/nixpigweb/internal/pkg/database"
 	"github.com/nixpig/nixpigweb/internal/pkg/models"
 	"github.com/nixpig/nixpigweb/internal/pkg/queries"
 
@@ -16,9 +17,7 @@ import (
 )
 
 func GetContent(c *fiber.Ctx) error {
-	contentQueries := queries.Content{DB: database.Connection()}
-
-	content, err := contentQueries.GetContent()
+	content, err := queries.GetContent()
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
@@ -45,9 +44,7 @@ func GetContentById(c *fiber.Ctx) error {
 		})
 	}
 
-	contentQueries := queries.Content{DB: database.Connection()}
-
-	content, err := contentQueries.GetContentById(id)
+	content, err := queries.GetContentById(id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error":   true,
@@ -64,8 +61,6 @@ func GetContentById(c *fiber.Ctx) error {
 }
 
 func CreateContent(c *fiber.Ctx) error {
-	// TODO: content should be created for the current logged in user
-
 	content := &models.Content{}
 
 	if err := c.BodyParser(content); err != nil {
@@ -76,11 +71,26 @@ func CreateContent(c *fiber.Ctx) error {
 		})
 	}
 
+	token := c.Locals("user").(*jwt.Token)
+	claims := token.Claims.(jwt.MapClaims)
+	userId := int(claims["user_id"].(float64))
+
+	user, err := queries.GetUserById(userId)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "user does not exist",
+			"data":    nil,
+		})
+	}
+
+	content.UserId = user.Id
 	content.Slug = slugify.Slugify(content.Title)
 
 	validate := validator.New()
 
 	if err := validate.Struct(content); err != nil {
+		fmt.Println(err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "could not validate data",
@@ -88,10 +98,9 @@ func CreateContent(c *fiber.Ctx) error {
 		})
 	}
 
-	contentQueries := queries.Content{DB: database.Connection()}
-
-	rowsAffected, err := contentQueries.CreateContent(content)
+	rowsAffected, err := queries.CreateContent(content)
 	if err != nil {
+		fmt.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
 			"message": "it's not you, it's me",
@@ -107,7 +116,6 @@ func CreateContent(c *fiber.Ctx) error {
 }
 
 func DeleteContentById(c *fiber.Ctx) error {
-	// TODO: the current logged in user should be able to delete only their own content
 	idParam := c.Params("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
@@ -118,9 +126,37 @@ func DeleteContentById(c *fiber.Ctx) error {
 		})
 	}
 
-	contentQueries := queries.Content{DB: database.Connection()}
+	token := c.Locals("user").(*jwt.Token)
+	claims := token.Claims.(jwt.MapClaims)
+	loggedInUserId := int(claims["user_id"].(float64))
 
-	rowsAffected, err := contentQueries.DeleteContentById(id)
+	loggedInUser, err := queries.GetUserById(loggedInUserId)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
+
+	content, err := queries.GetContentById(id)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
+
+	if loggedInUser.Id != content.UserId && !loggedInUser.IsAdmin {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
+
+	rowsAffected, err := queries.DeleteContentById(id)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
@@ -137,10 +173,9 @@ func DeleteContentById(c *fiber.Ctx) error {
 }
 
 func UpdateContent(c *fiber.Ctx) error {
-	// TODO: the current logged in user should be able to update only their own content
-	var content models.Content
+	var updatedContent models.Content
 
-	if err := c.BodyParser(&content); err != nil {
+	if err := c.BodyParser(&updatedContent); err != nil {
 		if err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 				"error":   true,
@@ -151,7 +186,6 @@ func UpdateContent(c *fiber.Ctx) error {
 	}
 
 	idParam := c.Params("id")
-
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -161,7 +195,37 @@ func UpdateContent(c *fiber.Ctx) error {
 		})
 	}
 
-	if id != content.Id {
+	token := c.Locals("user").(*jwt.Token)
+	claims := token.Claims.(jwt.MapClaims)
+	loggedInUserId := int(claims["user_id"].(float64))
+
+	existingContent, err := queries.GetContentById(id)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
+
+	loggedInUser, err := queries.GetUserById(loggedInUserId)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
+
+	if (loggedInUserId != updatedContent.UserId || loggedInUserId != existingContent.UserId) && !loggedInUser.IsAdmin {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
+
+	if id != updatedContent.Id {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "bad request",
@@ -171,12 +235,12 @@ func UpdateContent(c *fiber.Ctx) error {
 
 	validate := validator.New()
 
-	slug := slugify.Slugify(content.Title)
-	content.Slug = slug
+	slug := slugify.Slugify(updatedContent.Title)
+	updatedContent.Slug = slug
 
-	content.UpdatedAt = time.Now()
+	updatedContent.UpdatedAt = time.Now()
 
-	if err := validate.Struct(&content); err != nil {
+	if err := validate.Struct(&updatedContent); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "bad request",
@@ -184,9 +248,7 @@ func UpdateContent(c *fiber.Ctx) error {
 		})
 	}
 
-	contentQueries := queries.Content{DB: database.Connection()}
-
-	rowsAffected, err := contentQueries.UpdateContent(&content)
+	rowsAffected, err := queries.UpdateContent(&updatedContent)
 	if err != nil {
 		fmt.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

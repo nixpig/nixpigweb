@@ -1,20 +1,16 @@
 package queries
 
 import (
-	"database/sql"
 	"fmt"
 
+	"github.com/nixpig/nixpigweb/internal/pkg/database"
 	"github.com/nixpig/nixpigweb/internal/pkg/models"
 )
 
-type Content struct {
-	*sql.DB
-}
+func CreateContent(content *models.Content) (int64, error) {
+	query := `insert into content_ (title_, subtitle_, slug_, body_, type_, user_id_) values ($1, $2, $3, $4, $5, $6)`
 
-func (c *Content) CreateContent(content *models.Content) (int64, error) {
-	query := `insert into content_ (title_, subtitle_, slug_, body_, type_) values ($1, $2, $3, $4, $5)`
-
-	res, err := c.Exec(query, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.Type)
+	res, err := database.DB.Exec(query, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.Type, &content.UserId)
 	if err != nil {
 		return 0, fmt.Errorf("error inserting new content item\n%v", err)
 	}
@@ -27,12 +23,12 @@ func (c *Content) CreateContent(content *models.Content) (int64, error) {
 	return rowsAffected, nil
 }
 
-func (c *Content) GetContent() ([]models.Content, error) {
+func GetContent() ([]models.Content, error) {
 	var contents []models.Content
 
-	query := `select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_ from content_`
+	query := `select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_, user_id_ from content_`
 
-	rows, err := c.Query(query)
+	rows, err := database.DB.Query(query)
 	if err != nil {
 		return contents, fmt.Errorf("error fetching content from database\n%v", err)
 	}
@@ -41,7 +37,7 @@ func (c *Content) GetContent() ([]models.Content, error) {
 
 	for rows.Next() {
 		var content models.Content
-		if err := rows.Scan(&content.Id, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.CreatedAt, &content.UpdatedAt, &content.Type); err != nil {
+		if err := rows.Scan(&content.Id, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.CreatedAt, &content.UpdatedAt, &content.Type, &content.UserId); err != nil {
 			return contents, fmt.Errorf("error scanning data to struct\n%v", err)
 		}
 
@@ -51,23 +47,23 @@ func (c *Content) GetContent() ([]models.Content, error) {
 	return contents, nil
 }
 
-func (c *Content) GetContentById(id int) (models.Content, error) {
-	query := `select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_ from content_ where id_ = $1`
+func GetContentById(id int) (models.Content, error) {
+	query := `select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_, user_id_ from content_ where id_ = $1`
 
 	var content models.Content
 
-	row := c.QueryRow(query, id)
-	if err := row.Scan(&content.Id, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.CreatedAt, &content.UpdatedAt, &content.Type); err != nil {
+	row := database.DB.QueryRow(query, id)
+	if err := row.Scan(&content.Id, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.CreatedAt, &content.UpdatedAt, &content.Type, &content.UserId); err != nil {
 		return content, fmt.Errorf("error scanning data\n%v", err)
 	}
 
 	return content, nil
 }
 
-func (c *Content) DeleteContentById(id int) (int64, error) {
+func DeleteContentById(id int) (int64, error) {
 	query := `delete from content_ where id_ = $1`
 
-	res, err := c.Exec(query, id)
+	res, err := database.DB.Exec(query, id)
 	if err != nil {
 		return 0, fmt.Errorf("error deleting record with id: %v\n%v", id, err)
 	}
@@ -80,10 +76,10 @@ func (c *Content) DeleteContentById(id int) (int64, error) {
 	return rowsAffected, nil
 }
 
-func (c *Content) UpdateContent(content *models.Content) (int64, error) {
+func UpdateContent(content *models.Content) (int64, error) {
 	query := `update content_ set title_ = $2, subtitle_ = $3, slug_ = $4, body_ = $5, updated_at_ = $6, type_ = $7 where id_ = $1`
 
-	res, err := c.Exec(query, &content.Id, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.UpdatedAt, &content.Type)
+	res, err := database.DB.Exec(query, &content.Id, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.UpdatedAt, &content.Type)
 	if err != nil {
 		return 0, fmt.Errorf("error updating record\n%v", err)
 	}
