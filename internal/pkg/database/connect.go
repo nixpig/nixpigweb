@@ -40,10 +40,10 @@ func Connect() error {
 
 func loadEnvironment() *databaseEnvironment {
 	host := config.Get("DATABASE_HOST")
-	user := config.Get("DATABASE_USER")
-	name := config.Get("DATABASE_DB")
-	password := config.Get("DATABASE_PASSWORD")
 	port := config.Get("DATABASE_PORT")
+	name := config.Get("DATABASE_DB")
+	user := config.Get("DATABASE_USER")
+	password := config.Get("DATABASE_PASSWORD")
 
 	portNumber, err := strconv.Atoi(port)
 	if err != nil {
