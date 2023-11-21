@@ -15,6 +15,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	database.Connect()
+	if err := database.Connect(); err != nil {
+		fmt.Println(fmt.Errorf("error connecting to database\n%v", err))
+		os.Exit(1)
+	}
+
 	server.Start()
 }
