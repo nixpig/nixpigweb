@@ -44,6 +44,39 @@ func TestCreateUser(t *testing.T) {
 	assert.Equal(t, int64(1), rowsAffected)
 }
 
+func TestGetUsers(t *testing.T) {
+	var users []models.User
+	var err error
+
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("unexpected error creating database mock: %s", err)
+	}
+
+	defer db.Close()
+
+	database.DB = db
+
+	expectedQuery := regexp.QuoteMeta(`select username_ from users_`)
+
+	userRows := sqlmock.NewRows([]string{"username_"}).AddRow("user_one").AddRow("user_two").AddRow("user_three")
+
+	mock.ExpectQuery(expectedQuery).WillReturnRows(userRows)
+
+	expectedUsers := []models.User{
+		{Username: "user_one"},
+		{Username: "user_two"},
+		{Username: "user_three"},
+	}
+
+	users, err = queries.GetUsers()
+
+	assert.Nil(t, err)
+
+	assert.Equal(t, expectedUsers, users)
+
+}
+
 func TestGetUserById(t *testing.T) {
 	var user models.User
 	var err error
