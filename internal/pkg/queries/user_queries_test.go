@@ -59,7 +59,10 @@ func TestGetUsers(t *testing.T) {
 
 	expectedQuery := regexp.QuoteMeta(`select username_ from users_`)
 
-	userRows := sqlmock.NewRows([]string{"username_"}).AddRow("user_one").AddRow("user_two").AddRow("user_three")
+	userRows := sqlmock.NewRows([]string{"username_"}).
+		AddRow("user_one").
+		AddRow("user_two").
+		AddRow("user_three")
 
 	mock.ExpectQuery(expectedQuery).WillReturnRows(userRows)
 

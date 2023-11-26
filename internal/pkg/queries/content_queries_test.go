@@ -3,6 +3,7 @@ package queries_test
 import (
 	"regexp"
 	"testing"
+	"time"
 
 	_ "database/sql"
 
@@ -45,4 +46,59 @@ func TestCreateContent(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.Equal(t, int64(1), affectedRows)
+}
+
+func TestGetContent(t *testing.T) {
+	var content []models.Content
+	var err error
+
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("error trying to create mock database: %s", err)
+	}
+
+	defer db.Close()
+
+	database.DB = db
+
+	expectedQuery := regexp.QuoteMeta(`select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_, user_id_ from content_`)
+
+	mockTime := time.Now()
+
+	mockResult := sqlmock.
+		NewRows([]string{"id_", "title_", "subtitle_", "slug_", "body_", "created_at_", "updated_at_", "type_", "user_id"}).
+		AddRow(1, "title one", "subtitle one", "slug-one", "body one", mockTime, mockTime, "post", 23).
+		AddRow(1, "title two", "subtitle two", "slug-two", "body two", mockTime, mockTime, "page", 23)
+
+	mock.ExpectQuery(expectedQuery).WillReturnRows(mockResult)
+
+	expectedContent := []models.Content{
+		{
+			Id:        1,
+			Title:     "title one",
+			Subtitle:  "subtitle one",
+			Slug:      "slug-one",
+			Body:      "body one",
+			CreatedAt: mockTime,
+			UpdatedAt: mockTime,
+			Type:      "post",
+			UserId:    23,
+		},
+		{
+			Id:        1,
+			Title:     "title two",
+			Subtitle:  "subtitle two",
+			Slug:      "slug-two",
+			Body:      "body two",
+			CreatedAt: mockTime,
+			UpdatedAt: mockTime,
+			Type:      "page",
+			UserId:    23,
+		},
+	}
+
+	content, err = queries.GetContent()
+
+	assert.Nil(t, err)
+	assert.Equal(t, expectedContent, content)
 }
