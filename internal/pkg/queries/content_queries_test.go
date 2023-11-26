@@ -166,3 +166,40 @@ func TestDeleteContentById(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, int64(1), affectedRows)
 }
+
+func TestUpdateContent(t *testing.T) {
+	var err error
+
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("failed to create mock db instance: %s", err)
+	}
+
+	defer db.Close()
+
+	database.DB = db
+
+	expectExec := regexp.QuoteMeta(`update content_ set title_ = $2, subtitle_ = $3, slug_ = $4, body_ = $5, updated_at_ = $6, type_ = $7 where id_ = $1`)
+
+	mockTime := time.Now()
+
+	mock.ExpectExec(expectExec).
+		WithArgs(1, "title changed", "subtitle changed", "slug-changed", "body changed", mockTime, "post").
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	contentUpdate := models.Content{
+		Id:        1,
+		Title:     "title changed",
+		Subtitle:  "subtitle changed",
+		Slug:      "slug-changed",
+		Body:      "body changed",
+		UpdatedAt: mockTime,
+		Type:      "post",
+	}
+
+	rowsAffected, err := queries.UpdateContent(&contentUpdate)
+
+	assert.Nil(t, err)
+	assert.Equal(t, int64(1), rowsAffected)
+
+}
