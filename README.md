@@ -1,5 +1,7 @@
 # nixpigweb
 
-This is my first project in Go. Read all about it [here](https://nixpig.dev).
+## Work In Progress
 
-> No doubt I'm doing a bunch of things incorrectly. Feel free to correct me in the [issues](https://github.com/nixpig/nixpigweb/issues/new).
+This is my first real project in Go. Maybe read about it [here](https://nixpig.dev)?
+
+> No doubt there will be a bunch of areas for improvement. Feel free to let me know in the [issues](https://github.com/nixpig/nixpigweb/issues/new).
