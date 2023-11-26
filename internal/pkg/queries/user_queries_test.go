@@ -36,7 +36,9 @@ func TestCreateUser(t *testing.T) {
 		Email:    "test@example.com",
 	}
 
-	mock.ExpectExec(expectedQuery).WithArgs(user.Username, user.Email, user.Password).WillReturnResult(mockResult)
+	mock.ExpectExec(expectedQuery).
+		WithArgs(user.Username, user.Email, user.Password).
+		WillReturnResult(mockResult)
 
 	rowsAffected, err := queries.CreateUser(&user)
 

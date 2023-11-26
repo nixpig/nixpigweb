@@ -142,3 +142,27 @@ func TestGetContentById(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, expectedResult, content)
 }
+
+func TestDeleteContentById(t *testing.T) {
+	var err error
+
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("failed to create mock database: %s", err)
+	}
+
+	defer db.Close()
+
+	database.DB = db
+
+	expectExec := regexp.QuoteMeta(`delete from content_ where id_ = $1`)
+
+	mock.ExpectExec(expectExec).
+		WithArgs(1).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	affectedRows, err := queries.DeleteContentById(1)
+
+	assert.Nil(t, err)
+	assert.Equal(t, int64(1), affectedRows)
+}
