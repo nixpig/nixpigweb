@@ -102,3 +102,43 @@ func TestGetContent(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, expectedContent, content)
 }
+
+func TestGetContentById(t *testing.T) {
+	var err error
+
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("failed to create mock database: %s", err)
+	}
+
+	defer db.Close()
+
+	database.DB = db
+
+	expectQuery := regexp.QuoteMeta(`select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_, user_id_ from content_ where id_ = $1`)
+
+	mockTime := time.Now()
+
+	mockResult := sqlmock.
+		NewRows([]string{"id_", "title_", "subtitle_", "slug_", "body_", "created_at_", "updated_at_", "type_", "user_id"}).
+		AddRow(1, "title one", "subtitle one", "slug-one", "body one", mockTime, mockTime, "post", 23)
+
+	mock.ExpectQuery(expectQuery).WithArgs(1).WillReturnRows(mockResult)
+
+	expectedResult := models.Content{
+		Id:        1,
+		Title:     "title one",
+		Subtitle:  "subtitle one",
+		Slug:      "slug-one",
+		Body:      "body one",
+		CreatedAt: mockTime,
+		UpdatedAt: mockTime,
+		Type:      "post",
+		UserId:    23,
+	}
+
+	content, err := queries.GetContentById(1)
+
+	assert.Nil(t, err)
+	assert.Equal(t, expectedResult, content)
+}
