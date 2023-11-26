@@ -1,6 +1,6 @@
-API_PACKAGE_PATH := ./cmd/api/
+API_PACKAGE_PATH := ./cmd/api
 API_BINARY_NAME := api
-WEB_PACKAGE_PATH := ./cmd/web/
+WEB_PACKAGE_PATH := ./cmd/web
 WEB_BINARY_NAME := web
 
 .PHONY: tidy
@@ -25,11 +25,6 @@ build:
 	go build -o tmp/bin/${API_BINARY_NAME} ${API_PACKAGE_PATH}
 	go build -o tmp/bin/${WEB_BINARY_NAME} ${WEB_PACKAGE_PATH}
 
-.PHONY: run
-run: build
-	tmp/bin/${API_BINARY_NAME}
-	tmp/bin/${WEB_BINARY_NAME}
-
 .PHONY: dev_api
 dev_api: 
 	go run github.com/cosmtrek/air@v1.43.0 \
@@ -37,7 +32,7 @@ dev_api:
 		--build.bin "tmp/bin/${API_BINARY_NAME}" \
 		--build.delay "100" \
 		--build.exclude_dir "" \
-		--build.include_ext "go, tpl, tmpl, html, css, scss, js, ts, sql, jpeg, jpg, gif, png, bmp, svg, webp, ico" \
+		--build.include_ext "go" \
 		--misc.clean_on_exit "true"
 
 .PHONY: dev_web
@@ -51,5 +46,7 @@ dev_web:
 		--misc.clean_on_exit "true"
 
 clean:
-	rm -rf bin tmp cmd/api/tmp cmd/web/tmp
+	rm -rf bin tmp 
+	rm -rf ${API_PACKAGE_PATH}/tmp ${API_PACKAGE_PATH}/bin
+	rm -rf ${WEB_PACKAGE_PATH}/tmp ${WEB_PACKAGE_PATH}/bin
 
