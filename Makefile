@@ -22,6 +22,7 @@ test:
 
 .PHONY: build
 build:
+	templ generate
 	go build -o tmp/bin/${API_BINARY_NAME} ${API_PACKAGE_PATH}
 	go build -o tmp/bin/${WEB_BINARY_NAME} ${WEB_PACKAGE_PATH}
 
@@ -42,7 +43,7 @@ dev_web:
 		--build.bin "tmp/bin/${WEB_BINARY_NAME}" \
 		--build.delay "100" \
 		--build.exclude_dir "" \
-		--build.include_ext "go, tpl, tmpl, html, css, scss, js, ts, sql, jpeg, jpg, gif, png, bmp, svg, webp, ico" \
+		--build.include_ext "go, tpl, templ, tmpl, html, css, scss, js, ts, sql, jpeg, jpg, gif, png, bmp, svg, webp, ico" \
 		--misc.clean_on_exit "true"
 
 clean:

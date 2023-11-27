@@ -1,31 +1,27 @@
 package main
 
-import "fmt"
-import "log"
-import "github.com/gofiber/fiber/v2"
-import "github.com/gofiber/template/html/v2"
+import (
+	"fmt"
+	"os"
+
+	"github.com/nixpig/nixpigweb/internal/pkg/config"
+	"github.com/nixpig/nixpigweb/internal/pkg/database"
+	"github.com/nixpig/nixpigweb/internal/web/server"
+)
 
 func main() {
-	engine := html.New("./internal/web/templates/", ".html")
+	if err := config.Init(); err != nil {
+		fmt.Println(fmt.Errorf("failed to initialise app config\n%v", err))
+		os.Exit(1)
+	}
 
-	// DEVELOPMENT
-	engine.Reload(true)
-	engine.Debug(true)
+	if err := database.Connect(); err != nil {
+		fmt.Println(fmt.Errorf("failed to connect to database\n%v", err))
+		os.Exit(1)
+	}
 
-	engine.AddFunc("greet", func(name string) string {
-		return fmt.Sprintf("Hello, %s!", name)
-	})
+	contextPath := config.Get("WEB_CONTEXT")
+	port := config.Get("WEB_PORT")
 
-	app := fiber.New(fiber.Config{
-		Views: engine,
-	})
-
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.Render("index", fiber.Map{
-			"Title": "Hello, world!",
-		})
-	})
-
-	log.Fatal(app.Listen(":3000"))
-
+	server.Start(contextPath, port)
 }

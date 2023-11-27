@@ -20,5 +20,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	server.Start()
+	contextPath := config.Get("API_CONTEXT")
+	port := config.Get("API_PORT")
+
+	server.Start(contextPath, port)
 }
