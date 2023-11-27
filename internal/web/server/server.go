@@ -38,8 +38,5 @@ func Start(contextPath string, port string) {
 
 	web.Use(handlers.NotFoundHandler)
 
-	// TODO: add 404
-
 	log.Fatal(app.Listen(fmt.Sprintf(":%s", port)))
-
 }
