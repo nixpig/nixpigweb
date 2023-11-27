@@ -9,6 +9,8 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/helmet"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/html/v2"
+
+	"github.com/nixpig/nixpigweb/internal/web/handlers"
 )
 
 func Start(contextPath string, port string) {
@@ -32,11 +34,9 @@ func Start(contextPath string, port string) {
 
 	web := app.Group(fmt.Sprintf("/%s", contextPath))
 
-	web.Get("/", func(c *fiber.Ctx) error {
-		return c.Render("index", fiber.Map{
-			"Title": "Hello, world!",
-		})
-	})
+	web.Get("/", handlers.IndexHandler)
+
+	web.Use(handlers.NotFoundHandler)
 
 	// TODO: add 404
 
