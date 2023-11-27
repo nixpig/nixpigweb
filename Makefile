@@ -20,10 +20,6 @@ audit:
 test: 
 	go test -v -race -buildvcs ./...
 
-.PHONY: generate
-generate:
-	templ generate
-
 .PHONY: build
 build:
 	templ generate
@@ -51,7 +47,6 @@ dev_web:
 		--misc.clean_on_exit "true"
 
 clean:
-	find . -type f -name *_templ.go -delete
 	rm -rf bin tmp 
 	rm -rf ${API_PACKAGE_PATH}/tmp ${API_PACKAGE_PATH}/bin
 	rm -rf ${WEB_PACKAGE_PATH}/tmp ${WEB_PACKAGE_PATH}/bin
