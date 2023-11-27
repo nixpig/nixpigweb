@@ -20,6 +20,10 @@ audit:
 test: 
 	go test -v -race -buildvcs ./...
 
+.PHONY: generate
+generate:
+	templ generate
+
 .PHONY: build
 build:
 	templ generate

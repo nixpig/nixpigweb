@@ -5,13 +5,12 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/adaptor"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/helmet"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/nixpig/nixpigweb/internal/web/templates"
+	"github.com/nixpig/nixpigweb/internal/web/utils"
 )
-import "github.com/a-h/templ"
 
 func Start(contextPath string, port string) {
 	app := fiber.New()
@@ -22,7 +21,7 @@ func Start(contextPath string, port string) {
 
 	web := app.Group(fmt.Sprintf("/%s", contextPath))
 
-	web.Get("/", adaptor.HTTPHandler(templ.Handler(templates.Hello("pig"))))
+	web.Get("/", utils.WrapComponent(templates.Hello("pig")))
 
 	// TODO: add 404
 
