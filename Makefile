@@ -17,6 +17,7 @@ audit:
 	go test -race -buildvcs -vet=off ./...
 
 .PHONY: test
+test: export ENV=test
 test: 
 	go test -v -race -buildvcs ./...
 
@@ -26,9 +27,10 @@ build:
 	go build -o tmp/bin/${API_BINARY_NAME} ${API_PACKAGE_PATH}
 	go build -o tmp/bin/${WEB_BINARY_NAME} ${WEB_PACKAGE_PATH}
 
-.PHONY: dev_api
-dev_api: 
-	ENV=development go run github.com/cosmtrek/air@v1.43.0 \
+.PHONY: api
+api: export ENV=development
+api: 
+	go run github.com/cosmtrek/air@v1.43.0 \
 		--build.cmd "make build" \
 		--build.bin "tmp/bin/${API_BINARY_NAME}" \
 		--build.delay "100" \
@@ -36,9 +38,10 @@ dev_api:
 		--build.include_ext "go" \
 		--misc.clean_on_exit "true"
 
-.PHONY: dev_web
-dev_web: 
-	ENV=development go run github.com/cosmtrek/air@v1.43.0 \
+.PHONY: web
+web: export ENV=development
+web: 
+	go run github.com/cosmtrek/air@v1.43.0 \
 		--build.cmd "make build" \
 		--build.bin "tmp/bin/${WEB_BINARY_NAME}" \
 		--build.delay "100" \
@@ -51,3 +54,7 @@ clean:
 	rm -rf ${API_PACKAGE_PATH}/tmp ${API_PACKAGE_PATH}/bin
 	rm -rf ${WEB_PACKAGE_PATH}/tmp ${WEB_PACKAGE_PATH}/bin
 
+.PHONY: dev
+dev: export ENV=development
+dev:
+	make -j2 web api
