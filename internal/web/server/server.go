@@ -35,6 +35,7 @@ func Start(contextPath string, port string) {
 	web := app.Group(fmt.Sprintf("/%s", contextPath))
 
 	web.Get("/", handlers.IndexHandler)
+	web.Get("/:slug", handlers.ContentHandler)
 
 	web.Use(handlers.NotFoundHandler)
 

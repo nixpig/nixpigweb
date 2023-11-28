@@ -47,6 +47,20 @@ func GetContent() ([]models.Content, error) {
 	return contents, nil
 }
 
+func GetContentBySlug(slug string) (models.Content, error) {
+	query := `select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_, user_id_ from content_ where slug_ = $1`
+
+	var content models.Content
+
+	row := database.DB.QueryRow(query, slug)
+
+	if err := row.Scan(&content.Id, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.CreatedAt, &content.UpdatedAt, &content.Type, &content.UserId); err != nil {
+		return content, err
+	}
+
+	return content, nil
+}
+
 func GetContentById(id int) (models.Content, error) {
 	query := `select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_, user_id_ from content_ where id_ = $1`
 
