@@ -19,7 +19,6 @@ func Start(contextPath string, port string) {
 
 	env := config.Get("ENV")
 
-	// TODO: dynamically set development settings below
 	if env == "development" {
 		engine.Reload(true)
 		engine.Debug(true)
