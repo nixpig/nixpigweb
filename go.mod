@@ -4,10 +4,10 @@ go 1.21.3
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0
-	github.com/a-h/templ v0.2.476
 	github.com/go-playground/validator/v10 v10.16.0
 	github.com/gofiber/contrib/jwt v1.0.7
 	github.com/gofiber/fiber/v2 v2.51.0
+	github.com/gofiber/template/html/v2 v2.0.5
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9
@@ -24,7 +24,6 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/gofiber/template v1.8.2 // indirect
-	github.com/gofiber/template/html/v2 v2.0.5 // indirect
 	github.com/gofiber/utils v1.1.0 // indirect
 	github.com/google/uuid v1.4.0 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
