@@ -8,10 +8,18 @@
 </head>
 <body>
   <h1>{{ greet "Pig" }}</h1>
+  <h2>Posts</h2>
   <ul>
-    {{ range $post := .Content }}
+    {{ range $post := .Posts }}
     <li>
       <a href="{{$post.Slug}}">{{ $post.Title }}</a>
+    </li>{{ end }}
+  </ul>
+  <h2>Pages</h2>
+  <ul>
+    {{ range $page := .Pages }}
+    <li>
+      <a href="{{$page.Slug}}">{{$page.Title}}</a>
     </li>{{ end }}
   </ul>
 </body>

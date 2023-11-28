@@ -144,6 +144,96 @@ func TestGetContentBySlug(t *testing.T) {
 
 }
 
+func TestGetContentByType(t *testing.T) {
+	var err error
+
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("failed to create mock database: %s", err)
+	}
+
+	defer db.Close()
+
+	database.DB = db
+
+	expectQuery := regexp.QuoteMeta(`select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_, user_id_ from content_ where type_ = $1`)
+
+	mockTime := time.Now()
+
+	mockResultPosts := sqlmock.
+		NewRows([]string{"id_", "title_", "subtitle_", "slug_", "body_", "created_at_", "updated_at_", "type_", "user_id"}).
+		AddRow(1, "title one", "subtitle one", "slug-one", "body one", mockTime, mockTime, "post", 23).
+		AddRow(3, "title three", "subtitle three", "slug-three", "body three", mockTime, mockTime, "post", 23)
+
+	mockResultPages := sqlmock.
+		NewRows([]string{"id_", "title_", "subtitle_", "slug_", "body_", "created_at_", "updated_at_", "type_", "user_id"}).
+		AddRow(2, "title two", "subtitle two", "slug-two", "body two", mockTime, mockTime, "page", 23).
+		AddRow(4, "title four", "subtitle four", "slug-four", "body four", mockTime, mockTime, "page", 23)
+
+	mock.ExpectQuery(expectQuery).WithArgs("post").
+		WillReturnRows(mockResultPosts)
+
+	mock.ExpectQuery(expectQuery).WithArgs("page").
+		WillReturnRows(mockResultPages)
+
+	posts, err := queries.GetContentByType("post")
+
+	assert.Nil(t, err)
+	assert.Equal(t, []models.Content{
+		{
+			Id:        1,
+			Title:     "title one",
+			Subtitle:  "subtitle one",
+			Slug:      "slug-one",
+			Body:      "body one",
+			CreatedAt: mockTime,
+			UpdatedAt: mockTime,
+			Type:      "post",
+			UserId:    23,
+		},
+		{
+			Id:        3,
+			Title:     "title three",
+			Subtitle:  "subtitle three",
+			Slug:      "slug-three",
+			Body:      "body three",
+			CreatedAt: mockTime,
+			UpdatedAt: mockTime,
+			Type:      "post",
+			UserId:    23,
+		},
+	}, posts)
+
+	pages, err := queries.GetContentByType("page")
+
+	assert.Nil(t, err)
+	assert.Equal(t, []models.Content{
+		{
+			Id:        2,
+			Title:     "title two",
+			Subtitle:  "subtitle two",
+			Slug:      "slug-two",
+			Body:      "body two",
+			CreatedAt: mockTime,
+			UpdatedAt: mockTime,
+			Type:      "page",
+			UserId:    23,
+		},
+		{
+			Id:        4,
+			Title:     "title four",
+			Subtitle:  "subtitle four",
+			Slug:      "slug-four",
+			Body:      "body four",
+			CreatedAt: mockTime,
+			UpdatedAt: mockTime,
+			Type:      "page",
+			UserId:    23,
+		},
+	}, pages)
+
+}
+
 func TestGetContentById(t *testing.T) {
 	var err error
 

@@ -7,7 +7,7 @@ import (
 )
 
 func IndexHandler(c *fiber.Ctx) error {
-	content, err := queries.GetContent()
+	posts, err := queries.GetContentByType("post")
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).Render("500", fiber.Map{
 
@@ -16,8 +16,17 @@ func IndexHandler(c *fiber.Ctx) error {
 		})
 	}
 
+	pages, err := queries.GetContentByType("page")
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).Render("500", fiber.Map{
+			"SiteName":    "nixpig.dev",
+			"ContextPath": config.Get("WEB_CONTEXT"),
+		})
+	}
+
 	return c.Render("index", fiber.Map{
-		"Title":   "Hello, world!",
-		"Content": content,
+		"Title": "Hello, world!",
+		"Posts": posts,
+		"Pages": pages,
 	})
 }

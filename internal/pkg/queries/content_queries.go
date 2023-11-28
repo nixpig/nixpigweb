@@ -74,6 +74,29 @@ func GetContentById(id int) (models.Content, error) {
 	return content, nil
 }
 
+func GetContentByType(contentType string) ([]models.Content, error) {
+	query := `select id_, title_, subtitle_, slug_, body_, created_at_, updated_at_, type_, user_id_ from content_ where type_ = $1`
+
+	var contents []models.Content
+
+	rows, err := database.DB.Query(query, contentType)
+	if err != nil {
+		return contents, err
+	}
+
+	for rows.Next() {
+		var content models.Content
+
+		if err := rows.Scan(&content.Id, &content.Title, &content.Subtitle, &content.Slug, &content.Body, &content.CreatedAt, &content.UpdatedAt, &content.Type, &content.UserId); err != nil {
+			return contents, err
+		}
+
+		contents = append(contents, content)
+	}
+
+	return contents, nil
+}
+
 func DeleteContentById(id int) (int64, error) {
 	query := `delete from content_ where id_ = $1`
 
