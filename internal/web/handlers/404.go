@@ -7,11 +7,11 @@ import (
 
 func NotFoundHandler(c *fiber.Ctx) error {
 	contextPath := config.Get("WEB_CONTEXT")
+	siteName := config.Get("SITE_NAME")
 
 	return c.Render("404", fiber.Map{
-		"SiteName":    "nixpig.dev",
+		"SiteName":    siteName,
 		"ContextPath": contextPath,
 	})
 
 }
-

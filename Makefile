@@ -28,7 +28,7 @@ build:
 
 .PHONY: dev_api
 dev_api: 
-	go run github.com/cosmtrek/air@v1.43.0 \
+	ENV=development go run github.com/cosmtrek/air@v1.43.0 \
 		--build.cmd "make build" \
 		--build.bin "tmp/bin/${API_BINARY_NAME}" \
 		--build.delay "100" \
@@ -38,7 +38,7 @@ dev_api:
 
 .PHONY: dev_web
 dev_web: 
-	go run github.com/cosmtrek/air@v1.43.0 \
+	ENV=development go run github.com/cosmtrek/air@v1.43.0 \
 		--build.cmd "make build" \
 		--build.bin "tmp/bin/${WEB_BINARY_NAME}" \
 		--build.delay "100" \
