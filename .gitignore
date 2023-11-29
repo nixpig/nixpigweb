@@ -35,7 +35,6 @@ node_modules
 coverage
 
 # production
-build
 bin
 
 # misc

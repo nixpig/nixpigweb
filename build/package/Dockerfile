@@ -1,0 +1,23 @@
+FROM golang:1.21.4-alpine3.18 as builder
+
+RUN apk add --no-cache make
+
+WORKDIR /usr/src/app
+
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+
+COPY . .
+
+RUN make build
+
+FROM golang:1.21.4-alpine3.18
+
+WORKDIR /usr/src/app
+
+COPY --from=builder /usr/src/app/tmp/bin bin
+COPY --from=builder /usr/src/app/web web
+
+EXPOSE 80
+
+CMD ["./bin/web"]

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"time"
 
 	_ "github.com/lib/pq"
 	"github.com/nixpig/nixpigweb/internal/pkg/config"
@@ -24,6 +25,14 @@ func Connect() error {
 	environment := loadEnvironment()
 	connectionString := buildConnectionString(environment)
 
+	wait, err := strconv.Atoi(config.Get("WAIT"))
+	if err != nil {
+		wait = 5000000000
+	}
+	time.Sleep(time.Duration(wait))
+
+	fmt.Println("Trying to connect to database: ", connectionString)
+
 	DB, err = sql.Open("postgres", connectionString)
 	if err != nil {
 		fmt.Println(fmt.Errorf("error connecting to database\n%v", err))
@@ -34,6 +43,8 @@ func Connect() error {
 		fmt.Println(fmt.Errorf("failed to ping database\n%v", err))
 		return err
 	}
+
+	fmt.Println("successfully pinged database")
 
 	return nil
 }
