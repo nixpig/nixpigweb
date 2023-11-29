@@ -1,0 +1,21 @@
+{{ template "before" . }}
+{{ template "header" . }}
+{{ template "menu" . }}
+
+<main>
+  <article>
+    <h1>{{.PageTitle}}</h1>
+    <h2>{{.PageSubtitle}}</h2>
+
+    <p>Slug: {{.Slug}}</p>
+    <p>Body: {{.Body}}</p>
+    <p>CreatedAt: {{.CreatedAt}}</p>
+    <p>UpdatedAt: {{.UpdatedAt}}</p>
+    <p>Type: {{.Type}}</p>
+    <p>UserId: {{ .UserId }}</p>
+
+  </article>
+</main>
+
+{{ template "footer" . }}
+{{ template "after" . }}

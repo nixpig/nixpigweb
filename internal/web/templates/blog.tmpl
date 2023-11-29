@@ -1,0 +1,18 @@
+{{ template "before" . }}
+{{ template "header" . }}
+{{ template "menu" . }}
+
+<main>
+  <h1>{{.PageTitle}}</h1>
+  <p>
+    <ul>
+      {{ range $post := .Posts }}
+      <li>
+        <a href="{{$post.Slug}}">{{ $post.Title }}</a>
+      </li>{{ end }}
+    </ul>
+  </p>
+</main>
+
+{{ template "footer" . }}
+{{ template "after" . }}

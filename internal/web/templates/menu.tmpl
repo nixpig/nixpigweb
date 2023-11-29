@@ -1,0 +1,13 @@
+<nav>
+  <ul>
+    <li>
+      <a href="/{{.ContextPath}}">Home</a>
+    </li>{{ range $page := .Pages }}
+    <li>
+      <a href="{{$page.Slug}}">{{$page.Title}}</a>
+    </li>{{ end }}
+    <li>
+      <a href="{{.ContextPath}}/blog">Blog</a>
+    </li>
+  </ul>
+</nav>

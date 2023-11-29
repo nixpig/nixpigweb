@@ -11,8 +11,7 @@ import (
 
 func main() {
 	if err := config.Init(); err != nil {
-		fmt.Println(fmt.Errorf("failed to initialise app config\n%v", err))
-		os.Exit(1)
+		fmt.Println(fmt.Errorf("failed to load .env file\nthis shouldn't be fatal if environment variables are set by some other means\n%v", err))
 	}
 
 	if err := database.Connect(); err != nil {

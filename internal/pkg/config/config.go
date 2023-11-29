@@ -12,7 +12,7 @@ const envPath = ".env"
 func Init() error {
 	err := godotenv.Load(envPath)
 	if err != nil {
-		fmt.Println(fmt.Errorf("error loading environment variables. This could be fatal.\n%v", err))
+		fmt.Println(fmt.Errorf("error loading environment variables\n this might be fatal.\n%v", err))
 		return err
 	}
 

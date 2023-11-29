@@ -6,7 +6,15 @@ import (
 	"github.com/nixpig/nixpigweb/internal/pkg/queries"
 )
 
-func IndexHandler(c *fiber.Ctx) error {
+func BlogHander(c *fiber.Ctx) error {
+	posts, err := queries.GetContentByType("post")
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).Render("500", fiber.Map{
+			"ContextPath": config.Get("WEB_CONTEXT"),
+			"SiteName":    config.Get("SITE_NAME"),
+		})
+	}
+
 	pages, err := queries.GetContentByType("page")
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).Render("500", fiber.Map{
@@ -15,10 +23,11 @@ func IndexHandler(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.Render("index", fiber.Map{
-		"PageTitle":   "Index Page Title",
-		"Pages":       pages,
+	return c.Render("blog", fiber.Map{
 		"ContextPath": config.Get("WEB_CONTEXT"),
 		"SiteName":    config.Get("SITE_NAME"),
+		"Pages":       pages,
+		"PageTitle":   "Blog",
+		"Posts":       posts,
 	})
 }

@@ -15,18 +15,14 @@ import (
 )
 
 func Start(contextPath string, port string) {
-	engine := html.New("./internal/web/templates/", ".html")
+	engine := html.New("./internal/web/templates/", ".tmpl")
 
-	env := config.Get("ENV")
+	env := config.Get("APP_ENV")
 
 	if env == "development" {
 		engine.Reload(true)
 		engine.Debug(true)
 	}
-
-	engine.AddFunc("greet", func(name string) string {
-		return fmt.Sprintf("Hello, %s!", name)
-	})
 
 	app := fiber.New(fiber.Config{
 		Views: engine,
@@ -39,6 +35,7 @@ func Start(contextPath string, port string) {
 	web := app.Group(fmt.Sprintf("/%s", contextPath))
 
 	web.Get("/", handlers.IndexHandler)
+	web.Get("/blog", handlers.BlogHander)
 	web.Get("/:slug", handlers.ContentHandler)
 
 	web.Use(handlers.NotFoundHandler)
