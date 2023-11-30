@@ -13,13 +13,14 @@ func NotFoundHandler(c *fiber.Ctx) error {
 
 	pages, err := queries.GetContentByType("page")
 	if err != nil {
-		return c.Status(fiber.StatusNotFound).Render("500", fiber.Map{
+		return c.Status(fiber.StatusInternalServerError).Render("500", fiber.Map{
+			"PageTitle":   pageTitle,
 			"SiteName":    config.Get("SITE_NAME"),
 			"ContextPath": config.Get("WEB_CONTEXT"),
 		})
 	}
 
-	return c.Render("404", fiber.Map{
+	return c.Status(fiber.StatusNotFound).Render("404", fiber.Map{
 		"PageTitle":   pageTitle,
 		"SiteName":    siteName,
 		"ContextPath": contextPath,

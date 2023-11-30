@@ -9,7 +9,7 @@ import (
 func IndexHandler(c *fiber.Ctx) error {
 	pages, err := queries.GetContentByType("page")
 	if err != nil {
-		return c.Status(fiber.StatusNotFound).Render("500", fiber.Map{
+		return c.Status(fiber.StatusInternalServerError).Render("500", fiber.Map{
 			"SiteName":    config.Get("SITE_NAME"),
 			"ContextPath": config.Get("WEB_CONTEXT"),
 		})
