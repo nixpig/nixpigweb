@@ -6,10 +6,17 @@ This is my first real project in Go. Maybe read about it [here](https://nixpig.d
 
 > No doubt there will be a bunch of areas for improvement. Feel free to let me know in the [issues](https://github.com/nixpig/nixpigweb/issues/new).
 
-## Build
+## Build locally
 
 ```shell
 make tidy audit test build
+```
+
+## Build images
+
+```shell
+docker build -f build/package/Dockerfile.web -t registry.digitalocean.com/nixpig/nixpigweb-web .
+docker build -f build/package/Dockerfile.api -t registry.digitalocean.com/nixpig/nixpigweb-api .
 ```
 
 ## Deploy
