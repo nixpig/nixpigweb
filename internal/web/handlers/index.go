@@ -10,6 +10,7 @@ func IndexHandler(c *fiber.Ctx) error {
 	pages, err := queries.GetContentByType("page")
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).Render("500", fiber.Map{
+			"PageTitle":   "500 - Internal Server Error",
 			"SiteName":    config.Get("SITE_NAME"),
 			"ContextPath": config.Get("WEB_CONTEXT"),
 		})
