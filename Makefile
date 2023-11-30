@@ -21,14 +21,20 @@ test: export APP_ENV=test
 test: 
 	go test -v -race -buildvcs ./...
 
-.PHONY: build
-build:
+.PHONY: build_api
+build_api:
 	go build -o tmp/bin/${API_BINARY_NAME} ${API_PACKAGE_PATH}
+
+.PHONY: build_web
+build_web:
 	go build -o tmp/bin/${WEB_BINARY_NAME} ${WEB_PACKAGE_PATH}
 
-.PHONY: api
-api: export APP_ENV=development
-api: 
+.PHONY: build
+build: build_api build_web
+
+.PHONY: dev_api
+dev_api: export APP_ENV=development
+dev_api: 
 	go run github.com/cosmtrek/air@v1.43.0 \
 		--build.cmd "make build" \
 		--build.bin "tmp/bin/${API_BINARY_NAME}" \
@@ -37,9 +43,9 @@ api:
 		--build.include_ext "go" \
 		--misc.clean_on_exit "true"
 
-.PHONY: web
-web: export APP_ENV=development
-web: 
+.PHONY: dev_web
+dev_web: export APP_ENV=development
+dev_web: 
 	go run github.com/cosmtrek/air@v1.43.0 \
 		--build.cmd "make build" \
 		--build.bin "tmp/bin/${WEB_BINARY_NAME}" \
@@ -56,4 +62,4 @@ clean:
 .PHONY: dev
 dev: export APP_ENV=development
 dev:
-	make -j2 web api
+	make -j2 dev_web dev_api

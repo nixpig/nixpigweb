@@ -52,9 +52,9 @@ func Connect() error {
 func loadEnvironment() *databaseEnvironment {
 	host := config.Get("DATABASE_HOST")
 	port := config.Get("DATABASE_PORT")
-	name := config.Get("DATABASE_DB")
-	user := config.Get("DATABASE_USER")
-	password := config.Get("DATABASE_PASSWORD")
+	name := config.Get("POSTGRES_DB")
+	user := config.Get("POSTGRES_USER")
+	password := config.Get("POSTGRES_PASSWORD")
 
 	portNumber, err := strconv.Atoi(port)
 	if err != nil {

@@ -1,0 +1,29 @@
+# -*- mode: nginx -*-
+# vi: set ft=nginx :
+
+server {
+	listen 80;
+	listen [::]:80;
+
+	server_name ${SERVER_NAME};
+
+	return 301 https://$host$request_uri;
+}
+
+server {
+	listen 443 ssl;
+	listen [::]:443 ssl;
+
+	server_name ${SERVER_NAME};
+
+	ssl_certificate ssl/${SSL_CERT};
+	ssl_certificate_key ssl/${SSL_CERT_KEY}; 
+
+	location / {
+			proxy_pass http://web:8080;
+	}
+
+	location /api {
+		proxy_pass http://api:8081;
+	}
+}

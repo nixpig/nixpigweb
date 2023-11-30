@@ -5,23 +5,55 @@ services:
     restart: always
     build:
       context: ..
-      dockerfile: ./build/package/Dockerfile
+      dockerfile: ./build/package/Dockerfile.web
     depends_on:
       - db
     env_file: ../.env
     ports:
-      - 80:3000
+      - 8080:8080
+    networks:
+      - nixpig_net
+
+  api:
+    restart: always
+    build:
+      context: ..
+      dockerfile: ./build/package/Dockerfile.api
+    depends_on:
+      - db
+    env_file: ../.env
+    ports:
+      - 8081:8081
+    networks:
+      - nixpig_net
+
   db:
     restart: always
     image: postgres:16.0-alpine3.18
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=example_p4ssW0rd
-      - POSTGRES_DB=nixpigweb_
+    env_file: ../.env
     volumes:
       - db_volume:/var/lib/postgresql/data
     ports:
       - 127.0.0.1:5432:5432
+    networks:
+      - nixpig_net
+
+  proxy:
+    restart: always
+    image: nginx:1.25.2-alpine
+    env_file: ../.env
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ../deploy/default.conf.template:/etc/nginx/templates/default.conf.template
+      - /home/nixpig/.ssl:/etc/nginx/ssl:so
+    depends_on:
+      - db
+      - web
+      - api
+    networks:
+      - nixpig_net
 
 volumes:
   db_volume:
