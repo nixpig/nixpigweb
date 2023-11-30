@@ -20,10 +20,10 @@ server {
 	ssl_certificate_key ssl/${SSL_CERT_KEY}; 
 
 	location / {
-			proxy_pass http://web:8080;
+			proxy_pass http://web:${WEB_PORT};
 	}
 
 	location /api {
-		proxy_pass http://api:8081;
+		proxy_pass http://api:${API_PORT};
 	}
 }
