@@ -1,11 +1,10 @@
 {{ template "before" . }}
 {{ template "header" . }}
-{{ template "menu" . }}
 
 <main>
   <h1>{{.PageTitle}}</h1>
 
-  <p>Try going back to <a href="/{{.ContextPath}}">{{.SiteName}}</a> to find what you're looking for.</p>
+  <p>Try going back to <a href="/">{{.SiteName}}</a> to find what you're looking for.</p>
 </main>
 
 {{ template "footer" . }}

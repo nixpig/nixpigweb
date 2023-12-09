@@ -1,7 +1,7 @@
 ---
 - name: nixpigweb
   host: localhost
-  # port: 3001
+  port: 8081
   requests:
     - name: login_success
       resource: /api/auth/login
@@ -27,10 +27,10 @@
     - name: create_new_user
       resource: /api/user
       method: post
-      auth: !bearer
-        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDA5MTIyNjYsImlzX2FkbWluIjp0cnVlLCJ1c2VyX2lkIjoyfQ.ZOlQchnNrzemU4ehBucoy0ZrRVeskEcWu-Vtn8VW5YE
+      # auth: !bearer
+      #   token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDA5MTIyNjYsImlzX2FkbWluIjp0cnVlLCJ1c2VyX2lkIjoyfQ.ZOlQchnNrzemU4ehBucoy0ZrRVeskEcWu-Vtn8VW5YE
       body:
-        username: test_user
+        username: nixpig
         email: test@nixpig.dev
         password: p4ssw0rd
 
@@ -46,16 +46,27 @@
     - name: get_content_by_id
       resource: /api/content/24
 
-    - name: create_content
+    - name: create_page_content
       resource: /api/content
       method: post
       body:
-        title: Some title
+        title: About
+        subtitle: About nixpig.dev
+        body: This needs to be filled with some stuff about me and the site.
+        type: page
+      auth: !bearer
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDIxNDY0MjMsImlzX2FkbWluIjpmYWxzZSwidXNlcl9pZCI6MX0.QVw4NNEsMTZXRP_-NaSSsGxCG8_cq-YyDPiTjxX2O1c
+
+    - name: create_post_content
+      resource: /api/content
+      method: post
+      body:
+        title: Dynamically accessing a struct field in Rust
         subtitle: Some subtitle in here
         body: Some body content to fill up in here.
         type: post
       auth: !bearer
-        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDA1NTg4MzgsImlzX2FkbWluIjp0cnVlLCJ1c2VyX2lkIjoyfQ.YCms9NhGI7jyNm_53GCgz9gjoRTn8SkGcG-RHQSZor0
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDIxNDY0MjMsImlzX2FkbWluIjpmYWxzZSwidXNlcl9pZCI6MX0.QVw4NNEsMTZXRP_-NaSSsGxCG8_cq-YyDPiTjxX2O1c
 
     - name: create_content_not_authed
       resource: /api/content
@@ -74,7 +85,7 @@
       resource: /api/content/24
       method: delete
       auth: !bearer
-        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDA1NTg4MzgsImlzX2FkbWluIjp0cnVlLCJ1c2VyX2lkIjoyfQ.YCms9NhGI7jyNm_53GCgz9gjoRTn8SkGcG-RHQSZor0
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDIxNDY0MjMsImlzX2FkbWluIjpmYWxzZSwidXNlcl9pZCI6MX0.QVw4NNEsMTZXRP_-NaSSsGxCG8_cq-YyDPiTjxX2O1c
 
     - name: update_content_not_authed
       resource: /api/content/25
@@ -96,4 +107,4 @@
         body: Updated body content in here.
         type: page
       auth: !bearer
-        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDA1NTg4MzgsImlzX2FkbWluIjp0cnVlLCJ1c2VyX2lkIjoyfQ.YCms9NhGI7jyNm_53GCgz9gjoRTn8SkGcG-RHQSZor0
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDIxNDY0MjMsImlzX2FkbWluIjpmYWxzZSwidXNlcl9pZCI6MX0.QVw4NNEsMTZXRP_-NaSSsGxCG8_cq-YyDPiTjxX2O1c

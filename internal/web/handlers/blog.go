@@ -10,26 +10,23 @@ func BlogHander(c *fiber.Ctx) error {
 	posts, err := queries.GetContentByType("post")
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).Render("500", fiber.Map{
-			"PageTitle":   "500 - Internal Server Error",
-			"ContextPath": config.Get("WEB_CONTEXT"),
-			"SiteName":    config.Get("SITE_NAME"),
+			"PageTitle": "500 - Internal Server Error",
+			"SiteName":  config.Get("SITE_NAME"),
 		})
 	}
 
 	pages, err := queries.GetContentByType("page")
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).Render("500", fiber.Map{
-			"PageTitle":   "500 - Internal Server Error",
-			"SiteName":    config.Get("SITE_NAME"),
-			"ContextPath": config.Get("WEB_CONTEXT"),
+			"PageTitle": "500 - Internal Server Error",
+			"SiteName":  config.Get("SITE_NAME"),
 		})
 	}
 
 	return c.Render("blog", fiber.Map{
-		"ContextPath": config.Get("WEB_CONTEXT"),
-		"SiteName":    config.Get("SITE_NAME"),
-		"Pages":       pages,
-		"PageTitle":   "Blog",
-		"Posts":       posts,
+		"SiteName":  config.Get("SITE_NAME"),
+		"Pages":     pages,
+		"PageTitle": "Blog",
+		"Posts":     posts,
 	})
 }

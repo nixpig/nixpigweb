@@ -19,8 +19,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	contextPath := config.Get("WEB_CONTEXT")
 	port := config.Get("WEB_PORT")
 
-	server.Start(contextPath, port)
+	server.Start(port)
 }

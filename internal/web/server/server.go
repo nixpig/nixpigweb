@@ -13,7 +13,7 @@ import (
 	"log"
 )
 
-func Start(contextPath string, port string) {
+func Start(port string) {
 	engine := html.New("./web/templates/", ".tmpl")
 
 	env := config.Get("APP_ENV")
@@ -34,7 +34,7 @@ func Start(contextPath string, port string) {
 	app.Use(logger.New())
 	app.Use(compress.New())
 
-	web := app.Group(fmt.Sprintf("/%s", contextPath))
+	web := app.Group(fmt.Sprintf("/%s", "/"))
 
 	web.Get("/", handlers.IndexHandler)
 	web.Get("/blog", handlers.BlogHander)

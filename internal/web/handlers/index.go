@@ -10,16 +10,14 @@ func IndexHandler(c *fiber.Ctx) error {
 	pages, err := queries.GetContentByType("page")
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).Render("500", fiber.Map{
-			"PageTitle":   "500 - Internal Server Error",
-			"SiteName":    config.Get("SITE_NAME"),
-			"ContextPath": config.Get("WEB_CONTEXT"),
+			"PageTitle": "500 - Internal Server Error",
+			"SiteName":  config.Get("SITE_NAME"),
 		})
 	}
 
 	return c.Render("index", fiber.Map{
-		"PageTitle":   "Index Page Title",
-		"Pages":       pages,
-		"ContextPath": config.Get("WEB_CONTEXT"),
-		"SiteName":    config.Get("SITE_NAME"),
+		"PageTitle": "🐽 Hi, I'm @nixpig",
+		"Pages":     pages,
+		"SiteName":  config.Get("SITE_NAME"),
 	})
 }

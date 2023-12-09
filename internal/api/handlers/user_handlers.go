@@ -14,8 +14,18 @@ import (
 )
 
 func CreateUser(c *fiber.Ctx) error {
-	token := c.Locals("user").(*jwt.Token)
-	claims := token.Claims.(jwt.MapClaims)
+	var err error
+
+	token := c.Locals("user")
+	if token == nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
+
+	claims := token.(*jwt.Token).Claims.(jwt.MapClaims)
 	loggedInUserId := int(claims["user_id"].(float64))
 
 	loggedInUser, err := queries.GetUserById(loggedInUserId)
