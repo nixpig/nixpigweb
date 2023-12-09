@@ -4,13 +4,13 @@
 <main>
     <h1>{{.PageTitle}}</h1>
     <h2>{{.PageSubtitle}}</h2>
+    {{if eq .Type "post"}}
+    <p>
+      <b>Posted on:</b> {{.CreatedAt.Format "2006-01-02"}}
+    </p>
+    {{end}}
 
-    <p>Slug: {{.Slug}}</p>
-    <p>Body: {{.Body}}</p>
-    <p>CreatedAt: {{.CreatedAt}}</p>
-    <p>UpdatedAt: {{.UpdatedAt}}</p>
-    <p>Type: {{.Type}}</p>
-    <p>UserId: {{ .UserId }}</p>
+    {{.Body}}
 
 </main>
 
