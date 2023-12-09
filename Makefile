@@ -36,7 +36,7 @@ build: build_api build_web
 dev_api: export APP_ENV=development
 dev_api: 
 	go run github.com/cosmtrek/air@v1.43.0 \
-		--build.cmd "make build" \
+		--build.cmd "make build_api" \
 		--build.bin "tmp/bin/${API_BINARY_NAME}" \
 		--build.delay "100" \
 		--build.exclude_dir "" \
@@ -47,7 +47,7 @@ dev_api:
 dev_web: export APP_ENV=development
 dev_web: 
 	go run github.com/cosmtrek/air@v1.43.0 \
-		--build.cmd "make build" \
+		--build.cmd "make build_web" \
 		--build.bin "tmp/bin/${WEB_BINARY_NAME}" \
 		--build.delay "100" \
 		--build.exclude_dir "" \
