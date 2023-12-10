@@ -11,6 +11,7 @@ func RegisterAuthRoutes(api fiber.Router) fiber.Router {
 
 	auth.Post("/login", handlers.Login)
 	auth.Post("/logout", middleware.Protected(), handlers.Logout)
+	auth.Post("/update-password", middleware.Protected(), handlers.ChangePassword)
 
 	return auth
 }

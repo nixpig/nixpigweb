@@ -30,6 +30,16 @@
         username: nixpig
         password: sd0932jf
 
+    - name: update_password
+      resource: /api/auth/update-password
+      method: post
+      body:
+        username: admin
+        old_password: p4ssw0rd
+        new_password: p4ssw0rdn3w
+      auth: !bearer
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDIyNzk5NzQsImlhdCI6MTcwMjE5MzU3NCwiaXNfYWRtaW4iOnRydWUsInVzZXJfaWQiOjF9.R6AVQdH_dRtTEvARzYFXCWdZQqAIBJVpUWyUPN-ZL_s
+
     - name: create_new_user
       resource: /api/user
       method: post

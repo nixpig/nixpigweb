@@ -8,6 +8,7 @@ import (
 	"github.com/nixpig/nixpigweb/internal/pkg/config"
 	"github.com/nixpig/nixpigweb/internal/pkg/models"
 	"github.com/nixpig/nixpigweb/internal/pkg/queries"
+	"github.com/nixpig/nixpigweb/internal/pkg/services"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -150,6 +151,99 @@ func Logout(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"error":   false,
 		"message": "you have been logged out",
+		"data":    nil,
+	})
+}
+
+func ChangePassword(c *fiber.Ctx) error {
+	var changePassword models.ChangePassword
+
+	token := c.Locals("user")
+	if token == nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
+
+	if !services.ValidateUserToken(token.(*jwt.Token)) {
+		fmt.Println("ERROR: failed to validate user token")
+
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error":   true,
+			"message": "not authorised",
+			"data":    nil,
+		})
+	}
+
+	if err := c.BodyParser(&changePassword); err != nil {
+		fmt.Println("ERROR: failed to parse password change data from request")
+
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   true,
+			"message": "bad request",
+			"data":    nil,
+		})
+	}
+
+	user, err := queries.GetUserByUsername(changePassword.Username)
+	if err != nil {
+		fmt.Println("ERROR: failed to get user by username\n", err)
+
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error":   true,
+			"message": "not authorised",
+			"data":    nil,
+		})
+	}
+
+	if err != nil {
+		fmt.Println("ERROR: failed to hash old password")
+
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": "internal server error - password not changed",
+			"data":    nil,
+		})
+	}
+
+	if !comparePasswordHash(user.Password, string(changePassword.OldPassword)) {
+		fmt.Println("ERROR: password doesn't match")
+
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error":   true,
+			"message": "not authorised",
+			"data":    nil,
+		})
+	}
+
+	hashedNewPassword, err := bcrypt.GenerateFromPassword([]byte(changePassword.NewPassword), 14)
+
+	if err != nil {
+		fmt.Println("ERROR: failed to hash new password")
+
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": "internal server error - password not changed",
+			"data":    nil,
+		})
+	}
+
+	passwordChanged, err := queries.ChangePassword(changePassword.Username, string(hashedNewPassword))
+	if err != nil || !passwordChanged {
+		fmt.Println("ERROR: failed to execute query to change password\n", err)
+
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   true,
+			"message": "internal server error - password not changed",
+			"data":    nil,
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"error":   false,
+		"message": "password changed",
 		"data":    nil,
 	})
 }

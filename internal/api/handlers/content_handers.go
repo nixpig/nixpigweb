@@ -76,7 +76,7 @@ func CreateContent(c *fiber.Ctx) error {
 	claims := token.Claims.(jwt.MapClaims)
 	userId := int(claims["user_id"].(float64))
 
-	if !services.ValidateUserToken(token, userId) {
+	if !services.ValidateUserToken(token) {
 		fmt.Println("ERROR: failed to validate user token")
 
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -140,6 +140,16 @@ func DeleteContentById(c *fiber.Ctx) error {
 	token := c.Locals("user").(*jwt.Token)
 	claims := token.Claims.(jwt.MapClaims)
 	loggedInUserId := int(claims["user_id"].(float64))
+
+	if !services.ValidateUserToken(token) {
+		fmt.Println("ERROR: failed to validate user token")
+
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error":   true,
+			"message": "not authorised",
+			"data":    nil,
+		})
+	}
 
 	loggedInUser, err := queries.GetUserById(loggedInUserId)
 	if err != nil {
@@ -209,6 +219,16 @@ func UpdateContent(c *fiber.Ctx) error {
 	token := c.Locals("user").(*jwt.Token)
 	claims := token.Claims.(jwt.MapClaims)
 	loggedInUserId := int(claims["user_id"].(float64))
+
+	if !services.ValidateUserToken(token) {
+		fmt.Println("ERROR: failed to validate user token")
+
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error":   true,
+			"message": "not authorised",
+			"data":    nil,
+		})
+	}
 
 	existingContent, err := queries.GetContentById(id)
 	if err != nil {

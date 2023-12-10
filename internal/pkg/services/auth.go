@@ -8,7 +8,7 @@ import (
 	"github.com/nixpig/nixpigweb/internal/pkg/queries"
 )
 
-func ValidateUserToken(token *jwt.Token, userId int) bool {
+func ValidateUserToken(token *jwt.Token) bool {
 	claims := token.Claims.(jwt.MapClaims)
 	claim_id := int(claims["user_id"].(float64))
 	claim_exp := int(claims["exp"].(float64))
@@ -20,11 +20,10 @@ func ValidateUserToken(token *jwt.Token, userId int) bool {
 		return false
 	}
 
-	claimUserMatchesUser := claim_id == userId
 	claimUserMatchesSessionUser := claim_id == session.UserId
 	tokenIsNotExpired := int64(claim_exp) >= time.Now().Unix()
 
-	return claimUserMatchesUser && claimUserMatchesSessionUser && tokenIsNotExpired
+	return claimUserMatchesSessionUser && tokenIsNotExpired
 }
 
 func ValidateAdminToken(token *jwt.Token, isAdmin bool) bool {

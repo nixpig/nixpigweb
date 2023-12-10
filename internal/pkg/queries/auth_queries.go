@@ -1,6 +1,8 @@
 package queries
 
 import (
+	"fmt"
+
 	"github.com/nixpig/nixpigweb/internal/pkg/database"
 	"github.com/nixpig/nixpigweb/internal/pkg/models"
 )
@@ -106,4 +108,31 @@ func GetSessionByUserId(userId int) (models.Session, error) {
 	}
 
 	return session, nil
+}
+
+func ChangePassword(username string, newPassword string) (bool, error) {
+	query := `update users_ set password_ = $2 where username_ = $1`
+
+	fmt.Println("username: ", username)
+	fmt.Println("new password: ", newPassword)
+
+	res, err := database.DB.Exec(query, username, newPassword)
+	if err != nil {
+		fmt.Println("ERROR: failed to execute query to update password\n", err)
+		return false, err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		fmt.Println("ERROR: failed to fetch rows affected by update password query\n", err)
+		return false, err
+	}
+
+	if rowsAffected == 0 {
+		fmt.Println("ERROR: no rows affected by update password query")
+
+		return false, err
+	}
+
+	return true, nil
 }

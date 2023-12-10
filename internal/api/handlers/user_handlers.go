@@ -8,6 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/nixpig/nixpigweb/internal/pkg/models"
 	"github.com/nixpig/nixpigweb/internal/pkg/queries"
+	"github.com/nixpig/nixpigweb/internal/pkg/services"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/go-playground/validator/v10"
@@ -26,6 +27,16 @@ func CreateUser(c *fiber.Ctx) error {
 	}
 
 	claims := token.(*jwt.Token).Claims.(jwt.MapClaims)
+
+	if !services.ValidateUserToken(token.(*jwt.Token)) {
+		fmt.Println("ERROR: failed to validate user token")
+
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error":   true,
+			"message": "not authorised",
+			"data":    nil,
+		})
+	}
 
 	// TODO: handle the scenario where there's no "user_id" field on claims
 	loggedInUserId := int(claims["user_id"].(float64))
