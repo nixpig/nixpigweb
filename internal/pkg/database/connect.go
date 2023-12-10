@@ -7,6 +7,9 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/github"
 	_ "github.com/lib/pq"
 	"github.com/nixpig/nixpigweb/internal/pkg/config"
 )
@@ -45,6 +48,18 @@ func Connect() error {
 	}
 
 	fmt.Println("successfully pinged database")
+
+	driver, err := postgres.WithInstance(DB, &postgres.Config{})
+	if err != nil {
+		fmt.Println(fmt.Errorf("failed to get driver from instance\n%v", err))
+	}
+
+	m, err := migrate.NewWithDatabaseInstance("github://nixpig/nixpigweb/db/migrations", "postgres", driver)
+	if err != nil {
+		fmt.Println(fmt.Errorf("failed to create migration\n%v", err))
+	}
+
+	m.Up()
 
 	return nil
 }
