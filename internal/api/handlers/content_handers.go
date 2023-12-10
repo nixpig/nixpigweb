@@ -10,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/nixpig/nixpigweb/internal/pkg/models"
 	"github.com/nixpig/nixpigweb/internal/pkg/queries"
+	"github.com/nixpig/nixpigweb/internal/pkg/services"
 
 	"github.com/go-playground/validator/v10"
 
@@ -74,6 +75,16 @@ func CreateContent(c *fiber.Ctx) error {
 	token := c.Locals("user").(*jwt.Token)
 	claims := token.Claims.(jwt.MapClaims)
 	userId := int(claims["user_id"].(float64))
+
+	if !services.ValidateUserToken(token, userId) {
+		fmt.Println("ERROR: failed to validate user token")
+
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error":   true,
+			"message": "not authorised",
+			"data":    nil,
+		})
+	}
 
 	user, err := queries.GetUserById(userId)
 	if err != nil {

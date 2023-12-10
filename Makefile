@@ -1,3 +1,8 @@
+ifneq (,$(wildcard .env))
+	include .env
+	export
+endif
+
 API_PACKAGE_PATH := ./cmd/api
 API_BINARY_NAME := api
 WEB_PACKAGE_PATH := ./cmd/web
@@ -63,3 +68,15 @@ clean:
 dev: export APP_ENV=development
 dev:
 	make -j2 dev_web dev_api
+
+.PHONY: migrate_up
+migrate_up:
+	migrate -path db/migrations -database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${POSTGRES_DB}?sslmode=disable up
+
+.PHONY: migrate_down
+migrate_down:
+	migrate -path db/migrations -database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${POSTGRES_DB}?sslmode=disable down
+
+.PHONY: env_test
+env_test: 
+	echo ${POSTGRES_USER}

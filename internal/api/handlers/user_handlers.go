@@ -26,6 +26,8 @@ func CreateUser(c *fiber.Ctx) error {
 	}
 
 	claims := token.(*jwt.Token).Claims.(jwt.MapClaims)
+
+	// TODO: handle the scenario where there's no "user_id" field on claims
 	loggedInUserId := int(claims["user_id"].(float64))
 
 	loggedInUser, err := queries.GetUserById(loggedInUserId)

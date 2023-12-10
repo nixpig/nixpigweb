@@ -31,3 +31,79 @@ func GetUserByEmail(email string) (models.User, error) {
 
 	return user, nil
 }
+
+func SaveSession(session models.Session) (int64, error) {
+	query := `insert into sessions_ (token_, expires_at_, issued_at_, user_id_) values ($1, $2, $3, $4)`
+
+	res, err := database.DB.Exec(query, &session.Token, &session.ExpiresAt, &session.IssuedAt, &session.UserId)
+	if err != nil {
+		return 0, err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return rowsAffected, nil
+}
+
+func DeleteSessionsByUserId(userId int) (int64, error) {
+	query := `delete from sessions_ where user_id = $1`
+
+	res, err := database.DB.Exec(query, userId)
+	if err != nil {
+		return 0, err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return rowsAffected, nil
+}
+
+func DeleteSessionsBySessionId(sessionId int) (int64, error) {
+	query := `delete from sessions_ where id_ = $1`
+
+	res, err := database.DB.Exec(query, sessionId)
+	if err != nil {
+		return 0, err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return rowsAffected, nil
+}
+
+func GetSessionByToken(token string) (models.Session, error) {
+	query := `select id_, token_, expires_at_, issued_at_, user_id_ from sessions_ where token_ = $1`
+
+	var session models.Session
+
+	row := database.DB.QueryRow(query, token)
+
+	if err := row.Scan(&session.Id, &session.Token, &session.ExpiresAt, &session.IssuedAt, &session.UserId); err != nil {
+		return session, err
+	}
+
+	return session, nil
+}
+
+func GetSessionByUserId(userId int) (models.Session, error) {
+	query := `select id_, token_, expires_at_, issued_at_, user_id_ from sessions_ where user_id_ = $1`
+
+	var session models.Session
+
+	row := database.DB.QueryRow(query, userId)
+
+	if err := row.Scan(&session.Id, &session.Token, &session.ExpiresAt, &session.IssuedAt, &session.UserId); err != nil {
+		return session, err
+	}
+
+	return session, nil
+}

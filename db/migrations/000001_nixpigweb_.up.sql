@@ -20,5 +20,13 @@ create table if not exists content_ (
     user_id_ integer references users_(id_)
 );
 
+create table if not exists sessions_ (
+    id_ integer primary key generated always as identity,
+    token_ text,
+    expires_at_ bigint,
+    issued_at_ bigint,
+    user_id_ integer references users_(id_)
+);
+
 commit;
 
