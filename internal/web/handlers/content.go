@@ -12,11 +12,13 @@ import (
 func ContentHandler(c *fiber.Ctx) error {
 	slug := c.Params("slug")
 
+	sitename := config.Get("SITE_NAME")
+
 	content, err := queries.GetContentBySlug(slug)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).Render("500", fiber.Map{
 			"PageTitle": "500 - Internal Server Error",
-			"SiteName":  "nixpig.dev",
+			"SiteName":  sitename,
 		})
 	}
 
@@ -24,7 +26,7 @@ func ContentHandler(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).Render("500", fiber.Map{
 			"PageTitle": "500 - Internal Server Error",
-			"SiteName":  config.Get("SITE_NAME"),
+			"SiteName":  sitename,
 		})
 	}
 
@@ -32,7 +34,7 @@ func ContentHandler(c *fiber.Ctx) error {
 	html := utils.MdToHtml(md)
 
 	return c.Render("content", fiber.Map{
-		"SiteName":     "nixpig.dev",
+		"SiteName":     sitename,
 		"Pages":        pages,
 		"Id":           content.Id,
 		"PageTitle":    content.Title,
