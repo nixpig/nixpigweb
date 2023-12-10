@@ -1,9 +1,12 @@
 package handlers
 
 import (
+	"html/template"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/nixpig/nixpigweb/internal/pkg/config"
 	"github.com/nixpig/nixpigweb/internal/pkg/queries"
+	"github.com/nixpig/nixpigweb/internal/web/utils"
 )
 
 func ContentHandler(c *fiber.Ctx) error {
@@ -25,6 +28,9 @@ func ContentHandler(c *fiber.Ctx) error {
 		})
 	}
 
+	md := []byte(content.Body)
+	html := utils.MdToHtml(md)
+
 	return c.Render("content", fiber.Map{
 		"SiteName":     "nixpig.dev",
 		"Pages":        pages,
@@ -32,7 +38,7 @@ func ContentHandler(c *fiber.Ctx) error {
 		"PageTitle":    content.Title,
 		"PageSubtitle": content.Subtitle,
 		"Slug":         content.Slug,
-		"Body":         content.Body,
+		"Body":         template.HTML(string(html)),
 		"CreatedAt":    content.CreatedAt,
 		"UpdatedAt":    content.UpdatedAt,
 		"Type":         content.Type,

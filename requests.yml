@@ -68,10 +68,10 @@
       body:
         title: About
         subtitle: About nixpig.dev
-        body: This needs to be filled with some stuff about me and the site.
+        body: This **needs** to be _filled_ with some `stuff` about me and the site.
         type: page
       auth: !bearer
-        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDIyNzU1NDMsImlhdCI6MTcwMjE4OTE0MywiaXNfYWRtaW4iOnRydWUsInVzZXJfaWQiOjF9.BVGnxdmzqEOfRPcZY-HyHElBNitzZF34GC3fKpmlSXA
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDIyODU1MTUsImlhdCI6MTcwMjE5OTExNSwiaXNfYWRtaW4iOnRydWUsInVzZXJfaWQiOjF9.7GTx0n25Z6aTOCY3GHQekfxCXRNtTN1ZDPYlS0zjXCY
 
     - name: create_post_content
       resource: /api/content
