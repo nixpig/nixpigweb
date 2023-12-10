@@ -8,13 +8,19 @@ No doubt there will be a bunch of areas for improvement. Feel free to let me kno
 
 ## Build
 
-### Local
+### Run tests
 
 ```shell
-make tidy audit test build
+make test
 ```
 
-### Images
+### Local dev
+
+```shell
+make dev
+```
+
+### Deployable images
 
 ```shell
 docker build -f build/package/Dockerfile.web -t registry.digitalocean.com/nixpig/nixpigweb-web .
@@ -64,5 +70,5 @@ Database migration is run on app start-up.
 
 To run manually:
 
-- Up: `migrate -path db/migrations  -database postgres://postgres:example_p4ssW0rd@localhost:5432/nixpigweb_?sslmode=disable up`
-- Down: `migrate -path db/migrations  -database postgres://postgres:example_p4ssW0rd@localhost:5432/nixpigweb_?sslmode=disable down`
+- Up: `make migrate_up`
+- Down: `make migrate_down`
