@@ -1,7 +1,17 @@
 @import "simple.min.css";
 
 :root {
-  --accent: hotpink;
+  --bg: #191919;
+  --accent-bg: #212121;
+  --text: #faf0e6;
+  --text-light: #efefef;
+  --border: #898ea4;
+  --accent: #bed754;
+  --accent-text: var(--bg);
+  --code: #e3651d;
+  --preformatted: #e3651d;
+  --marked: #d81b60;
+  --disabled: #e0e0e0;
 }
 
 body > header {
@@ -13,19 +23,22 @@ body > header {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+
+  @media screen and (max-width: 479px) {
+    flex-direction: column;
+  }
 }
 
-.sitename {
+.header .sitename {
   font-size: 2rem;
   font-weight: bold;
 }
 
-/* h1 { */
-/*   margin-bottom: 1rem; */
-/* } */
-/**/
-/* h2 { */
-/*   font-size: 2.2rem; */
-/*   margin-top: 1rem; */
-/*   margin-bottom: 1rem; */
-/* } */
+.header .sitename a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.header .sitename a:hover {
+  color: var(--accent);
+}

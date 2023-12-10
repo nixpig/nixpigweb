@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/postgres"
+	// "github.com/golang-migrate/migrate/v4"
+	// "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/github"
 	_ "github.com/lib/pq"
 	"github.com/nixpig/nixpigweb/internal/pkg/config"
@@ -49,20 +49,20 @@ func Connect() error {
 
 	fmt.Println("successfully pinged database")
 
-	driver, err := postgres.WithInstance(DB, &postgres.Config{})
-	if err != nil {
-		fmt.Println(fmt.Errorf("failed to get driver from instance\n%v", err))
-	}
+	// driver, err := postgres.WithInstance(DB, &postgres.Config{})
+	// if err != nil {
+	// 	fmt.Println(fmt.Errorf("failed to get driver from instance\n%v", err))
+	// }
 
-	m, err := migrate.NewWithDatabaseInstance("github://nixpig/nixpigweb/db/migrations", "postgres", driver)
-	if err != nil {
-		fmt.Println(fmt.Errorf("failed to create migration\n%v", err))
-	}
+	// m, err := migrate.NewWithDatabaseInstance("github://nixpig/nixpigweb/db/migrations", "postgres", driver)
+	// if err != nil {
+	// 	fmt.Println(fmt.Errorf("failed to create migration\n%v", err))
+	// }
 
 	// TODO: dunno why, but the return type of `Up` is an error, even when it's not _actually_ an error in there
-	if err := m.Up(); err != nil {
-		fmt.Println(fmt.Errorf("did not run db migration; things might be a bit fucky if the db isn't already in good order\n%v", err))
-	}
+	// if err := m.Up(); err != nil {
+	// 	fmt.Println(fmt.Errorf("did not run db migration; things might be a bit fucky if the db isn't already in good order\n%v", err))
+	// }
 
 	return nil
 }
