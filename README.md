@@ -4,15 +4,17 @@
 
 This is my first real project in Go. Maybe read about it [here](https://nixpig.dev)?
 
-> No doubt there will be a bunch of areas for improvement. Feel free to let me know in the [issues](https://github.com/nixpig/nixpigweb/issues/new).
+No doubt there will be a bunch of areas for improvement. Feel free to let me know in the [issues](https://github.com/nixpig/nixpigweb/issues/new).
 
-## Build locally
+## Build
+
+### Local
 
 ```shell
 make tidy audit test build
 ```
 
-## Build images
+### Images
 
 ```shell
 docker build -f build/package/Dockerfile.web -t registry.digitalocean.com/nixpig/nixpigweb-web .
@@ -58,7 +60,9 @@ docker compose -p nixpig -f deploy/docker-compose.yml up -d
 
 ### Apply database migrations
 
-```shell
-migrate -path db/migrations  -database postgres://postgres:example_p4ssW0rd@localhost:5432/nixpigweb_?sslmode=disable up
+Database migration is run on app start-up.
 
-```
+To run manually:
+
+- Up: `migrate -path db/migrations  -database postgres://postgres:example_p4ssW0rd@localhost:5432/nixpigweb_?sslmode=disable up`
+- Down: `migrate -path db/migrations  -database postgres://postgres:example_p4ssW0rd@localhost:5432/nixpigweb_?sslmode=disable down`
