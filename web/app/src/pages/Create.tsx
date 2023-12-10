@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const post = async (
   e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -24,11 +24,23 @@ const post = async (
   }
 };
 
-export const Create = () => {
+export const Create = ({ id }: { id?: number }) => {
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [type, setType] = useState("");
   const [content, setContent] = useState("");
+
+  useEffect(() => {
+    if (id) {
+      axios.get(`https://nixpig.dev/api/content/${id}`).then((res) => {
+        let { title, subtitle, type, body } = res.data.data;
+        setTitle(title);
+        setSubtitle(subtitle);
+        setType(type);
+        setContent(body);
+      });
+    }
+  });
 
   return (
     <div>
