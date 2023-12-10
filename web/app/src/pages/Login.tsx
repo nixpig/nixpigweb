@@ -10,7 +10,6 @@ const login = async (
   setToken: any
 ) => {
   e.preventDefault();
-  console.log(username, password);
 
   try {
     let res = await axios.post("https://nixpig.dev/api/auth/login", {
@@ -18,10 +17,8 @@ const login = async (
       password,
     });
 
-    console.log(res.data);
     setToken(res.data.data.token);
   } catch (e) {
-    console.error("login failed...");
     alert("Login failed");
   }
 };
