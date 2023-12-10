@@ -59,7 +59,10 @@ func Connect() error {
 		fmt.Println(fmt.Errorf("failed to create migration\n%v", err))
 	}
 
-	m.Up()
+	// TODO: dunno why, but the return type of `Up` is an error, even when it's not _actually_ an error in there
+	if err := m.Up(); err != nil {
+		fmt.Println(fmt.Errorf("did not run db migration; things might be a bit fucky if the db isn't already in good order\n%v", err))
+	}
 
 	return nil
 }
