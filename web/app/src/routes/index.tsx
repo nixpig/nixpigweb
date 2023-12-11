@@ -3,7 +3,7 @@ import {
   createBrowserRouter,
   RouteObject,
 } from "react-router-dom";
-import { Content, Create, Dashboard, Login, Users } from "../pages";
+import { Content, Create, Edit, Dashboard, Login, Users } from "../pages";
 import { Layout } from "../partials/Layout";
 import { useAuth } from "../provider/authProvider";
 import { ProtectedRoute } from "./ProtectedRoute";
@@ -28,6 +28,10 @@ const Routes = () => {
             {
               path: "/content",
               element: <Content />,
+            },
+            {
+              path: "/edit/:id",
+              element: <Edit />,
             },
             {
               path: "/create",

@@ -6,7 +6,7 @@ import axios from "axios";
 
 function App() {
   useEffect(() => {
-    axios.get("https://nixpig.dev/api/user").then((res) => {
+    axios.get("http://localhost:8081/api/user").then((res) => {
       console.log(res.data);
     });
   });

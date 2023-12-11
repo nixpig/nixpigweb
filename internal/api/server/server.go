@@ -10,13 +10,19 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 
 	"github.com/nixpig/nixpigweb/internal/api/routes"
+	"github.com/nixpig/nixpigweb/internal/pkg/config"
 )
 
 func Start(contextPath string, port string) {
 	app := fiber.New()
 
+	app.Use(cors.New(cors.Config{
+		AllowOriginsFunc: func(origin string) bool {
+			return config.Get("APP_ENV") == "development"
+		},
+	}))
+
 	app.Use(helmet.New())
-	app.Use(cors.New())
 	app.Use(logger.New())
 
 	api := app.Group(fmt.Sprintf("/%s", contextPath))

@@ -2,54 +2,54 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const viewContent = async (
-  e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  id: number
-) => {
-  e.preventDefault();
-
-  try {
-    let res = await axios.get(`https://nixpig.dev/api/content/${id}`);
-
-    let { slug } = res.data.data;
-
-    window.open(`https://nixpig.dev/${slug}`, "_blank");
-  } catch (e) {
-    alert("Failed to view content");
-  }
-};
-
-const editContent = async (
-  e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  id: number
-) => {
-  e.preventDefault();
-  console.log(id);
-};
-
-const deleteContent = async (
-  e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  id: number
-) => {
-  e.preventDefault();
-
-  try {
-    await axios.delete(`https://nixpig.dev/api/content/${id}`);
-  } catch (e) {
-    alert("Failed to delete content");
-  }
-};
-
 export const Content = () => {
   const [content, setContent] = useState<any[]>([]);
 
   useEffect(() => {
-    axios.get("https://nixpig.dev/api/content").then((res) => {
+    axios.get("http://localhost:8081/api/content").then((res) => {
       setContent(res.data.data);
     });
   }, []);
 
   const navigate = useNavigate();
+
+  const viewContent = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    id: number
+  ) => {
+    e.preventDefault();
+
+    try {
+      let res = await axios.get(`http://localhost:8081/api/content/${id}`);
+
+      let { slug } = res.data.data;
+
+      window.open(`http://localhost:8081/${slug}`, "_blank");
+    } catch (e) {
+      alert("Failed to view content");
+    }
+  };
+
+  const editContent = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    id: number
+  ) => {
+    e.preventDefault();
+    navigate(`/edit/${id}`);
+  };
+
+  const deleteContent = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    id: number
+  ) => {
+    e.preventDefault();
+
+    try {
+      await axios.delete(`http://localhost:8081/api/content/${id}`);
+    } catch (e) {
+      alert("Failed to delete content");
+    }
+  };
 
   return (
     <div>

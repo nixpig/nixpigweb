@@ -197,6 +197,8 @@ func UpdateContent(c *fiber.Ctx) error {
 	var updatedContent models.Content
 
 	if err := c.BodyParser(&updatedContent); err != nil {
+		fmt.Println(fmt.Errorf("ERROR: failed to parse body content\n%v", err))
+
 		if err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 				"error":   true,
@@ -248,7 +250,7 @@ func UpdateContent(c *fiber.Ctx) error {
 		})
 	}
 
-	if (loggedInUserId != updatedContent.UserId || loggedInUserId != existingContent.UserId) && !loggedInUser.IsAdmin {
+	if (loggedInUserId != existingContent.UserId) && !loggedInUser.IsAdmin {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":   true,
 			"message": "bad request",

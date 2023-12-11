@@ -12,7 +12,7 @@ const login = async (
   e.preventDefault();
 
   try {
-    let res = await axios.post("https://nixpig.dev/api/auth/login", {
+    let res = await axios.post("http://localhost:8081/api/auth/login", {
       username,
       password,
     });

@@ -2,20 +2,22 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-const post = async (
+const edit = async (
   e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   title: string,
   subtitle: string,
   type: string,
-  content: string
+  content: string,
+  id?: number
 ) => {
   e.preventDefault();
 
   try {
-    let res = await axios.post("http://localhost:8081/api/content", {
+    let res = await axios.patch(`http://localhost:8081/api/content/${id}`, {
       title,
       subtitle,
       type,
+      id,
       body: content,
     });
 
@@ -25,7 +27,7 @@ const post = async (
   }
 };
 
-export const Create = () => {
+export const Edit = () => {
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [type, setType] = useState("");
@@ -91,9 +93,11 @@ export const Create = () => {
           <button
             type="submit"
             id="create-btn"
-            onClick={(e) => post(e, title, subtitle, type, content)}
+            onClick={(e) =>
+              edit(e, title, subtitle, type, content, parseInt(`${id}`))
+            }
           >
-            Post
+            Save changes
           </button>
         </div>
       </form>
