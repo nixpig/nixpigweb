@@ -5,7 +5,7 @@ export const Users = () => {
   const [users, setUsers] = useState<any[]>([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8081/api/user").then((res) => {
+    axios.get("/api/user").then((res) => {
       setUsers(res.data.data);
     });
   }, []);

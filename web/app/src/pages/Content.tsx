@@ -6,7 +6,7 @@ export const Content = () => {
   const [content, setContent] = useState<any[]>([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8081/api/content").then((res) => {
+    axios.get("/api/content").then((res) => {
       setContent(res.data.data);
     });
   }, []);
@@ -20,7 +20,7 @@ export const Content = () => {
     e.preventDefault();
 
     try {
-      let res = await axios.get(`http://localhost:8081/api/content/${id}`);
+      let res = await axios.get(`/api/content/${id}`);
 
       let { slug } = res.data.data;
 
@@ -45,7 +45,7 @@ export const Content = () => {
     e.preventDefault();
 
     try {
-      await axios.delete(`http://localhost:8081/api/content/${id}`);
+      await axios.delete(`/api/content/${id}`);
     } catch (e) {
       alert("Failed to delete content");
     }

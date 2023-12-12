@@ -12,7 +12,7 @@ const post = async (
   e.preventDefault();
 
   try {
-    let res = await axios.post("http://localhost:8081/api/content", {
+    let res = await axios.post("/api/content", {
       title,
       subtitle,
       type,
@@ -38,7 +38,7 @@ export const Create = () => {
   useEffect(() => {
     if (id) {
       console.log("getting...");
-      axios.get(`http://localhost:8081/api/content/${id}`).then((res) => {
+      axios.get(`/api/content/${id}`).then((res) => {
         const { title, subtitle, type, body } = res.data.data;
         setTitle(title);
         setSubtitle(subtitle);

@@ -13,7 +13,7 @@ const edit = async (
   e.preventDefault();
 
   try {
-    let res = await axios.patch(`http://localhost:8081/api/content/${id}`, {
+    let res = await axios.patch(`/api/content/${id}`, {
       title,
       subtitle,
       type,
@@ -40,7 +40,7 @@ export const Edit = () => {
   useEffect(() => {
     if (id) {
       console.log("getting...");
-      axios.get(`http://localhost:8081/api/content/${id}`).then((res) => {
+      axios.get(`/api/content/${id}`).then((res) => {
         const { title, subtitle, type, body } = res.data.data;
         setTitle(title);
         setSubtitle(subtitle);

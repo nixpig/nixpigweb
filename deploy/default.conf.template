@@ -26,4 +26,8 @@ server {
 	location /api {
 		proxy_pass http://api:${API_PORT};
 	}
+
+	location /admin {
+		proxy_pass http://admin:${ADMIN_PORT};
+	}
 }
