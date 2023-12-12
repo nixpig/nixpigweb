@@ -1,4 +1,4 @@
-import axios from "axios";
+import { http } from "../services";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -12,7 +12,7 @@ const post = async (
   e.preventDefault();
 
   try {
-    let res = await axios.post("/api/content", {
+    let res = await http.post("/api/content", {
       title,
       subtitle,
       type,
@@ -38,7 +38,7 @@ export const Create = () => {
   useEffect(() => {
     if (id) {
       console.log("getting...");
-      axios.get(`/api/content/${id}`).then((res) => {
+      http.get(`/api/content/${id}`).then((res) => {
         const { title, subtitle, type, body } = res.data.data;
         setTitle(title);
         setSubtitle(subtitle);

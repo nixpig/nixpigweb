@@ -59,3 +59,19 @@ func GetUserById(id int) (models.User, error) {
 
 	return user, nil
 }
+
+func UpdateUser(user *models.User) (int64, error) {
+	query := `update users_ set username_ = $2, email_ = $3, password_ = $4 where id_ = $1`
+
+	res, err := database.DB.Exec(query, &user.Id, &user.Username, &user.Email, &user.Password)
+	if err != nil {
+		return 0, err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return rowsAffected, nil
+}

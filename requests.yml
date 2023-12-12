@@ -50,6 +50,16 @@
         email: test@nixpig.dev
         password: p4ssw0rd
 
+    - name: update_user
+      resource: /api/user/1
+      method: patch
+      auth: !bearer
+        token: tokeninhere
+      body:
+        username: nixpigupdated
+        email: test2@nixpig.dev
+        password: p4ssw0rd2
+
     - name: get_users
       resource: /api/user
 

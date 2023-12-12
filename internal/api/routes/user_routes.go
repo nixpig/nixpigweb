@@ -12,6 +12,7 @@ func RegisterUserRoutes(api fiber.Router) fiber.Router {
 	user.Post("/", middleware.Protected(), handlers.CreateUser)
 	user.Get("/", handlers.GetUsers)
 	user.Get("/:id", handlers.GetUserById)
+	user.Patch("/:id", middleware.Protected(), handlers.UpdateUser)
 
 	return user
 }

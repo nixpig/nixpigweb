@@ -1,12 +1,12 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { http } from "../services/";
 
 export const Content = () => {
   const [content, setContent] = useState<any[]>([]);
 
   useEffect(() => {
-    axios.get("/api/content").then((res) => {
+    http.get("/api/content").then((res) => {
       setContent(res.data.data);
     });
   }, []);
@@ -20,7 +20,7 @@ export const Content = () => {
     e.preventDefault();
 
     try {
-      let res = await axios.get(`/api/content/${id}`);
+      let res = await http.get(`/api/content/${id}`);
 
       let { slug } = res.data.data;
 
@@ -45,7 +45,7 @@ export const Content = () => {
     e.preventDefault();
 
     try {
-      await axios.delete(`/api/content/${id}`);
+      await http.delete(`/api/content/${id}`);
     } catch (e) {
       alert("Failed to delete content");
     }

@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import "./App.css";
 import AuthProvider from "./provider/authProvider";
 import Routes from "./routes";
-import axios from "axios";
+import { http } from "./services";
 
 function App() {
   useEffect(() => {
-    axios.get("/api/user").then((res) => {
+    http.get("/api/user").then((res) => {
       console.log(res.data);
     });
   });

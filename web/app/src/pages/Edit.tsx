@@ -1,6 +1,6 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { http } from "../services";
 
 const edit = async (
   e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -13,7 +13,7 @@ const edit = async (
   e.preventDefault();
 
   try {
-    let res = await axios.patch(`/api/content/${id}`, {
+    let res = await http.patch(`/api/content/${id}`, {
       title,
       subtitle,
       type,
@@ -40,7 +40,7 @@ export const Edit = () => {
   useEffect(() => {
     if (id) {
       console.log("getting...");
-      axios.get(`/api/content/${id}`).then((res) => {
+      http.get(`/api/content/${id}`).then((res) => {
         const { title, subtitle, type, body } = res.data.data;
         setTitle(title);
         setSubtitle(subtitle);

@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../provider/authProvider";
-import axios from "axios";
 import { useState } from "react";
+import { http } from "../services";
 
 const login = async (
   e: any,
@@ -12,7 +12,7 @@ const login = async (
   e.preventDefault();
 
   try {
-    let res = await axios.post("/api/auth/login", {
+    let res = await http.post("/api/auth/login", {
       username,
       password,
     });

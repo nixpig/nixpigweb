@@ -1,11 +1,13 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { http } from "../services";
 
 export const Users = () => {
   const [users, setUsers] = useState<any[]>([]);
 
+  const [editingUserId, setEditingUserId] = useState<number>(-1);
+
   useEffect(() => {
-    axios.get("/api/user").then((res) => {
+    http.get("/api/user").then((res) => {
       setUsers(res.data.data);
     });
   }, []);
@@ -19,6 +21,7 @@ export const Users = () => {
             <th>Username</th>
             <th>Email</th>
             <th>Admin</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -30,12 +33,23 @@ export const Users = () => {
                   <td>{user.username}</td>
                   <td>{user.email}</td>
                   <td>{JSON.stringify(user.is_admin)}</td>
+                  <td>
+                    {editingUserId !== user.id ? (
+                      <button onClick={(e) => setEditingUserId(user.id)}>
+                        Edit
+                      </button>
+                    ) : (
+                      <div>
+                        <button>Save</button> | <button>Cancel</button>
+                      </div>
+                    )}
+                  </td>
                 </tr>
               );
             })
           ) : (
             <tr>
-              <td colSpan={4}>No users</td>
+              <td colSpan={5}>No users</td>
             </tr>
           )}
         </tbody>
