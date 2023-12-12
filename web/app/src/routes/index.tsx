@@ -54,15 +54,20 @@ const Routes = () => {
     },
   ];
 
-  const router = createBrowserRouter([
-    ...routesForPublic,
-    ...(!token ? routesForNotAuthenticatedOnly : []),
-    ...routesForAuthenticatedOnly,
+  const router = createBrowserRouter(
+    [
+      ...routesForPublic,
+      ...(!token ? routesForNotAuthenticatedOnly : []),
+      ...routesForAuthenticatedOnly,
+      {
+        path: "*",
+        element: <div>404</div>,
+      },
+    ],
     {
-      path: "*",
-      element: <div>404</div>,
-    },
-  ]);
+      basename: "/admin",
+    }
+  );
 
   return <RouterProvider router={router} />;
 };

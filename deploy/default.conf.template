@@ -28,6 +28,6 @@ server {
 	}
 
 	location /admin {
-		proxy_pass http://admin:${ADMIN_PORT};
+		proxy_pass http://admin:${ADMIN_PORT}/admin;
 	}
 }
