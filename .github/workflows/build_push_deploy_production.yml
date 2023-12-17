@@ -82,8 +82,9 @@ jobs:
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          source: "deploy/docker-compose.yml,default.conf.template"
+          source: "deploy/docker-compose.yml,deploy/default.conf.template"
           target: /home/nixpig
+          overwrite: true
 
       - name: Deploy on Droplet
         uses: appleboy/ssh-action@v1.0.0
