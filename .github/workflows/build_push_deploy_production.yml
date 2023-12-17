@@ -100,4 +100,4 @@ jobs:
           script: |
             docker login -u $API_TOKEN -p $API_TOKEN registry.digitalocean.com \
               && docker pull $CONTAINER_REGISTRY/$IMAGE_NAME:latest \
-              && docker compose -f deploy/docker-compose.yml up -d --build web
+              && docker compose -f deploy/docker-compose.yml up -d --build

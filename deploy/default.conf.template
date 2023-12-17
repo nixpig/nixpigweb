@@ -4,22 +4,6 @@
 server {
 	listen 80;
 	listen [::]:80;
-	
-	listen 443 ssl;
-	listen [::]:443 ssl;
-
-	server_name nixpig.com;
-
-	ssl_certificate ssl/${SSL_CERT};
-	ssl_certificate_key ssl/${SSL_CERT_KEY}; 
-
-	rewrite ^/(.*)$ https://nixpig.dev/$1 permanent;
-}
-
-
-server {
-	listen 80;
-	listen [::]:80;
 
 	server_name ${SERVER_NAME};
 
