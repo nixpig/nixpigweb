@@ -82,7 +82,7 @@ jobs:
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          source: deploy/docker-compose.yml
+          source: "deploy/docker-compose.yml,default.conf.template"
           target: /home/nixpig
 
       - name: Deploy on Droplet
