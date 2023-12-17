@@ -25,7 +25,7 @@ jobs:
           images: |
             ${{ vars.CONTAINER_REGISTRY }}/${{ vars.IMAGE_NAME }}
           tags: |
-            type=raw,value=$GITHUB_SHA
+            type=raw,value=${{ github.sha }}
             type=raw,value=latest
 
       - name: Setup QEMU
@@ -52,5 +52,5 @@ jobs:
 
       - name: Push image to container registry
         run: |
-          docker push ${{ vars.CONTAINER_REGISTRY }}/${{ vars.IMAGE_NAME }}:${{ env.GITHUB_SHA }}
+          docker push ${{ vars.CONTAINER_REGISTRY }}/${{ vars.IMAGE_NAME }}:${{ github.sha }}
           docker push ${{ vars.CONTAINER_REGISTRY }}/${{ vars.IMAGE_NAME }}:latest
