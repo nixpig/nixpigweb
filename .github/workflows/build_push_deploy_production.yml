@@ -85,6 +85,7 @@ jobs:
           source: "deploy/docker-compose.yml,deploy/default.conf.template"
           target: /home/nixpig
           overwrite: true
+          strip_components: 1
 
       - name: Deploy on Droplet
         uses: appleboy/ssh-action@v1.0.0
@@ -100,6 +101,5 @@ jobs:
           envs: API_TOKEN,CONTAINER_REGISTRY,IMAGE_NAME
           script: |
             docker login -u $API_TOKEN -p $API_TOKEN registry.digitalocean.com \
-              && cp .env deploy/.env \
               && docker pull $CONTAINER_REGISTRY/$IMAGE_NAME:latest \
-              && docker compose -f deploy/docker-compose.yml up -d --build
+              && docker compose -f docker-compose.yml up -d --build

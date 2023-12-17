@@ -57,7 +57,7 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./deploy/default.conf.template:/etc/nginx/templates/default.conf.template
+      - ./default.conf.template:/etc/nginx/templates/default.conf.template
       - /home/nixpig/.ssl:/etc/nginx/ssl:so
     depends_on:
       - db
