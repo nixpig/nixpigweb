@@ -1,0 +1,60 @@
+name: build_push_deploy_production
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Reason for manual build and deploy"
+        required: true
+
+env:
+  CONTAINER_REGISTRY: ${{ vars.CONTAINER_REGISTRY }}
+  IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo code
+        uses: actions/checkout@v4
+
+      - name: Configure Docker metadata
+        uses: docker/metadata-actions@v5
+        id: meta
+        with:
+          images: |
+            $CONTAINER_REGISTRY/$IMAGE_NAME
+          tags: |
+            type=raw,value=$GITHUB_SHA
+            type=raw,value=latest
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build web image
+        uses: docker/build-push-action@v5
+        with:
+          push: false
+          image: build/package/Dockerfile.web
+          context: .
+          tags: ${{ steps.meta.outputs.tags }}
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.API_TOKEN }}
+
+      - name: Login to container registry
+        run: doctl registry login
+
+      - name: Push image to container registry
+        run: |
+          docker push $CONTAINER_REGISTRY/$IMAGE_NAME:$GITHUB_SHA
+          docker push $CONTAINER_REGISTRY/$IMAGE_NAME:latest
