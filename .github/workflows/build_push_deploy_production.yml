@@ -99,5 +99,6 @@ jobs:
           envs: API_TOKEN,CONTAINER_REGISTRY,IMAGE_NAME
           script: |
             docker login -u $API_TOKEN -p $API_TOKEN registry.digitalocean.com \
+              && cp .env deploy/.env \
               && docker pull $CONTAINER_REGISTRY/$IMAGE_NAME:latest \
               && docker compose -f deploy/docker-compose.yml up -d --build
