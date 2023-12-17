@@ -11,10 +11,6 @@ on:
         description: "Reason for manual build and deploy"
         required: true
 
-env:
-  CONTAINER_REGISTRY: ${{ vars.CONTAINER_REGISTRY }}
-  IMAGE_NAME: ${{ vars.IMAGE_NAME }}
-
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
@@ -27,7 +23,7 @@ jobs:
         id: meta
         with:
           images: |
-            $CONTAINER_REGISTRY/$IMAGE_NAME
+            ${{ vars.CONTAINER_REGISTRY }}/${{ vars.IMAGE_NAME }}
           tags: |
             type=raw,value=$GITHUB_SHA
             type=raw,value=latest
@@ -56,5 +52,5 @@ jobs:
 
       - name: Push image to container registry
         run: |
-          docker push $CONTAINER_REGISTRY/$IMAGE_NAME:$GITHUB_SHA
-          docker push $CONTAINER_REGISTRY/$IMAGE_NAME:latest
+          docker push ${{ vars.CONTAINER_REGISTRY }}/${{ vars.IMAGE_NAME }}:${{ env.GITHUB_SHA }}
+          docker push ${{ vars.CONTAINER_REGISTRY }}/${{ vars.IMAGE_NAME }}:latest
