@@ -81,7 +81,7 @@ jobs:
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          envs: "{{ secrets.API_TOKEN }}"
+          envs: API_TOKEN
           script: |
             docker login -u $API_TOKEN -p $API_TOKEN registry.digitalocean.com
             cd nixpigweb \
