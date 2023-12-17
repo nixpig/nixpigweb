@@ -82,6 +82,6 @@ jobs:
           envs: "{{ secrets.API_TOKEN }}"
           script: |
             docker login -u ${{ secrets.API_TOKEN }} -p ${{ secrets.API_TOKEN }} registry.digitalocean.com
-            cd nixpigweb \
-              && git pull \
-              && docker compose -f deploy/docker-compose.yml up -d --build web
+            # cd nixpigweb \
+            #   && git pull \
+            #   && docker compose -f deploy/docker-compose.yml up -d --build web
