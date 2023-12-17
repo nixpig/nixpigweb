@@ -1,4 +1,7 @@
 # deploy test 1
+
+# paths assume docker-compose is located at 'root' relative to other directories in repo
+
 version: "3.1"
 
 services:
@@ -7,7 +10,7 @@ services:
     image: registry.digitalocean.com/nixpig/nixpigweb-web:latest
     depends_on:
       - db
-    env_file: ../.env
+    env_file: .env
     ports:
       - 8080:8080
     networks:
@@ -18,7 +21,7 @@ services:
     image: registry.digitalocean.com/nixpig/nixpigweb-api:latest
     depends_on:
       - db
-    env_file: ../.env
+    env_file: .env
     ports:
       - 8081:8081
     networks:
@@ -29,7 +32,7 @@ services:
     image: registry.digitalocean.com/nixpig/nixpigweb-admin:latest
     depends_on:
       - api
-    env_file: ../.env
+    env_file: .env
     ports:
       - 8082:8082
     networks:
@@ -38,7 +41,7 @@ services:
   db:
     restart: always
     image: postgres:16.0-alpine3.18
-    env_file: ../.env
+    env_file: .env
     volumes:
       - db_volume:/var/lib/postgresql/data
     ports:
@@ -49,12 +52,12 @@ services:
   proxy:
     restart: always
     image: nginx:1.25.2-alpine
-    env_file: ../.env
+    env_file: .env
     ports:
       - 80:80
       - 443:443
     volumes:
-      - ../deploy/default.conf.template:/etc/nginx/templates/default.conf.template
+      - ./deploy/default.conf.template:/etc/nginx/templates/default.conf.template
       - /home/nixpig/.ssl:/etc/nginx/ssl:so
     depends_on:
       - db
