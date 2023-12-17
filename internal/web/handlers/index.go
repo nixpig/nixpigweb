@@ -16,8 +16,9 @@ func IndexHandler(c *fiber.Ctx) error {
 	}
 
 	return c.Render("index", fiber.Map{
-		"PageTitle": "Hi, I'm @nixpig",
-		"Pages":     pages,
-		"SiteName":  config.Get("SITE_NAME"),
+		"PageTitle":    "Hi, I'm @nixpig",
+		"Pages":        pages,
+		"SiteName":     config.Get("SITE_NAME"),
+		"PageSubtitle": "Diary of a front-ender learning Rust, Go and other back-end tech...",
 	})
 }
