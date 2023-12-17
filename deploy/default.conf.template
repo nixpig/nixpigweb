@@ -5,9 +5,21 @@ server {
 	listen 80;
 	listen [::]:80;
 
-	server_name ${SERVER_NAME};
+	server_name nixpig.dev nixpig.com www.nixpig.dev www.nixpig.com;
 
 	return 301 https://$host$request_uri;
+}
+
+server {
+	listen 443;
+	listen [::]::443 ssl;
+
+	server_name www.nixpig.dev nixpig.com www.nixpig.com;
+
+	ssl_certificate ssl/${SSL_CERT};
+	ssl_certificate_key ssl/${SSL_CERT_KEY}; 
+
+	return 301 https://${SERVER_NAME}$request_uri;
 }
 
 server {
