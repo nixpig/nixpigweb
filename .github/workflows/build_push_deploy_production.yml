@@ -12,6 +12,12 @@ on:
         required: true
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run unit tests
+        run: make test
+
   build_and_push:
     runs-on: ubuntu-latest
     environment: Production
@@ -56,3 +62,22 @@ jobs:
         run: |
           docker push ${{ vars.CONTAINER_REGISTRY }}/${{ vars.IMAGE_NAME }}:${{ github.sha }}
           docker push ${{ vars.CONTAINER_REGISTRY }}/${{ vars.IMAGE_NAME }}:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment: Production
+    needs: build_and_push
+    steps:
+      - name: Deploy on Digital Ocean Droplet
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          envs: "{{ secrets.API_TOKEN }}"
+          script: |
+            docker login -u ${{ secrets.API_TOKEN }} -p ${{ secrets.API_TOKEN }} registry.digitalocean.com
+            cd nixpigweb \
+              && git pull \
+              && docker compose -f deploy/docker-compose.yml up -d --build web
