@@ -28,6 +28,7 @@ func Start(port string) {
 	})
 
 	app.Static("/static", "./web/static")
+	app.Static("robots.txt", "./web/robots.txt")
 
 	app.Use(helmet.New())
 	app.Use(cors.New())
