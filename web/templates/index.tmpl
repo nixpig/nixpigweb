@@ -3,18 +3,33 @@
 
 <main>
   <h1>{{.PageTitle}}</h1>
+  <div></div>
 
-  <p>
-    I'm an Engineering Lead, based in the UK. I've spent the majority of my professional career focused on front-end web. Recently, I've been branching out and now starting to dabble in back-end and tools development using Go and Rust.
-  </p>
+  <section>
+    <h2>About me</h2>
+    <p>
+      I'm an Engineering Lead, based in the UK. I've spent the majority of my professional career focused on front-end web. Recently, I've been branching out and starting to dabble in back-end and tools development using Go and Rust.
+    </p>
 
-  <p>
-    This website is mostly just somewhere to experiment with the various things I'm working on and document it.
-  </p>
+    <p>
+      This website is mostly just somewhere to experiment with the various things I'm working on and document it.
+    </p>
 
-  <p>
-    If you want to know more, you can check out the <a href="/about">about page</a> or read some <a href="/blog">blog posts</a>.
-  </p>
+    <p>
+      If you want to know more, you can check out the <a href="/about">about page</a> or read some <a href="/blog">blog posts</a>.
+    </p>
+  </section>
+
+  <section>
+    <h2>Latest content</h2>
+
+    <ul>
+      {{ range $post := .Posts }}
+      <li>
+        {{ $post.CreatedAt.Format "Jan 2, 2006" }} - <a href="{{$post.Slug}}">{{ $post.Title }}</a>
+      </li>{{ end }}
+    </ul>
+  </section>
 </main>
 
 {{ template "footer" . }}

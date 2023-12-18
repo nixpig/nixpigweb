@@ -8,7 +8,7 @@
     <ul>
       {{ range $post := .Posts }}
       <li>
-        {{ $post.CreatedAt.Format "2006-01-02" }} - <a href="{{$post.Slug}}">{{ $post.Title }}</a>
+        {{ $post.CreatedAt.Format "Jan 2, 2006" }} - <a href="{{$post.Slug}}">{{ $post.Title }}</a>
       </li>{{ end }}
     </ul>
   </p>
