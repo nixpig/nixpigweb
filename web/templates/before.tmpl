@@ -1,12 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- test deploy 2 -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="{{.PageSubtitle}}">
+    <meta name="author" content="@nixpig">
+    
+    {{if .Body}}
+      <meta name="description" content='{{printf "%.156s" .Body}} ...'>
+    {{else if .PageSubtitle}}
+      <meta name="description" content="{{.PageSubtitle}}">
+    {{end}}
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐽</text></svg>">  
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="{{ .SiteName }}">
+    <meta property="og:title" content="{{.PageTitle}}">
+
+    {{if .CreatedAt}}
+      <meta property="article:published_time" content='{{.CreatedAt.Format "2006-01-02T15:04:05-0700"}}'>
+    {{end}}
+
+    {{if .UpdatedAt}}
+      <meta property="article:modified_time" content='{{.UpdatedAt.Format "2006-01-02T15:04:05-0700"}}'>
+    {{end}}
+
+    <meta property="og:locale" content="en-GB">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://{{.SiteName}}/static/logo.jpg">
+    <meta property="og:url" content="https://{{.SiteName}}/{{.Slug}}">
+
+    {{if .Body}}
+      <meta property="og:description" content='{{ printf "%.156s" .Body}}'>
+    {{else if .PageSubtitle}}
+      <meta property="og:description" content='{{.PageSubtitle}}'>
+    {{end}}
+
+    <!-- Twitter -->
+    <meta property="twitter:site" content="@nixpigdev">
+    <meta property="twitter:title" content="{{.PageTitle}}">
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:image" content="https://{{.SiteName}}/static/logo.jpg">
+    
+    {{if .Body}}
+      <meta property="twitter:description" content='{{ printf "%.156s" .Body}}'>
+    {{else if .PageSubtitle}}
+      <meta property="twitter:description" content="{{.PageSubtitle}}">
+    {{end}}
+
     {{ template "style" . }}
-    <title>{{ .PageTitle }} - {{ .SiteName }}</title>
+    <title>
+      {{if .PageTitle}}
+        {{ .PageTitle }} | 
+      {{end}}
+      {{ .SiteName }}
+    </title>
   </head>
 <body>

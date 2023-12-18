@@ -28,5 +28,6 @@ func BlogHander(c *fiber.Ctx) error {
 		"Pages":     pages,
 		"PageTitle": "Blog",
 		"Posts":     posts,
+		"Body":      "A collection of the blog posts I've written.",
 	})
 }

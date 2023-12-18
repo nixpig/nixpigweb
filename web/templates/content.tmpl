@@ -6,11 +6,11 @@
     <h2>{{.PageSubtitle}}</h2>
     {{if eq .Type "post"}}
     <p>
-      <b>Posted on:</b> {{.CreatedAt.Format "2006-01-02"}}
+      <b>Posted on:</b> {{.CreatedAt.Format "Jan 2, 2006"}}
 
       {{if ne .UpdatedAt .CreatedAt}}
         &bull;
-        <b>Updated on:</b> {{.UpdatedAt.Format "2006-01-02"}}
+        <b>Updated on:</b> {{.UpdatedAt.Format "Jan 2, 2006"}}
       {{end}}
     </p>
     {{end}}

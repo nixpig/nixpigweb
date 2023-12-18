@@ -499,4 +499,33 @@
     padding: 1.5rem;
     margin: 2rem 0;
   }
+
+  .social-list {
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    @media screen and (max-width: 479px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  .social-list a {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+
+    @media screen and (max-width: 479px) {
+      flex-direction: row;
+    }
+  }
+
 </style>
