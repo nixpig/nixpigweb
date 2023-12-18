@@ -29,30 +29,68 @@ jobs:
       - name: Checkout repo code
         uses: actions/checkout@v4
 
-      - name: Configure Docker metadata
-        uses: docker/metadata-action@v5
-        id: meta
-        with:
-          images: |
-            ${{ vars.CONTAINER_REGISTRY }}/${{ vars.IMAGE_NAME }}
-          tags: |
-            type=raw,value=${{ github.sha }}
-            type=raw,value=latest
-
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build web image
+      - name: Configure 'web' metadata
+        uses: docker/metadata-action@v5
+        id: web_meta
+        with:
+          images: |
+            ${{ vars.CONTAINER_REGISTRY }}/${{ vars.WEB_IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ github.sha }}
+            type=raw,value=latest
+
+      - name: Build 'web' image
         uses: docker/build-push-action@v5
         with:
           push: false
           load: true
           file: build/package/Dockerfile.web
           context: .
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.web_meta.outputs.tags }}
+
+      - name: Configure 'admin' metadata
+        uses: docker/metadata-action@v5
+        id: admin_meta
+        with:
+          images: |
+            ${{ vars.CONTAINER_REGISTRY }}/${{ vars.ADMIN_IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ github.sha }}
+            type=raw,value=latest
+
+      - name: Build 'admin' image
+        uses: docker/build-push-action@v5
+        with:
+          push: false
+          load: true
+          file: build/package/Dockerfile.admin
+          context: .
+          tags: ${{ steps.admin_meta.outputs.tags }}
+
+      - name: Configure 'api' metadata
+        uses: docker/metadata-action@v5
+        id: api_meta
+        with:
+          images: |
+            ${{ vars.CONTAINER_REGISTRY }}/${{ vars.API_IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ github.sha }}
+            type=raw,value=latest
+
+      - name: Build 'api' image
+        uses: docker/build-push-action@v5
+        with:
+          push: false
+          load: true
+          file: build/package/Dockerfile.api
+          context: .
+          tags: ${{ steps.api_meta.outputs.tags }}
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -62,10 +100,20 @@ jobs:
       - name: Login to container registry
         run: doctl registry login
 
-      - name: Push image to container registry
+      - name: push 'web' images to container registry
         run: |
-          docker push ${{ vars.CONTAINER_REGISTRY }}/${{ vars.IMAGE_NAME }}:${{ github.sha }}
-          docker push ${{ vars.CONTAINER_REGISTRY }}/${{ vars.IMAGE_NAME }}:latest
+          docker push ${{ vars.container_registry }}/${{ vars.web_image_name }}:${{ github.sha }}
+          docker push ${{ vars.container_registry }}/${{ vars.web_image_name }}:latest
+
+      - name: push 'admin' images to container registry
+        run: |
+          docker push ${{ vars.container_registry }}/${{ vars.admin_image_name }}:${{ github.sha }}
+          docker push ${{ vars.container_registry }}/${{ vars.admin_image_name }}:latest
+
+      - name: push 'api' images to container registry
+        run: |
+          docker push ${{ vars.container_registry }}/${{ vars.api_image_name }}:${{ github.sha }}
+          docker push ${{ vars.container_registry }}/${{ vars.api_image_name }}:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -75,7 +123,7 @@ jobs:
       - name: Checkout repo code
         uses: actions/checkout@v4
 
-      - name: Copy docker-compose.yml to Droplet
+      - name: Copy deployment files to Droplet
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.DROPLET_HOST }}
@@ -92,14 +140,18 @@ jobs:
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
           CONTAINER_REGISTRY: ${{ vars.CONTAINER_REGISTRY }}
-          IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+          WEB_IMAGE_NAME: ${{ vars.WEB_IMAGE_NAME }}
+          ADMIN_IMAGE_NAME: ${{ vars.ADMIN_IMAGE_NAME }}
+          API_IMAGE_NAME: ${{ vars.API_IMAGE_NAME }}
         with:
           host: ${{ secrets.DROPLET_HOST }}
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          envs: API_TOKEN,CONTAINER_REGISTRY,IMAGE_NAME
+          envs: API_TOKEN,CONTAINER_REGISTRY,WEB_IMAGE_NAME,ADMIN_IMAGE_NAME,API_IMAGE_NAME
           script: |
             docker login -u $API_TOKEN -p $API_TOKEN registry.digitalocean.com \
-              && docker pull $CONTAINER_REGISTRY/$IMAGE_NAME:latest \
+              && docker pull $CONTAINER_REGISTRY/$WEB_IMAGE_NAME:latest \
+              && docker pull $CONTAINER_REGISTRY/$ADMIN_IMAGE_NAME:latest \
+              && docker pull $CONTAINER_REGISTRY/$API_IMAGE_NAME:latest \
               && docker compose -f docker-compose.yml up -d --build
