@@ -1,21 +1,21 @@
 <style>
   :root,
   ::backdrop {
-    --sans-font: -apple-system, BlinkMacSystemFont, "Avenir Next", Avenir,
-      "Nimbus Sans L", Roboto, "Noto Sans", "Segoe UI", Arial, Helvetica,
-      "Helvetica Neue", sans-serif;
+    --sans-font: "PT Sans", sans-serif;
+    --header-font: "Fira Sans", sans-serif;
     --mono-font: Consolas, Menlo, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
     --standard-border-radius: 5px;
 
-    --bg: #191919;
-    --accent-bg: #212121;
-    --text: #faf0e6;
-    --text-light: #efefef;
-    --border: #898ea4;
-    --accent: #bed754;
-    --accent-text: var(--bg);
-    --code: #e3651d;
-    --preformatted: #e3651d;
+    --bg: #000000;
+    --accent-bg: #0a0a0a;
+    --text: #ffffff;
+    --text-light: #ffffff;
+    --border: #d0d0d0;
+    --accent: #a0ff1f;
+    --accent-text: #f0f0f0;
+    --hyper-text: #f700c6; 
+    --code: #f40256;
+    --preformatted: #f0f0f0;
     --disabled: #e0e0e0;
   }
 
@@ -50,11 +50,13 @@
   }
 
   body > header {
-    background-color: var(--accent-bg);
+    background-color: var(--bg);
     border-bottom: 1px solid var(--border);
     text-align: left;
-    padding: 0 0.5rem 2rem 0.5rem;
+    padding: 0 1rem 2rem 1rem;
     grid-column: 1 / -1;
+
+    font-family: var(--header-font);
 
     padding-bottom: 0;
     display: flex;
@@ -78,6 +80,9 @@
   body > header .sitename a:hover {
     color: var(--text);
     text-decoration: none;
+    background: none;
+    padding: 0;
+    margin: 0;
   }
 
   main {
@@ -91,6 +96,17 @@
     font-size: 0.9rem;
     text-align: center;
     border-top: 1px solid var(--border);
+  }
+
+  body > footer a,
+  body > footer a:visited {
+    color: var(--text);
+  }
+
+  body > footer a:hover {
+    color: var(--text);
+    text-decoration: none;
+    background: none;
   }
 
   h1 {
@@ -121,6 +137,10 @@
 
   p {
     margin: 1.5rem 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--header-font);
   }
 
   p, h1, h2, h3, h4, h5, h6 {
@@ -157,7 +177,10 @@
   }
 
   a:hover {
-    text-decoration: none;
+    color: var(--text);
+    background-color: var(--hyper-text);
+    padding: 3px;
+    margin: -3px;
   }
 
   button,
@@ -247,7 +270,10 @@
   }
 
   header > nav a:hover {
+    padding: 0;
+    margin: 0 0.5rem 1rem 0.5rem;
     color: var(--accent);
+    background: none;
   }
 
   aside, pre {
