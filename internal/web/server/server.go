@@ -31,9 +31,14 @@ func Start(port string) {
 	app.Static("robots.txt", "./web/robots.txt")
 
 	app.Use(helmet.New())
-	app.Use(cors.New())
 	app.Use(logger.New())
 	app.Use(compress.New())
+
+	app.Use(cors.New(cors.Config{
+		AllowOriginsFunc: func(origin string) bool {
+			return config.Get("APP_ENV") == "development"
+		},
+	}))
 
 	web := app.Group(fmt.Sprintf("/%s", "/"))
 
