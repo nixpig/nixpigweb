@@ -528,7 +528,7 @@
     margin: 2rem 0;
   }
 
-  .social-list {
+  .footer__social-list {
     list-style-type: none;
     display: flex;
     flex-direction: row;
@@ -543,7 +543,7 @@
     }
   }
 
-  .social-list a {
+  .footer__social-list a {
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -556,20 +556,59 @@
     }
   }
 
-  .home-os {
+  .main__projects-table {
     display: flex;
     width: 100%;
     flex-direction: row;
-    gap: 0.5rem;
+    gap: 1rem;
+    margin-bottom: 1rem;
 
     @media screen and (max-width: 720px) {
       flex-direction: column;
     }
   }
 
-  .home-os > div {
+  .main__projects-table h3 {
+    margin: 0.75rem 0;
+  }
+
+  .main__projects-cell {
     flex-grow: 1;
     flex-basis: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
   }
+
+  a.main__projects-cell,
+  a.main__projects-cell:visited {
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .main__projects-description {
+    flex-grow: 1;
+  }
+
+  .main__projects-language::before {
+    content: '';
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.5rem;
+    -moz-border-radius: 0.5rem;
+    -webkit-border-radius: 0.5rem;
+    margin-right: 0.5rem;
+  }
+
+  .main__projects-language--rust::before {
+    background-color: #dea584;
+  }
+
+  .main__projects-language--go::before {
+    background-color: #00ADD8;
+  }
+
 
 </style>
