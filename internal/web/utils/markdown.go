@@ -11,7 +11,7 @@ func MdToHtml(md []byte) (string, error) {
 	markdown := goldmark.New(
 		goldmark.WithExtensions(
 			highlighting.NewHighlighting(
-				highlighting.WithStyle("fruity"),
+				highlighting.WithStyle("rrt"),
 				highlighting.WithFormatOptions(chromahtml.WithLineNumbers(true)))))
 
 	var buf bytes.Buffer
