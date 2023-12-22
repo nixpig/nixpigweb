@@ -1,19 +1,23 @@
 package utils
 
 import (
-	"github.com/gomarkdown/markdown"
-	"github.com/gomarkdown/markdown/html"
-	"github.com/gomarkdown/markdown/parser"
+	"bytes"
+	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
+	"github.com/yuin/goldmark"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
 )
 
-func MdToHtml(md []byte) []byte {
-	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock
-	p := parser.NewWithExtensions(extensions)
-	doc := p.Parse(md)
+func MdToHtml(md []byte) (string, error) {
+	markdown := goldmark.New(
+		goldmark.WithExtensions(
+			highlighting.NewHighlighting(
+				highlighting.WithStyle("fruity"),
+				highlighting.WithFormatOptions(chromahtml.WithLineNumbers(true)))))
 
-	htmlFlags := html.CommonFlags | html.HrefTargetBlank
-	opts := html.RendererOptions{Flags: htmlFlags}
-	renderer := html.NewRenderer(opts)
+	var buf bytes.Buffer
+	if err := markdown.Convert(md, &buf); err != nil {
+		return "", err
+	}
 
-	return markdown.Render(doc, renderer)
+	return buf.String(), nil
 }

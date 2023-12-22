@@ -31,7 +31,14 @@ func ContentHandler(c *fiber.Ctx) error {
 	}
 
 	md := []byte(content.Body)
-	html := utils.MdToHtml(md)
+
+	html, err := utils.MdToHtml(md)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).Render("500", fiber.Map{
+			"PageTitle": "500 - Internal Server Error",
+			"SiteName":  sitename,
+		})
+	}
 
 	return c.Render("content", fiber.Map{
 		"SiteName":     sitename,
