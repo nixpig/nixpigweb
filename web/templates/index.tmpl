@@ -35,45 +35,45 @@
 
   <hr>
 
-  <section class="main__projects">
-    <h2>Projects</h2>
-    <p>
-      Working on a few little open-source side projects.
+  <div class="main__content">
+    <section class="main__content-projects">
+      <h2>Side Projects</h2>
+      <p>
+        Working on a few little open-source side projects.
 
-      <div class="main__projects-table">
-        <a href="https://github.com/nixpig/corkscrew" target="_blank" class="main__projects-cell">
-          <h3>🌀 Corkscrew</h3>
-          <div class="main__projects-description">Configure HTTP requests in YAML and execute from the command line.</div>
-          <div class="main__projects-language main__projects-language--rust">Rust</div>
-        </a>
+        <div class="main__content-projects-table">
+          <a href="https://github.com/nixpig/corkscrew" target="_blank" class="main__content-projects-cell">
+            <h3>🌀 Corkscrew</h3>
+            <div class="main__content-projects-description">Configure HTTP requests in YAML and execute from the command line.</div>
+            <div class="main__content-projects-language main__content-projects-language--rust">Rust</div>
+          </a>
 
-        <a href="https://github.com/nixpig/joubini" target="_blank" class="main__projects-cell">
-          <h3>🐙 Joubini</h3>
-          <div class="main__projects-description">Super-simple HTTP reverse proxy for local development.</div>
-          <div class="main__projects-language main__projects-language--rust">Rust</div>
-        </a>
+          <a href="https://github.com/nixpig/joubini" target="_blank" class="main__content-projects-cell">
+            <h3>🐙 Joubini</h3>
+            <div class="main__content-projects-description">Super-simple HTTP reverse proxy for local development.</div>
+            <div class="main__content-projects-language main__content-projects-language--rust">Rust</div>
+          </a>
 
-        <a href="https://github.com/nixpig/chiton" target="_blank" class="main__projects-cell">
-          <h3>👀 Chiton</h3>
-          <div class="main__projects-description">file-watcher...</div>
-          <div class="main__projects-language main__projects-language--go">Go</div>
-        </a>
-      </div>
-    </p>
-  </section>
+          <a href="https://github.com/nixpig/chiton" target="_blank" class="main__content-projects-cell">
+            <h3>👀 Chiton</h3>
+            <div class="main__content-projects-description">file-watcher...</div>
+            <div class="main__content-projects-language main__content-projects-language--go">Go</div>
+          </a>
+        </div>
+      </p>
+    </section>
 
-  <hr>
-
-  <section class="main__latest">
-    <h2>Latest content</h2>
-    <p>Some blurb in here...</h2>
-    <ul>
-      {{ range $post := .Posts }}
-      <li>
-        {{ $post.CreatedAt.Format "Jan 2, 2006" }} - <a href="{{$post.Slug}}">{{ $post.Title }}</a>
-      </li>{{ end }}
-    </ul>
-  </section>
+    <section class="main__content-latest">
+      <h2>Latest content</h2>
+      <p>Some blurb in here...</h2>
+      <ul>
+        {{ range $post := .Posts }}
+        <li>
+          {{ $post.CreatedAt.Format "Jan 2, 2006" }} - <a href="{{$post.Slug}}">{{ $post.Title }}</a>
+        </li>{{ end }}
+      </ul>
+    </section>
+  </div>
 </main>
 
 {{ template "footer" . }}
