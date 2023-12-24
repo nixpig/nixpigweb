@@ -24,11 +24,19 @@
     color: var(--keyline);
   }
 
-  .latest__tags {}
+  .latest__date::after {
+    content: '';
+    display: inline-block;
+    height: 0.9rem;
+    margin-left: 0.5rem;
+    border-right: 1px solid var(--keyline);
+  }
 
   .latest__title {
     flex-grow: 1;
   }
+
+  .latest__tags {}
 
 </style>
 
@@ -38,7 +46,7 @@
   <ul>
     {{ range $post := .Posts }}
     <li>
-      <div class="latest__date">{{ $post.CreatedAt.Format "Jan 2, 2006" }} <span class="sep">|</span></div>
+      <div class="latest__date">{{ $post.CreatedAt.Format "Jan 2, 2006" }}</div>
       <div class="latest__title"><a href="{{$post.Slug}}">{{ $post.Title }}</a></div>
       <div class="latest__tags"></div>
     </li>{{ end }}
