@@ -3,77 +3,30 @@
 
 <main class="main">
   <h1>{{.PageTitle}}</h1>
-  <div></div>
 
   <section class="main__about">
     <h2>About me</h2>
+
+    <p>
+      I'm a software engineer from the UK. I've spent the majority of my 10 yrs professional career focused on front-end web. In recent times, I've been more involved in back-end, architecture and tooling.
+    </p>
+
     <aside>
-      <div><img src="static/images/profile.svg" width="120" height="150" alt="Picture of nixpig"></div>
-      <div>Some aside</div>
+      {{ template "projects__partial" . }}
     </aside>
 
     <p>
-      I'm a software engineer from the UK, where I'm currently working as an engineering lead.
+      Currently learning/experimenting with <a href="https://github.com/nixpig?tab=repositories&q=&type=&language=rust" target="_blank">Rust</a> and <a href="https://github.com/nixpig?tab=repositories&q=&type=&language=go&sort=" target="_blank">Go</a> on a few side projects.
     </p>
 
     <p>
-      I've spent the majority of my professional career focused on front-end web. Over the past year, I've been more involved in back-end, architecture and tooling.
-    </p>
-
-    <p>
-      Currently learning <a href="https://github.com/nixpig?tab=repositories&q=&type=&language=rust">Rust</a> and resisting the temptation to <i>rewrite everything</i> in it.
-    </p>
-
-    <p>
-      This website is mostly just somewhere to experiment with the various things I'm working on and document it.
-    </p>
-
-    <p>
-      If you want to know more, you can check out the <a href="/about">about page</a> or read some <a href="/blog">blog posts</a>.
+      You can find the code I've been writing recently on <a href="https://github.com/nixpig" target="_blank"><nobr><svg style="margin-bottom: -.25rem;" xmlns="http://www.w3.org/2000/svg" height="1.5rem" width="1.5rem" viewBox="0 0 496 512"><g><path stroke="currentcolor" fill="currentcolor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></g></svg> GitHub</nobr></a>.
     </p>
   </section>
 
-  <hr>
-
-  <div class="main__content">
-    <section class="main__content-projects">
-      <h2>Side Projects</h2>
-      <p>
-        Working on a few little open-source side projects.
-
-        <div class="main__content-projects-table">
-          <a href="https://github.com/nixpig/corkscrew" target="_blank" class="main__content-projects-cell">
-            <h3>🌀 Corkscrew</h3>
-            <div class="main__content-projects-description">Configure HTTP requests in YAML and execute from the command line.</div>
-            <div class="main__content-projects-language main__content-projects-language--rust">Rust</div>
-          </a>
-
-          <a href="https://github.com/nixpig/joubini" target="_blank" class="main__content-projects-cell">
-            <h3>🐙 Joubini</h3>
-            <div class="main__content-projects-description">Super-simple HTTP reverse proxy for local development.</div>
-            <div class="main__content-projects-language main__content-projects-language--rust">Rust</div>
-          </a>
-
-          <a href="https://github.com/nixpig/chiton" target="_blank" class="main__content-projects-cell">
-            <h3>👀 Chiton</h3>
-            <div class="main__content-projects-description">file-watcher...</div>
-            <div class="main__content-projects-language main__content-projects-language--go">Go</div>
-          </a>
-        </div>
-      </p>
-    </section>
-
-    <section class="main__content-latest">
-      <h2>Latest content</h2>
-      <p>Some blurb in here...</h2>
-      <ul>
-        {{ range $post := .Posts }}
-        <li>
-          {{ $post.CreatedAt.Format "Jan 2, 2006" }} - <a href="{{$post.Slug}}">{{ $post.Title }}</a>
-        </li>{{ end }}
-      </ul>
-    </section>
-  </div>
+  <section>
+    {{ template "latest__partial" . }}
+  </section>
 </main>
 
 {{ template "footer" . }}

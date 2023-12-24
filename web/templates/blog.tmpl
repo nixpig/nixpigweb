@@ -4,14 +4,9 @@
 <main>
   <h1>{{.PageTitle}}</h1>
   <p>{{.Body}}</p>
-  <p>
-    <ul>
-      {{ range $post := .Posts }}
-      <li>
-        {{ $post.CreatedAt.Format "Jan 2, 2006" }} - <a href="{{$post.Slug}}">{{ $post.Title }}</a>
-      </li>{{ end }}
-    </ul>
-  </p>
+  <section>
+    {{ template "latest__partial" . }}
+  </section>
 </main>
 
 {{ template "footer" . }}

@@ -1,0 +1,46 @@
+<style>
+  .latest {
+    overflow: hidden;
+  }
+
+  .latest ul {
+    list-style: none;
+    padding: 0;
+    border-top: 1px dashed var(--keyline);
+  }
+
+  .latest ul li {
+    display: flex;
+    gap: 1rem;
+    border-bottom: 1px dashed var(--keyline);
+    padding: .25rem;
+  }
+
+  .latest ul li:hover {
+    background-color: var(--accent-bg);
+  }
+
+  .latest .sep {
+    color: var(--keyline);
+  }
+
+  .latest__tags {}
+
+  .latest__title {
+    flex-grow: 1;
+  }
+
+</style>
+
+<div class="latest">
+  <h2>Latest content</h2>
+
+  <ul>
+    {{ range $post := .Posts }}
+    <li>
+      <div class="latest__date">{{ $post.CreatedAt.Format "Jan 2, 2006" }} <span class="sep">|</span></div>
+      <div class="latest__title"><a href="{{$post.Slug}}">{{ $post.Title }}</a></div>
+      <div class="latest__tags"></div>
+    </li>{{ end }}
+  </ul>
+</div>
