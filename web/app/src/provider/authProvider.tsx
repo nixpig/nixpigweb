@@ -1,5 +1,3 @@
-import axios from "axios";
-
 import {
   createContext,
   ReactNode,
@@ -8,6 +6,8 @@ import {
   useMemo,
   useState,
 } from "react";
+
+import { http } from "../services";
 
 const AuthContext = createContext<{
   token: string | null;
@@ -19,10 +19,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      http.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       localStorage.setItem("token", token);
     } else {
-      delete axios.defaults.headers.common["Authorization"];
+      delete http.defaults.headers.common["Authorization"];
       localStorage.removeItem("token");
     }
   }, [token]);
