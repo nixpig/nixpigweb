@@ -16,8 +16,8 @@ func ContentHandler(c *fiber.Ctx) error {
 
 	content, err := queries.GetContentBySlug(slug)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).Render("500", fiber.Map{
-			"PageTitle": "500 - Internal Server Error",
+		return c.Status(fiber.StatusNotFound).Render("404", fiber.Map{
+			"PageTitle": "404 - Not Found",
 			"SiteName":  sitename,
 		})
 	}
